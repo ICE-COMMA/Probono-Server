@@ -25,4 +25,5 @@ urlpatterns = [
     path('', views.transfer_info, name='transfer_info'),
     path('', views.weather_info, name='transfer_info'),
     path('', views.dense_popul_info, name='dense_popul_info'),
+    path('', views.safety_info, name='safety_info'),
 ]

@@ -17,3 +17,9 @@ def weather_info(request):
 
 def dense_popul_info(request):
     return render(request, 'transfer.html')
+
+def dense_popul_info(request):
+    return render(request, 'transfer.html')
+
+def safety_info(request):
+    return render(request, 'transfer.html')
