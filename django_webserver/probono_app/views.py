@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.auth import authenticate, login, logout
 
 def index(request):
     return render(request, 'index.html')
@@ -24,11 +25,11 @@ def dense_popul_info(request):
 def safety_info(request):
     return render(request, 'transfer.html')
 
-def login(request):
+def login_view(request):
     return render(request, 'transfer.html')
 
 def sign_up(request):
     return render(request, 'transfer.html')
 
-def logout(request):
+def logout_view(request):
     return render(request, 'transfer.html')
