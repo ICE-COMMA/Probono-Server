@@ -74,9 +74,11 @@ WSGI_APPLICATION = "config.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': 'djongo',
+        'NAME': 'Prototype',
+        'HOST': 'mongodb+srv://andyc707:tzlZgVWMs1wFvzDH@prototypeversion.sxa69i7.mongodb.net/',
+        'PORT': 27017
     }
 }
 
