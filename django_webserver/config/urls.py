@@ -21,8 +21,8 @@ from probono_app import views
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('', views.index, name='index'),
-    path('', views.my_page, name='my_page'),
-    path('', views.transfer_info, name='transfer_info'),
+    path('my_page/', views.my_page, name='my_page'),
+    path('transfer_info/', views.transfer_info, name='transfer_info'),
     path('', views.weather_info, name='transfer_info'),
     path('', views.dense_popul_info, name='dense_popul_info'),
     path('', views.safety_info, name='safety_info'),
