@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
+from .models import CustomUserManager
 
 def index(request):
     return render(request, 'index.html')
@@ -21,9 +22,9 @@ def safety_info(request):
 
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST.get('username') # WARN : front's parameter name
+        user_id = request.POST.get('username') # WARN : front's parameter name
         password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(request, user_id=user_id, password=password) # REMIND : This code have to verified by backend
         if user is not None:
             login(request, user)
             return redirect('index')
