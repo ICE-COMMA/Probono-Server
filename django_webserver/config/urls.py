@@ -23,4 +23,5 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('', views.my_page, name='my_page'),
     path('', views.transfer_info, name='transfer_info'),
+    path('', views.weather_info, name='transfer_info'),
 ]
