@@ -24,8 +24,11 @@ def dense_popul_info(request):
 def safety_info(request):
     return render(request, 'transfer.html')
 
-def sign_in(request):
+def login(request):
     return render(request, 'transfer.html')
 
 def sign_up(request):
+    return render(request, 'transfer.html')
+
+def sign_out(request):
     return render(request, 'transfer.html')
