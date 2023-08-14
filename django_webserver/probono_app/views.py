@@ -8,10 +8,7 @@ def my_page(request):
     return render(request, 'my_page.html')
 
 def transfer_info(request):
-    return render(request, 'transfer.html')
-
-def transfer_info(request):
-    return render(request, 'transfer.html')
+    return render(request, 'transfer_info.html')
 
 def weather_info(request):
     return render(request, 'transfer.html')
