@@ -30,5 +30,5 @@ def login(request):
 def sign_up(request):
     return render(request, 'transfer.html')
 
-def sign_out(request):
+def logout(request):
     return render(request, 'transfer.html')
