@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from probono_app import views
+from django.contrib.auth.views import LoginView, LogoutView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -28,5 +29,5 @@ urlpatterns = [
     path('safety_info', views.safety_info, name='safety_info'),
     path('login/', views.login_view, name='login'),
     path('sign_up', views.sign_up, name='sign_up'),
-    path('logout/', views.logout_view, name='logout'),
+    path('logout/', views.logout_view, name='logout')
 ]
