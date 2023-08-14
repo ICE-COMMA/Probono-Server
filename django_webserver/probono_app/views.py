@@ -14,13 +14,10 @@ def weather_info(request):
     return render(request, 'weather_info.html')
 
 def dense_popul_info(request):
-    return render(request, 'transfer.html')
-
-def dense_popul_info(request):
-    return render(request, 'transfer.html')
+    return render(request, 'dense_popul_info.html')
 
 def safety_info(request):
-    return render(request, 'transfer.html')
+    return render(request, 'safety_info.html')
 
 def login_view(request):
     if request.method == 'POST':
@@ -33,7 +30,7 @@ def login_view(request):
     return render(request, 'login.html')
 
 def sign_up(request):
-    return render(request, 'transfer.html')
+    return render(request, 'sign_up.html')
 
 def logout_view(request):
     return render(request, 'transfer.html')
