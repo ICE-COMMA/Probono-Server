@@ -24,9 +24,9 @@ urlpatterns = [
     path('my_page/', views.my_page, name='my_page'),
     path('transfer_info/', views.transfer_info, name='transfer_info'),
     path('weather_info/', views.weather_info, name='weather_info'),
-    path('', views.dense_popul_info, name='dense_popul_info'),
-    path('', views.safety_info, name='safety_info'),
+    path('dense_popul_info', views.dense_popul_info, name='dense_popul_info'),
+    path('safety_info', views.safety_info, name='safety_info'),
     path('login/', views.login_view, name='login'),
-    path('', views.sign_up, name='sign_in'),
+    path('sign_up', views.sign_up, name='sign_up'),
     path('logout/', views.logout_view, name='logout'),
 ]
