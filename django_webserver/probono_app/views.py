@@ -33,4 +33,5 @@ def sign_up(request):
     return render(request, 'sign_up.html')
 
 def logout_view(request):
-    return render(request, 'transfer.html')
+    logout(request)
+    return redirect('index')
