@@ -11,7 +11,7 @@ def transfer_info(request):
     return render(request, 'transfer_info.html')
 
 def weather_info(request):
-    return render(request, 'transfer.html')
+    return render(request, 'weather_info.html')
 
 def dense_popul_info(request):
     return render(request, 'transfer.html')
