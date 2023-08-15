@@ -6,7 +6,7 @@ from django.views.decorators.http import require_POST
 from config import utils
 
 # Session
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 
 # User
 from .models import CustomUser
