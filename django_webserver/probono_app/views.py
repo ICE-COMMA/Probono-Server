@@ -1,7 +1,17 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
-from .models import CustomUserManager
+from django.http import HttpResponse, JsonResponse
+from django.views.decorators.http import require_POST
+
+# Mongo DB
 from config import utils
+
+# Session
+from django.contrib.auth import authenticate, login, logout
+
+# User
+from .models import CustomUserManager, CustomUser
+from .forms import SignUpForm
+
 
 db_handle = utils.db_handle
 get_collection = utils.get_collection_handle
@@ -34,15 +44,25 @@ def login_view(request):
             return redirect('index')
     return render(request, 'login.html')
 
+@require_POST
 def sign_up(request):
-    if request.method == 'POST':
-
-        
+    form = SignUpForm(request.POST)
+    if form.is_valid():
+        users = get_collection(db_handle, 'User')
+        users.insert_one(form)
     return redirect('index')
 
-def id_duplicate():
+@require_POST
+def id_duplicate(request):
     users = get_collection(db_handle, 'User')
-    temp = users.find_one({'ID' : request.form})
+    temp = users.find_one({'ID' : request.form['check_id']})
+    if temp:
+        data = { "message": "id duplicated" } # REMIND : front have to know its response.
+        status_code = 201
+    else:
+        data = { "message": "id ok" }
+        status_code = 201
+    return JsonResponse(data, status=status_code)
 
 def logout_view(request):
     logout(request)
