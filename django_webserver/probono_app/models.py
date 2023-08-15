@@ -7,6 +7,7 @@ from bson.json_util import loads, dumps
 # User
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
+# 이거 완전 쓸모 없어 형석아 지우자
 class CustomUserManager(BaseUserManager):
 
     def create_user(self, user_id, name, password, sex, birth, disability, custom):
