@@ -77,11 +77,16 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 DATABASES = {
     'default': {
-        'ENGINE': 'djongo',
+        'ENGINE': 'django.db.backends.dummy',
         'NAME': 'Prototype',
-        'HOST': 'mongodb+srv://andyc707:tzlZgVWMs1wFvzDH@prototypeversion.sxa69i7.mongodb.net/',
-        'PORT': 27017
     }
+}
+
+MONGO_DB = {
+    'host': 'localhost',
+    'port': 27017,
+    'username': 'andyc707',
+    'password': 'tzlZgVWMs1wFvzDH',
 }
 
 
