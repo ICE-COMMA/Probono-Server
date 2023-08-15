@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../static/styles.css" />
+    <title>도시예보서비스</title>
+  </head>
+  <body>
+    <div id="modalContainer" class="hidden">
+      <div id="modalContent">
+        ID<input type="text" name="id" id="id" />
+        <br />
+        PW<input type="text" name="pw" id="pw" />
+        <button id="modalCloseButton">닫기</button>
+      </div>
+    </div>
+    <header>
+      <span>서울특별시 전역 폭염주의보 발령</span>
+    </header>
+    <div id="wrapper">
+      <nav id="left-nav">
+        <div id="logo">
+          <div><a href="index.html">COMMA</a></div>
+        </div>
+        <div id="info">
+          <div><a>혼잡정보</a></div>
+          <div><a>교통정보</a></div>
+          <div><a>시위정보</a></div>
+        </div>
+        <div id="contact">
+          <div><a>커스터마이징</a></div>
+          <div><a>제보하기</a></div>
+        </div>
+      </nav>
+      <nav id="right-nav">
+        <div id="user">
+          <div id="login"><a>로그인</a></div>
+          <div><a>회원가입</a></div>
+          <!-- <div><a>마이페이지</a></div> -->
+          <!-- <div><a>로그아웃</a></div> -->
+        </div>
+        <div id="location">
+          <div><a>지역설정하기</a></div>
+        </div>
+      </nav>
+      <div class="content-wrapper">
+        <div class="content">content</div>
+      </div>
+    </div>
+    <footer>
+      <p>dev by team COMMA</p>
+      <button id="start">음성인식</button>
+      <button id="end">인식종료</button>
+    </footer>
+    <script src="../static/speech.js"></script>
+    <script src="../static/modal.js"></script>
+  </body>
+</html>
