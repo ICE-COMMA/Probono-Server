@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from .models import CustomUserManager
+from config import utils
 
 def index(request):
     return render(request, 'index.html')
@@ -31,7 +32,8 @@ def login_view(request):
     return render(request, 'login.html')
 
 def sign_up(request):
-    return render(request, 'sign_up.html')
+
+    return redirect('index')
 
 def logout_view(request):
     logout(request)
