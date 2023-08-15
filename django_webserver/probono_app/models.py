@@ -66,3 +66,4 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     # 보류
     def __str__(self):
         return self.user_id
+    
