@@ -9,7 +9,7 @@ from config import utils
 from django.contrib.auth import authenticate, login, logout
 
 # User
-from .models import CustomUserManager, CustomUser
+from .models import CustomUser
 from .forms import SignUpForm
 
 
@@ -34,15 +34,22 @@ def dense_popul_info(request):
 def safety_info(request):
     return render(request, 'safety_info.html')
 
+@require_POST
 def login_view(request):
-    if request.method == 'POST':
-        user_id = request.POST.get('username') # WARN : front's parameter name
-        password = request.POST.get('password')
-        user = authenticate(request, user_id=user_id, password=password) # REMIND : This code have to verified by backend
-        if user is not None:
-            login(request, user)
+    users = get_collection(db_handle, 'User')
+    user_id = request.POST.get('username') # WARN : front's parameter name
+    password = request.POST.get('password')
+    user_info = users.find_one({'id' : user_id})
+    if user_info:
+        if (user_info['password'] == user_info['pw']):
+            login(request, user_info)
             return redirect('index')
-    return render(request, 'login.html')
+        else:
+            data = { "message": "wrong pw" }
+    else:
+        data = { "message": "wrong id" }
+    status_code = 201
+    JsonResponse(data, status=status_code)
 
 @require_POST
 def sign_up(request):
@@ -60,7 +67,6 @@ def id_duplicate(request):
         data = { "message": "id duplicated" } # REMIND : front have to know its response.
         status_code = 201
     else:
-        data = { "message": "id ok" }
         status_code = 201
     return JsonResponse(data, status=status_code)
 
