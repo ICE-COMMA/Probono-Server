@@ -29,5 +29,6 @@ urlpatterns = [
     path('safety_info', views.safety_info, name='safety_info'),
     path('login/', views.login_view, name='login'),
     path('sign_up', views.sign_up, name='sign_up'),
-    path('logout/', views.logout_view, name='logout')
+    path('logout/', views.logout_view, name='logout'),
+    path('id_check/', views.id_duplicate, name='id_duplicate')
 ]
