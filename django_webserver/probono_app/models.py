@@ -47,8 +47,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     user_id = models.CharField(max_length=100, unique=True)
     # user name
     name = models.CharField(max_length=100)
-    # password
-    password = models.CharField(max_length=100)
     # sex
     sex = models.CharField(max_length=1)
     # birth
