@@ -3,6 +3,9 @@ from django.contrib.auth import authenticate, login, logout
 from .models import CustomUserManager
 from config import utils
 
+db_handle = utils.db_handle
+get_collection = utils.get_collection_handle
+
 def index(request):
     return render(request, 'index.html')
 
@@ -32,8 +35,14 @@ def login_view(request):
     return render(request, 'login.html')
 
 def sign_up(request):
+    if request.method == 'POST':
 
+        
     return redirect('index')
+
+def id_duplicate():
+    users = get_collection(db_handle, 'User')
+    temp = users.find_one({'ID' : request.form})
 
 def logout_view(request):
     logout(request)
