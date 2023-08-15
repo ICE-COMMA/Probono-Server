@@ -1,5 +1,9 @@
 from django.db import models
 
+# DB
+from bson.objectid import ObjectId
+from bson.json_util import loads, dumps
+
 # User
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
