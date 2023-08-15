@@ -41,7 +41,7 @@ def login_view(request):
     password = request.POST.get('password')
     user_info = users.find_one({'id' : user_id})
     if user_info:
-        if (user_info['password'] == user_info['pw']):
+        if (password == user_info['pw']):
             login(request, user_info)
             return redirect('index')
         else:
