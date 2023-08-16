@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_POST
+from django.http import HttpResponse, JsonResponse
+import requests
 
 # Mongo DB
 from config import utils
@@ -69,6 +70,8 @@ def id_duplicate(request):
     else:
         status_code = 201
     return JsonResponse(data, status=status_code)
+
+def 
 
 def logout_view(request):
     logout(request)
