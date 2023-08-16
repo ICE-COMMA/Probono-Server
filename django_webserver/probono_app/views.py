@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse, JsonResponse
 import requests
+from bson.json_util import loads, dumps
 
 # Mongo DB
 from config import utils
@@ -71,8 +72,35 @@ def id_duplicate(request):
         status_code = 201
     return JsonResponse(data, status=status_code)
 
-def 
-
 def logout_view(request):
     logout(request)
     return redirect('index')
+
+def get_subway_elvtr(request):
+    base_url = 'http://openapi.seoul.go.kr:8088/4f6a5a74796c696d3534425a686562/json/tbTraficElvtr'
+    start_index = 1
+    end_index = 100
+
+    all_data = []
+
+    while True:
+        url = f"{base_url}/{start_index}/{end_index}/"
+        # print(url)
+        response = requests.get(url)
+        # print(response)
+        data = response.json()
+
+        # print(data)
+        if 'tbTraficElvtr' in data and 'row' in data['tbTraficElvtr']:
+            all_data.extend(data['tbTraficElvtr']['row'])
+
+        start_index += 100
+        end_index += 100
+
+        if len(data['tbTraficElvtr']['row']) < 100:
+            break
+
+    all_data = dumps(all_data)
+    print(all_data)
+
+    return JsonResponse(all_data)
