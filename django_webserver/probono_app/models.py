@@ -70,3 +70,111 @@ class CustomUser(AbstractBaseUser):
     def __str__(self):
         return self.user_id
     
+class Bus():
+    
+    #object_id
+    obj_id=models.CharField(max_length=100)
+    #bus number
+    bus_num=models.CharField(max_length=100)
+    #station
+    station=models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.obj_id
+    
+class Bus_Station():
+    
+    #object_id
+    obj_id=models.CharField(max_length=100)
+    #bus station name
+    stat_name=models.CharField(max_length=100)
+    #latitude
+    x=models.CharField(max_length=100)
+    #longitude
+    y=models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.stat_name
+    
+class Subway_Station():
+    
+    #object_id
+    obj_id=models.CharField(max_length=100)
+    #bus station name
+    stat_name=models.CharField(max_length=100)
+    #latitude
+    x=models.CharField(max_length=20)
+    #longitude
+    y=models.CharField(max_length=20)
+    #elevator_x
+    elevator_x=models.CharField(max_length=20)
+    #elevator_y
+    elevator_y=models.CharField(max_length=20)
+    
+    def __str__(self):
+        return self.stat_name
+    
+    
+class Police_Station():
+    
+    #object_id
+    obj_id=models.CharField(max_length=100)
+    #bus station name
+    stat_name=models.CharField(max_length=100)
+    #latitude
+    x=models.CharField(max_length=100)
+    #longitude
+    y=models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.stat_name
+    
+class Population_Density_Info():
+    
+    #object_id
+    obj_id=models.CharField(max_length=100)
+    #date
+    date=models.CharField(max_length=100)
+    #time
+    time=models.CharField(max_length=100)
+    #bus station name
+    amount=models.CharField(max_length=100)
+    #latitude
+    x=models.CharField(max_length=100)
+    #longitude
+    y=models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.obj_id
+
+class Safety_Guard_House():
+    
+    #object_id
+    obj_id=models.CharField(max_length=100)
+    #name
+    name=models.CharField(max_length=100)
+    #latitude
+    x=models.CharField(max_length=100)
+    #longitude
+    y=models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.obj_id
+    
+class demo():
+    
+    #object_id
+    obj_id=models.CharField(max_length=100)
+    #name
+    name=models.CharField(max_length=100)
+    #location
+    location=models.CharField(max_length=100)
+    #date
+    date=models.CharField(max_length=100)
+    #time
+    time=models.CharField(max_length=100)
+    #amount
+    amount=models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.obj_id
