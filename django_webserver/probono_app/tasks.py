@@ -47,7 +47,7 @@ def get_subway_elvtr_task():
     return
 
 @shared_task
-def get_bus_no_to_route(request):
+def get_bus_no_to_route():
     base_url = 'http://openapi.seoul.go.kr:8088/57636d66616c696d3536664b555850/json/busRoute'
     start_index = 1
     end_index = 100
