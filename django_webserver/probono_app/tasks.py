@@ -32,6 +32,7 @@ def get_subway_elvtr_task():
     # save to Mongo DB
     # Right here
     collection_elevtr = get_collection(db_handle, 'subway_elevator')
+    collection_elevtr.delete_many({})
     for data in all_data:
         sw_nm = data.get('SW_NM', '')
         node_wkt = data.get('NODE_WKT', '')
