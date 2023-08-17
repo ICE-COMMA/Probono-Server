@@ -77,41 +77,38 @@ def get_bus_no_to_route():
         collection_bus.insert_one(no_to_route)
     return
 
+@shared_task
+def get_safety_guard_house():
+    base_url="http://api.data.go.kr/openapi/tn_pubr_public_female_safety_prtchouse_api"
+    start_index=1
+    end_index=100
+    
+    collection_guard = get_collection(db_handle, 'safety_guard_house')
+    collection_guard.delete_many({})
+    while True:
+        params={'serviceKey' : 'z3tbVitFT7XffZ43RQ9sMyE0ALiv+EtqOysMUKPdg9E5zTIL3lNVHqGCOS9vPqq73zYw6OhwHiskVZj4MYCJ0w==',
+                'pageNo' : start_index,
+                'numOfRows' : end_index,
+                'type' : 'json' }
+        response = requests.get(base_url,params=params)
+        data = response.json() 
 
-# @shared_task
-# def get_safety_guard_house(request):
-#     base_url="http://api.data.go.kr/openapi/tn_pubr_public_female_safety_prtchouse_api"
-#     start_index=1
-#     end_index=100
-#     all_data=[]
-
-#     while True:
-#         params={'serviceKey' : 'z3tbVitFT7XffZ43RQ9sMyE0ALiv+EtqOysMUKPdg9E5zTIL3lNVHqGCOS9vPqq73zYw6OhwHiskVZj4MYCJ0w==',
-#                 'pageNo' : start_index,
-#                 'numOfRows' : end_index,
-#                 'type' : 'json' }
-#         response = requests.get(base_url,params=params)
-#         data = response.json() 
-#         if 'response' in data and 'body' in data['response']:
-#             all_data.extend(data['response']['body'])
-#             body=data['response']['body']
-#             if body['resultCode']=='03': # 데이터가 없을 떄 resultCode=03
-#                 break
-            
-#         start_index+=1
-        
-#         # save to Mongo DB
-#     collection_guard = get_collection(db_handle, 'safety_guard_house')
-#     collection_guard.delete_many({})
-#     for data in all_data:
-#         if data['ctprvnNm']=='서울특별시':
-#             name = data.get('storNm', '')
-#             x = data.get('latitude', '')
-#             y=data.get('longitude','')
-#             safety_guard_house = {
-#                 'name'    : name,
-#                 'x'     : x,
-#                 'y'     : y
-#             }
-#             collection_guard.insert_one(safety_guard_house)
-#     return
+        if 'response' in data and 'body' in data['response'] and 'items' in data['response']['body']:
+            items = data['response']['body']['items']
+            for target in items:
+                if target['ctprvnNm']=='서울특별시':
+                    name = target.get('storNm', '')
+                    x = target.get('latitude', '')
+                    y = target.get('longitude', '')
+                    safety_guard_house = {
+                        'name'    : name,
+                        'x'     : x,
+                        'y'     : y
+                    }
+                    collection_guard.insert_one(safety_guard_house)
+            if len(items) < 100:
+                break
+        else:
+            break
+        start_index += 1
+    return
