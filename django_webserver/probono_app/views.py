@@ -76,10 +76,13 @@ def logout_view(request):
     logout(request)
     return redirect('index')
 
+@require_POST
 def get_subway_elvtr(request):
     
-    
-    
-
-    
-    return
+    collection_elvtr = get_collection(db_handle, 'subway_elevator')
+    search = request.POST.get('name')
+    result = collection_elvtr.find({ 'sw_nm' : search })
+    result = list(result)
+    if not result:
+        return JsonResponse({ 'message' : 'No results' })
+    return JsonResponse({ 'result' : result})
