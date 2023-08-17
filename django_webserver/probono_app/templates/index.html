@@ -3,18 +3,73 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../static/css/modal.css" />
     <link rel="stylesheet" href="../static/css/styles.css" />
     <title>도시예보서비스</title>
   </head>
   <body>
-    <div id="modalContainer" class="hidden">
-      <div id="modalContent">
-        ID<input type="text" name="id" id="id" />
-        <br />
-        PW<input type="text" name="pw" id="pw" />
-        <button id="modalCloseButton">닫기</button>
+    <!-- 지도 모달 -->
+    <div id="locationContainer" class="hidden">
+      <div id="locationContent" class="modal-content">
+        <div id="gpsLocation">
+          <span>현재 위치로 설정</span>
+        </div>
+        <div id="mapLocation">
+          <span>지도를 통해 설정</span>
+        </div>
       </div>
     </div>
+    <!-- 회원가입 모달 -->
+    <div id="signup-container" class="hidden">
+      <div id="signup-content" class="modal-content">
+        <form action="/" method="post">
+          <input type="text" id="name" name="name" placeholder="* 이름" />
+
+          <input type="text" id="ID" name="ID" placeholder="* 아이디" />
+          <form action="/id_check" method="post">
+            {% csrf_token %}
+            <input type="submit" value="중복체크" id="checkID" />
+          </form>
+
+          <input
+            type="text"
+            id="PW"
+            name="PW"
+            placeholder="* 비밀번호를 입력해주세여."
+          />
+          <input
+            type="text"
+            id="PW"
+            name="PW"
+            placeholder="* 비밀번호를 한 번 더 입력해주세요."
+          />
+          <input
+            type="date"
+            id="date"
+            max="2024-01-01"
+            min="1900-01-01"
+            name="date"
+            placeholder="생년월일"
+          />
+          <select name="gender" id="gender">
+            <option value="gender-init">* 성별</option>
+            <option value="male">남성</option>
+            <option value="female">여성</option>
+          </select>
+          <select name="impaired" id="disabled">
+            <option value="impaired-init">* 장애여부</option>
+            <option value="panic">공황장애</option>
+            <option value="visually">시각장애</option>
+            <option value="behavior">거동장애</option>
+            <option value="normal">없음</option>
+          </select>
+          <br />
+          <input type="submit" value="이전" />
+          <input type="submit" value="제출" />
+        </form>
+      </div>
+    </div>
+    <!-- { 헤더 재난 정보 백에서 받아와야 함 } -->
     <header>
       <span>서울특별시 전역 폭염주의보 발령</span>
     </header>
@@ -36,7 +91,7 @@
       <nav id="right-nav">
         <div id="user">
           <div id="login"><a>로그인</a></div>
-          <div><a>회원가입</a></div>
+          <div id="signup"><a>회원가입</a></div>
           <!-- <div><a>마이페이지</a></div> -->
           <!-- <div><a>로그아웃</a></div> -->
         </div>
@@ -45,7 +100,11 @@
         </div>
       </nav>
       <div class="content-wrapper">
-        <div class="content">content</div>
+        <div id="content-image">
+          <img src="../static/images/seoulStation.jpg" alt="서울역" />
+        </div>
+        <!-- 진자 엔진 자리, 해당 지역 매칭해서 -->
+        <div id="content-exp">서울역</div>
       </div>
     </div>
     <footer>
@@ -54,6 +113,8 @@
       <button id="end">인식종료</button>
     </footer>
     <script src="../static/js/speech.js"></script>
+    <script src="../static/js/location.js"></script>
     <script src="../static/js/modal.js"></script>
+    <script src="../static/js/sign_up.js"></script>
   </body>
 </html>

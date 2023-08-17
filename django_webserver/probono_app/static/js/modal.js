@@ -1,11 +1,12 @@
-const modalOpenLogin = document.getElementById("login");
-const modalCloseButton = document.getElementById("modalCloseButton");
-const modal = document.getElementById("modalContainer");
+const signupContainer = document.querySelector("#signup-container");
+const signupBtn = document.querySelector("#signup");
 
-modalOpenLogin.addEventListener("click", () => {
-  modal.classList.remove("hidden");
+signupBtn.addEventListener("click", () => {
+  signupContainer.classList.remove("hidden");
 });
 
-modalCloseButton.addEventListener("click", () => {
-  modal.classList.add("hidden");
+window.addEventListener("click", (e) => {
+  e.target === signupContainer
+    ? signupContainer.classList.add("hidden")
+    : false;
 });
