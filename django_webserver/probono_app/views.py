@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse, JsonResponse
 import requests
+import xmltodict
 from bson.json_util import loads, dumps
 
 # Mongo DB
@@ -85,3 +86,14 @@ def get_subway_elvtr(request):
     if not result:
         return JsonResponse({ 'message' : 'No results' })
     return JsonResponse({ 'result' : result})
+
+def get_bus_no_to_route(request):
+    
+    return
+
+def get_bus_station_to_no(request):
+    
+
+    
+    
+    return
