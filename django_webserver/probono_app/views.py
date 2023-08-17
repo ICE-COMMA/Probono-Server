@@ -85,3 +85,17 @@ def get_subway_elvtr(request):
     if not result:
         return JsonResponse({ 'message' : 'No results' })
     return JsonResponse({ 'result' : result})
+
+
+def get_safety_guard_house(request):
+    base_url="http://api.data.go.kr/openapi/tn_pubr_public_female_safety_prtchouse_api"
+    start_index=1
+    end_index=100
+    all_data=[]
+    params={'serviceKey' : 'z3tbVitFT7XffZ43RQ9sMyE0ALiv+EtqOysMUKPdg9E5zTIL3lNVHqGCOS9vPqq73zYw6OhwHiskVZj4MYCJ0w==', 'pageNo' : '1', 'numOfRows' : '100', 'type' : 'json' }
+    url = f"{base_url}/{start_index}/{end_index}/"
+    response = requests.get(base_url,params=params)
+    data = response.json()
+    print(data)
+    
+    return render(request,'index.html')

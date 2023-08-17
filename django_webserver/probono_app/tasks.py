@@ -46,3 +46,27 @@ def get_subway_elvtr_task():
         }
         collection_elevtr.insert_one(subway_elevator)
     return
+
+@shared_task
+def get_safety_guard_house():
+    base_url="http://api.data.go.kr/openapi/tn_pubr_public_female_safety_prtchouse_api"
+    start_index=1
+    end_index=100
+    params={'serviceKey' : 'z3tbVitFT7XffZ43RQ9sMyE0ALiv+EtqOysMUKPdg9E5zTIL3lNVHqGCOS9vPqq73zYw6OhwHiskVZj4MYCJ0w==', 'pageNo' : '1', 'numOfRows' : '100', 'type' : 'json', 'storNm' : '', 'ctprvnNm' : '', 'signguNm' : '', 'signguCode' : '', 'rdnmadr' : '', 'lnmadr' : '', 'latitude' : '', 'longitude' : '', 'phoneNumber' : '', 'cmptncPolcsttnNm' : '', 'appnYear' : '', 'useYn' : '', 'referenceDate' : '', 'instt_code' : '' }
+    url = f"{base_url}/{start_index}/{end_index}/"
+    response = requests.get(base_url,params=params)
+    print(response)
+    data = response.json()
+    print(data)
+    
+    # all_data = []
+    # while True:
+    #     url = f"{base_url}/{start_index}/{end_index}/"
+    #     response = requests.get(base_url,params=params)
+    #     data = response.json()
+    #     if 'storNm' in data and '' in data['tbTraficElvtr']:
+    #         all_data.extend(data['tbTraficElvtr']['row'])
+    #     start_index += 100
+    #     end_index += 100
+    #     if len(data['tbTraficElvtr']['row']) < 100:
+    #         break
