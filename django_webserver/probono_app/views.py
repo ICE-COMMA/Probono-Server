@@ -77,22 +77,9 @@ def logout_view(request):
     return redirect('index')
 
 def get_subway_elvtr(request):
-    base_url = 'http://openapi.seoul.go.kr:8088/4f6a5a74796c696d3534425a686562/json/tbTraficElvtr'
-    start_index = 1
-    end_index = 100
-    all_data = []
+    
+    
+    
 
-    while True:
-        url = f"{base_url}/{start_index}/{end_index}/"
-        response = requests.get(url)
-        data = response.json()
-        if 'tbTraficElvtr' in data and 'row' in data['tbTraficElvtr']:
-            all_data.extend(data['tbTraficElvtr']['row'])
-        start_index += 100
-        end_index += 100
-        if len(data['tbTraficElvtr']['row']) < 100:
-            break
-    all_data = dumps(all_data)
-    print(all_data)
-    print(type(all_data))
-    return render(request, 'index.html', {'data': all_data})
+    
+    return
