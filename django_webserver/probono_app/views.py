@@ -65,12 +65,18 @@ def sign_up(request):
 @require_POST
 def id_duplicate(request):
     users = get_collection(db_handle, 'User')
-    temp = users.find_one({'ID' : request.form['check_id']})
-    if temp:
-        data = { "message": "id duplicated" } # REMIND : front have to know its response.
+    data = loads(request.body)
+    temp_id = data['check_id']
+    print(temp_id)
+    temp = users.find_one({'id' : temp_id})
+    print('temp : ', temp)
+    if not temp:
+        print(temp, 'aaaaaaaaa')
+        data = { 'valid' : True } # REMIND : front have to know its response.
         status_code = 201
     else:
         status_code = 201
+        data = { 'valid' : False } # REMIND : front have to know its response.
     return JsonResponse(data, status=status_code)
 
 def logout_view(request):
@@ -91,9 +97,20 @@ def get_bus_no_to_route(request):
     
     return
 
-def get_bus_station_to_no(request):
-    
+def get_bus_route(request):
 
-    
-    
-    return
+    # collection_bus = get_collection(db_handle, 'bus')
+    # num = request.POST.get('bus_num')
+    # route = collection_bus.find_one(num)
+    route = 100100001
+    url = 'http://ws.bus.go.kr/api/rest/busRouteInfo/getStaionByRoute'
+    params = { 'serviceKey' : 'z3tbVitFT7XffZ43RQ9sMyE0ALiv%2BEtqOysMUKPdg9E5zTIL3lNVHqGCOS9vPqq73zYw6OhwHiskVZj4MYCJ0w%3D%3D', 'busRouteId' : '10010001' }
+
+    response = requests.get(url, params=params)
+    print(response)
+    data_dict = xmltodict.parse(response.content)
+    print(data_dict)
+    data = data_dict.get('busRoute')
+    print(data)
+
+    return render(request, 'index.html')

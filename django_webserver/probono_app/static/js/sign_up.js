@@ -16,9 +16,11 @@ document.getElementById("checkID").addEventListener("click", (event) => {
   xhr.setRequestHeader("X-CSRFToken", getCSRFToken()); // CSRF 토큰 추가
   xhr.onreadystatechange = function () {
     if (xhr.readyState === XMLHttpRequest.DONE) {
-      if (xhr.status === 200) {
+      console.log('dasdf')
+      if (xhr.status === 201) {
         let response = JSON.parse(xhr.responseText);
         let resultMessage = document.getElementById("id-valid");
+        console.log(response)
         if (response.valid) {
           resultMessage.textContent = "사용 가능한 아이디입니다.";
         } else {
@@ -31,6 +33,5 @@ document.getElementById("checkID").addEventListener("click", (event) => {
     }
   };
   var data = JSON.stringify({ check_id: userID });
-  console.log(data);
   xhr.send(data);
 });
