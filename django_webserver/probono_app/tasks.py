@@ -30,7 +30,6 @@ def get_subway_elvtr_task():
             break
 
     # save to Mongo DB
-    # Right here
     collection_elevtr = get_collection(db_handle, 'subway_elevator')
     collection_elevtr.delete_many({})
     for data in all_data:
@@ -45,4 +44,35 @@ def get_subway_elvtr_task():
             'y'     : y
         }
         collection_elevtr.insert_one(subway_elevator)
+    return
+
+@shared_task
+def get_bus_no_to_route(request):
+    base_url = 'http://openapi.seoul.go.kr:8088/57636d66616c696d3536664b555850/json/busRoute'
+    start_index = 1
+    end_index = 100
+
+    all_data = []
+    while True:
+        url = f"{base_url}/{start_index}/{end_index}/"
+        response = requests.get(url)
+        data = response.json()
+        if 'busRoute' in data and 'row' in data['busRoute']:
+            all_data.extend(data['busRoute']['row'])
+        start_index += 100
+        end_index += 100
+        if len(data['busRoute']['row']) < 100:
+            break
+
+    # save to Mongo DB
+    collection_bus = get_collection(db_handle, 'bus')
+    collection_bus.delete_many({})
+    for data in all_data:
+        bus_no = data.get('ROUTE', '')
+        route = data.get('ROUTE_ID', '')
+        no_to_route = {
+            'bus_no'    : bus_no,
+            'route'     : route
+        }
+        collection_bus.insert_one(no_to_route)
     return
