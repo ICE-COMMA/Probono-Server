@@ -31,5 +31,7 @@ urlpatterns = [
     path('sign_up', views.sign_up, name='sign_up'),
     path('logout/', views.logout_view, name='logout'),
     path('id_check/', views.id_duplicate, name='id_duplicate'),
-    path('get_subway_elvtr/', views.get_subway_elvtr, name='get_subway_elvtr')
+    path('get_subway_elvtr/', views.get_subway_elvtr, name='get_subway_elvtr'),
+    path('get_bus_no_to_route/', views.get_bus_no_to_route, name='get_bus_no_to_route'),
+    path('get_bus_station_to_no/', views.get_bus_station_to_no, name='get_bus_station_to_no')
 ]
