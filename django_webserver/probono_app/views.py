@@ -78,7 +78,6 @@ def logout_view(request):
 
 @require_POST
 def get_subway_elvtr(request):
-    
     collection_elvtr = get_collection(db_handle, 'subway_elevator')
     search = request.POST.get('name')
     result = collection_elvtr.find({ 'sw_nm' : search })
