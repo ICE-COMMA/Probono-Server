@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse, JsonResponse
 import requests
+import xmltodict
 from bson.json_util import loads, dumps
 
 # Mongo DB
@@ -86,16 +87,53 @@ def get_subway_elvtr(request):
         return JsonResponse({ 'message' : 'No results' })
     return JsonResponse({ 'result' : result})
 
+def get_bus_no_to_route(request):
+    
+    return
+
+def get_bus_station_to_no(request):
+    
+
+    
+    
+    return
+
 
 def get_safety_guard_house(request):
     base_url="http://api.data.go.kr/openapi/tn_pubr_public_female_safety_prtchouse_api"
     start_index=1
-    end_index=100
+    end_index=4
     all_data=[]
-    params={'serviceKey' : 'z3tbVitFT7XffZ43RQ9sMyE0ALiv+EtqOysMUKPdg9E5zTIL3lNVHqGCOS9vPqq73zYw6OhwHiskVZj4MYCJ0w==', 'pageNo' : '1', 'numOfRows' : '100', 'type' : 'json' }
-    url = f"{base_url}/{start_index}/{end_index}/"
+    params={'serviceKey' : 'z3tbVitFT7XffZ43RQ9sMyE0ALiv+EtqOysMUKPdg9E5zTIL3lNVHqGCOS9vPqq73zYw6OhwHiskVZj4MYCJ0w==',
+            'pageNo' : start_index,
+            'numOfRows' : end_index,
+            'type' : 'json' }
+    print('sibal')
     response = requests.get(base_url,params=params)
     data = response.json()
     print(data)
+    if 'response' in data and 'body' in data['response'] and 'items' in data['response']['body']:
+        items = data['response']['body']
+        print(len(items))
     
+    #data = loads(data)
+
+    # while True:
+    #     params={'serviceKey' : 'z3tbVitFT7XffZ43RQ9sMyE0ALiv+EtqOysMUKPdg9E5zTIL3lNVHqGCOS9vPqq73zYw6OhwHiskVZj4MYCJ0w==',
+    #             'pageNo' : start_index,
+    #             'numOfRows' : end_index,
+    #             'type' : 'json' }
+    #     response = requests.get(base_url,params=params)
+    #     data = response.json() 
+    #     print(data)
+    #     # if 'response' in data and 'body' in data['response']:
+    #     #     all_data.extend(data['response']['body'])
+    #     #     body=data['response']['body']
+    #     if data['response']['header']['resultCode']=='03': # 데이터가 없을 떄 resultCode=03
+    #         break
+            
+    #     start_index += 1
+        
+    print(all_data)
+        
     return render(request,'index.html')

@@ -30,7 +30,6 @@ def get_subway_elvtr_task():
             break
 
     # save to Mongo DB
-    # Right here
     collection_elevtr = get_collection(db_handle, 'subway_elevator')
     collection_elevtr.delete_many({})
     for data in all_data:
@@ -48,25 +47,71 @@ def get_subway_elvtr_task():
     return
 
 @shared_task
-def get_safety_guard_house():
-    base_url="http://api.data.go.kr/openapi/tn_pubr_public_female_safety_prtchouse_api"
-    start_index=1
-    end_index=100
-    params={'serviceKey' : 'z3tbVitFT7XffZ43RQ9sMyE0ALiv+EtqOysMUKPdg9E5zTIL3lNVHqGCOS9vPqq73zYw6OhwHiskVZj4MYCJ0w==', 'pageNo' : '1', 'numOfRows' : '100', 'type' : 'json', 'storNm' : '', 'ctprvnNm' : '', 'signguNm' : '', 'signguCode' : '', 'rdnmadr' : '', 'lnmadr' : '', 'latitude' : '', 'longitude' : '', 'phoneNumber' : '', 'cmptncPolcsttnNm' : '', 'appnYear' : '', 'useYn' : '', 'referenceDate' : '', 'instt_code' : '' }
-    url = f"{base_url}/{start_index}/{end_index}/"
-    response = requests.get(base_url,params=params)
-    print(response)
-    data = response.json()
-    print(data)
-    
-    # all_data = []
-    # while True:
-    #     url = f"{base_url}/{start_index}/{end_index}/"
-    #     response = requests.get(base_url,params=params)
-    #     data = response.json()
-    #     if 'storNm' in data and '' in data['tbTraficElvtr']:
-    #         all_data.extend(data['tbTraficElvtr']['row'])
-    #     start_index += 100
-    #     end_index += 100
-    #     if len(data['tbTraficElvtr']['row']) < 100:
-    #         break
+def get_bus_no_to_route():
+    base_url = 'http://openapi.seoul.go.kr:8088/57636d66616c696d3536664b555850/json/busRoute'
+    start_index = 1
+    end_index = 100
+
+    all_data = []
+    while True:
+        url = f"{base_url}/{start_index}/{end_index}/"
+        response = requests.get(url)
+        data = response.json()
+        if 'busRoute' in data and 'row' in data['busRoute']:
+            all_data.extend(data['busRoute']['row'])
+        start_index += 100
+        end_index += 100
+        if len(data['busRoute']['row']) < 100:
+            break
+
+    # save to Mongo DB
+    collection_bus = get_collection(db_handle, 'bus')
+    collection_bus.delete_many({})
+    for data in all_data:
+        bus_no = data.get('ROUTE', '')
+        route = data.get('ROUTE_ID', '')
+        no_to_route = {
+            'bus_no'    : bus_no,
+            'route'     : route
+        }
+        collection_bus.insert_one(no_to_route)
+    return
+
+
+# @shared_task
+# def get_safety_guard_house(request):
+#     base_url="http://api.data.go.kr/openapi/tn_pubr_public_female_safety_prtchouse_api"
+#     start_index=1
+#     end_index=100
+#     all_data=[]
+
+#     while True:
+#         params={'serviceKey' : 'z3tbVitFT7XffZ43RQ9sMyE0ALiv+EtqOysMUKPdg9E5zTIL3lNVHqGCOS9vPqq73zYw6OhwHiskVZj4MYCJ0w==',
+#                 'pageNo' : start_index,
+#                 'numOfRows' : end_index,
+#                 'type' : 'json' }
+#         response = requests.get(base_url,params=params)
+#         data = response.json() 
+#         if 'response' in data and 'body' in data['response']:
+#             all_data.extend(data['response']['body'])
+#             body=data['response']['body']
+#             if body['resultCode']=='03': # 데이터가 없을 떄 resultCode=03
+#                 break
+            
+#         start_index+=1
+        
+#         # save to Mongo DB
+#     collection_guard = get_collection(db_handle, 'safety_guard_house')
+#     collection_guard.delete_many({})
+#     for data in all_data:
+#         if data['ctprvnNm']=='서울특별시':
+#             name = data.get('storNm', '')
+#             x = data.get('latitude', '')
+#             y=data.get('longitude','')
+#             safety_guard_house = {
+#                 'name'    : name,
+#                 'x'     : x,
+#                 'y'     : y
+#             }
+#             collection_guard.insert_one(safety_guard_house)
+#     return
