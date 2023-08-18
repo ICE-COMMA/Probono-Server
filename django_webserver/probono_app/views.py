@@ -114,3 +114,7 @@ def get_bus_route(request):
     print(data)
 
     return render(request, 'index.html')
+
+def get_safety_guard_house(request):
+    
+    return
