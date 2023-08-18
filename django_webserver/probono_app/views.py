@@ -63,15 +63,13 @@ def sign_up(request):
     return redirect('index')
 
 @require_POST
-def id_duplicate(request):
+def id_check(request):
     users = get_collection(db_handle, 'User')
     data = loads(request.body)
     temp_id = data['check_id']
-    print(temp_id)
     temp = users.find_one({'id' : temp_id})
-    print('temp : ', temp)
     if not temp:
-        print(temp, 'aaaaaaaaa')
+        print(temp, 'result : True!!')
         data = { 'valid' : True } # REMIND : front have to know its response.
         status_code = 201
     else:
@@ -104,7 +102,7 @@ def get_bus_route(request):
     # route = collection_bus.find_one(num)
     route = 100100001
     url = 'http://ws.bus.go.kr/api/rest/busRouteInfo/getStaionByRoute'
-    params = { 'serviceKey' : 'z3tbVitFT7XffZ43RQ9sMyE0ALiv%2BEtqOysMUKPdg9E5zTIL3lNVHqGCOS9vPqq73zYw6OhwHiskVZj4MYCJ0w%3D%3D', 'busRouteId' : '10010001' }
+    params = { 'serviceKey' : '4cwiloFmPQxO3hXwmJy3jruoPPh6m8PQZqxBkWecSAgIIeRjq6UIdo0r7ZnmT4Rm4kVErRaD9jd1XU5CS7Chwg==', 'busRouteId' : str(route) }
 
     response = requests.get(url, params=params)
     print(response)
