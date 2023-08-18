@@ -4,6 +4,10 @@ from django.http import HttpResponse, JsonResponse
 import requests
 import xmltodict
 from bson.json_util import loads, dumps
+from datetime import datetime
+from itertools import groupby
+
+from .models import SpecialWeather
 
 # Mongo DB
 from config import utils
@@ -102,10 +106,11 @@ def get_bus_route(request):
     # route = collection_bus.find_one(num)
     route = 100100001
     url = 'http://ws.bus.go.kr/api/rest/busRouteInfo/getStaionByRoute'
-    params = { 'serviceKey' : '4cwiloFmPQxO3hXwmJy3jruoPPh6m8PQZqxBkWecSAgIIeRjq6UIdo0r7ZnmT4Rm4kVErRaD9jd1XU5CS7Chwg==', 'busRouteId' : str(route) }
+    params = { 'ServiceKey' : '4cwiloFmPQxO3hXwmJy3jruoPPh6m8PQZqxBkWecSAgIIeRjq6UIdo0r7ZnmT4Rm4kVErRaD9jd1XU5CS7Chwg==', 'busRouteId' : str(route), 'resultType' : 'xml' }
 
     response = requests.get(url, params=params)
     print(response)
+    print(response.content)
     data_dict = xmltodict.parse(response.content)
     print(data_dict)
     data = data_dict.get('busRoute')
@@ -120,3 +125,29 @@ def get_safety_guard_house(request):
     
     
     return render(request, 'index.html')
+
+# def update_alerts_from_api():
+    
+#     api_data = get_data_from_api()
+#     alerts_collection = db['alerts']
+
+#     for data in api_data:
+#         existing_alert = alerts_collection.find_one({"REG_ID": data["REG_ID"]})
+
+#         if data["CMD"] == 1:
+#             if not existing_alert:
+#                 data["alert_active"] = True
+#                 alerts_collection.insert_one(data)
+#             else:
+#                 alerts_collection.update_one(
+#                     {"REG_ID": data["REG_ID"]},
+#                     {"$set": {"alert_active": True}}
+#                 )
+#         elif data["CMD"] == 3:
+#             if existing_alert:
+#                 alerts_collection.update_one(
+#                     {"REG_ID": data["REG_ID"]},
+#                     {"$set": {"alert_active": False}}
+#                 )
+
+#     return
