@@ -7,7 +7,7 @@ function getCSRFToken() {
 }
 
 document.getElementById("checkID").addEventListener("click", (event) => {
-  //   event.preventDefault();
+  event.preventDefault();
   const userID = document.getElementById("ID").value;
 
   let xhr = new XMLHttpRequest();
@@ -16,11 +16,9 @@ document.getElementById("checkID").addEventListener("click", (event) => {
   xhr.setRequestHeader("X-CSRFToken", getCSRFToken()); // CSRF 토큰 추가
   xhr.onreadystatechange = function () {
     if (xhr.readyState === XMLHttpRequest.DONE) {
-      console.log('dasdf')
       if (xhr.status === 201) {
         let response = JSON.parse(xhr.responseText);
         let resultMessage = document.getElementById("id-valid");
-        console.log(response)
         if (response.valid) {
           resultMessage.textContent = "사용 가능한 아이디입니다.";
         } else {
@@ -28,7 +26,7 @@ document.getElementById("checkID").addEventListener("click", (event) => {
         }
       } else {
         console.error("Error:", xhr.statusText);
-        alert(userID);
+        alert('sibal');
       }
     }
   };
