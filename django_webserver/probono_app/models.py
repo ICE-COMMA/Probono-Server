@@ -14,7 +14,7 @@ from itertools import groupby
 
 # 이거 완전 쓸모 없어 형석아 지우자
 class CustomUserManager(BaseUserManager):
-
+    
     def create_user(self, user_id, name, password, sex, birth, disability, custom):
 
         if not user_id:
@@ -50,30 +50,30 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractBaseUser):
 
     # user_id
-    user_id = models.CharField(max_length=100, unique=True)
+    ID = models.CharField(max_length=100, unique=True)
+
+    PW = models.CharField(max_length=100)
     # user name
     name = models.CharField(max_length=100)
     # sex
-    sex = models.CharField(max_length=1)
+    gender = models.CharField(max_length=1)
     # birth
-    birth = models.DateField()
+    date = models.DateField()
     # disability
-    disability = models.CharField(max_length=50)
+    impaired = models.CharField(max_length=50)
     # custom
     custom = models.CharField(max_length=10)
-
-    is_staff = models.BooleanField(default=False)
     
-    objects = CustomUserManager()
+    # objects = CustomUserManager()
 
-    USERNAME_FIELD = 'user_id'
+    USERNAME_FIELD = 'ID'
 
     # 보류
-    REQUIRED_FIELDS = ['user_id']
+    REQUIRED_FIELDS = ['ID']
 
     # 보류
     def __str__(self):
-        return self.user_id
+        return self.ID
     
 class Bus():
     
