@@ -52,11 +52,10 @@ def login_view(request):
     password = request.POST.get('password')
     print(request.POST)
     print(user_id, password)
-    user_info = users.find_one({'id' : user_id})
+    user_info = users.find_one({'ID' : user_id})
     print(user_info)
     if user_info:
-        print('HIHIHIHIHHI')
-        if password == user_info['pw']:
+        if password == user_info['PW']:
             request.session['ID'] = user_id
             print(request.session['ID'])
             data = {
@@ -73,11 +72,23 @@ def login_view(request):
 
 @require_POST
 def sign_up(request):
+    print(request.POST)
     form = SignUpForm(request.POST)
     if form.is_valid():
+        print('GOOD')
+        user_data = form.cleaned_data
+        date_obj = form.cleaned_data['date']
+        datetime_obj = datetime(date_obj.year, date_obj.month, date_obj.day)
+        form.cleaned_data['date'] = datetime_obj
+        user_data['custom'] = ''
+        print(user_data)
         users = get_collection(db_handle, 'User')
-        users.insert_one(form)
-    return redirect('index')
+        users.insert_one(form.cleaned_data)
+        return redirect('index')
+    print(form.errors)
+    print('redirect to index')
+    ret = { 'message' : 'error'}
+    return JsonResponse(ret)
 
 @require_POST
 def id_check(request):
@@ -86,7 +97,6 @@ def id_check(request):
     temp_id = data['check_id']
     temp = users.find_one({'id' : temp_id})
     if not temp:
-        print(temp, 'result : True!!')
         data = { 'valid' : True } # REMIND : front have to know its response.
         status_code = 201
     else:
