@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 from celery.schedules import crontab
+from probono_app.tasks import *
+from datetime import timedelta
 import corsheaders
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -137,6 +139,13 @@ CELERY_BEAT_SCHEDULE = {
     'update-api-data': {
         'task': 'probono_app.tasks.get_subway_elvtr_task',
         'schedule': crontab(hour=0, minute=0),
+    },
+
+    
+    
+    'update-special-weather': {
+        'task': 'probono_app.tasks.update_special_weather_task',
+        'schedule': timedelta(minutes=30),
     },
 }
 
