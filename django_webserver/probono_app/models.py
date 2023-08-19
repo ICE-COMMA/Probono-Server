@@ -58,7 +58,7 @@ class CustomUser(AbstractBaseUser):
     # birth
     birth = models.DateField()
     # disability
-    disability = models.CharField(max_length=10)
+    disability = models.CharField(max_length=50)
     # custom
     custom = models.CharField(max_length=10)
 
