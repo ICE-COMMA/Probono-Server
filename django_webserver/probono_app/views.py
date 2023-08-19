@@ -24,7 +24,9 @@ db_handle = utils.db_handle
 get_collection = utils.get_collection_handle
 
 def index(request):
-    return render(request, 'index.html')
+    collection = get_collection(db_handle, 'special_weather')
+    ret = list(collection.find({}))
+    return render(request, 'index.html', data=ret)
 
 def my_page(request):
     return render(request, 'my_page.html')
