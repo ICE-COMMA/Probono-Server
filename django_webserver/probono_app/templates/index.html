@@ -22,25 +22,48 @@
     <!-- 회원가입 모달 -->
     <div id="signup-container" class="hidden">
       <div id="signup-content" class="modal-content">
-        <form action="/" method="post">
-          <input type="text" id="name" name="name" placeholder="* 이름" />
+        <form action="/sign_up/" method="post">
+          {% csrf_token %}
+          <p>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              placeholder="* 이름"
+              required
+            />
 
-          <input type="text" id="ID" name="ID" placeholder="* 아이디" />
-            {% csrf_token %}
-            <input type="submit" value="중복체크" id="checkID" />
-
+            <input
+              type="text"
+              id="ID"
+              name="ID"
+              placeholder="* 아이디"
+              required
+            />
+          </p>
           <input
-            type="text"
+            type="submit"
+            value="중복체크"
+            id="checkID"
+            formaction="/id_check"
+            required
+          />
+          <p></p>
+          <input
+            type="password"
             id="PW"
             name="PW"
-            placeholder="* 비밀번호를 입력해주세여."
+            placeholder="* 비밀번호를 입력해주세요."
+            required
           />
           <input
-            type="text"
-            id="PW"
-            name="PW"
+            type="password"
+            id="checkPW"
+            name="checkPW"
             placeholder="* 비밀번호를 한 번 더 입력해주세요."
+            required
           />
+          <p id="message" class="hidden">비밀번호가 일치하지 않습니다.</p>
           <input
             type="date"
             id="date"
@@ -48,13 +71,14 @@
             min="1900-01-01"
             name="date"
             placeholder="생년월일"
+            required
           />
-          <select name="gender" id="gender">
+          <select name="gender" id="gender" required>
             <option value="gender-init">* 성별</option>
             <option value="male">남성</option>
             <option value="female">여성</option>
           </select>
-          <select name="impaired" id="disabled">
+          <select name="impaired" id="disabled" required>
             <option value="impaired-init">* 장애여부</option>
             <option value="panic">공황장애</option>
             <option value="visually">시각장애</option>
@@ -63,10 +87,23 @@
           </select>
           <br />
           <input type="submit" value="이전" />
-          <input type="submit" value="제출" />
+          <input type="submit" value="회원가입" />
         </form>
       </div>
     </div>
+
+    <div id="login-container" class="hidden">
+      <div id="login-content" class="modal-content">
+        <form id="loginForm" name="login" action="/login" method="post">
+          <label for="userid">Username</label>
+          <input type="text" id="userid" name="userid" required />
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required />
+          <button type="submit">Login</button>
+        </form>
+      </div>
+    </div>
+
     <!-- { 헤더 재난 정보 백에서 받아와야 함 } -->
     <header>
       <span>서울특별시 전역 폭염주의보 발령</span>
@@ -88,10 +125,8 @@
       </nav>
       <nav id="right-nav">
         <div id="user">
-          <div id="login"><a>로그인</a></div>
-          <div id="signup"><a>회원가입</a></div>
-          <!-- <div><a>마이페이지</a></div> -->
-          <!-- <div><a>로그아웃</a></div> -->
+          <div id="login-logout" class="login"><a>로그인</a></div>
+          <div id="signup-mypage" class="sign_up"><a>회원가입</a></div>
         </div>
         <div id="location">
           <div><a>지역설정하기</a></div>
@@ -110,9 +145,11 @@
       <button id="start">음성인식</button>
       <button id="end">인식종료</button>
     </footer>
-    <script src="../static/js/speech.js"></script>
     <script src="../static/js/location.js"></script>
+    <script src="../static/js/login.js"></script>
     <script src="../static/js/modal.js"></script>
+    <script src="../static/js/mypage.js"></script>
     <script src="../static/js/sign_up.js"></script>
+    <script src="../static/js/speech.js"></script>
   </body>
 </html>
