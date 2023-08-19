@@ -4,6 +4,16 @@ from django.http import HttpResponse, JsonResponse
 import requests
 import xmltodict
 from bson.json_util import loads, dumps
+# crawling`
+from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+# 구글링해서 찾은것, 지울수도
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+#img_url
+from urllib.parse import urljoin
 
 # Mongo DB
 from config import utils
@@ -118,3 +128,51 @@ def get_bus_route(request):
 def get_safety_guard_house(request):
     
     return
+
+def crawl_notice(request, target_date):
+    
+    chrome_driver_path='Probono_server\django_dashboard\Scripts\chromedriver.exe'
+    
+    chrome_options=webdriver.ChromeOptions()
+    chrome_options.add_argument("--headless")
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    
+    site_url = "https://www.smpa.go.kr/user/nd54882.do"
+    base_url = "https://www.smpa.go.kr"
+    driver.get(site_url)
+    
+    page_source=driver.page_source
+    soup = BeautifulSoup(page_source, 'html.parser')
+    
+    # 원하는 정보 추출
+    target_element = None
+    for td_element in soup.find_all('td', class_='subject'):
+        date_column = td_element.get_text().strip()
+        if date_column == target_date:
+            target_element = td_element
+            break
+
+    link_text=None
+    link_url=None
+    img_url=None
+    if target_element:
+        link = target_element.find('a')
+        link_text = link.get_text()
+        link_url = link['href']
+    
+    # 여기서 javascript함수로 되어있는 동적 정보 url로 접근해야함    
+    dynamic_content=soup.find('div',class_='reply-content')
+    if dynamic_content:
+        print('find')
+        img_url=urljoin(base_url,dynamic_content['src'])
+        print(str(img_url))
+    # WebDriver 종료
+    driver.quit()
+    
+    context = {
+        'link_text': link_text,
+        'link_url': link_url,
+        'img_url': img_url,
+    }
+        
+    return render(request, 'crawl_result.html', context)

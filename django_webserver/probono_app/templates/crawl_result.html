@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Crawl Result</title>
+  </head>
+  <body>
+    {% if error_message %}
+    <p>{{ error_message }}</p>
+    {% else %}
+    <p>Link Text: {{ link_text }}</p>
+    <p>Link URL: <a href="{{ link_url }}">{{ link_url }}</a></p>
+    {% if img_url %}
+    <img src="{{ img_url }}" alt="Attached Image" />
+    {% else %}
+    <p>No image attached.</p>
+    {% endif %} {% endif %}
+  </body>
+</html>
