@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse, JsonResponse
 import requests
@@ -13,11 +14,12 @@ from .models import SpecialWeather
 from config import utils
 
 # Session
-from django.contrib.auth import login, logout
+from config.utils import SessionStore
 
 # User
 from .models import CustomUser
 from .forms import SignUpForm
+
 
 
 db_handle = utils.db_handle
@@ -46,19 +48,28 @@ def safety_info(request):
 @require_POST
 def login_view(request):
     users = get_collection(db_handle, 'User')
-    user_id = request.POST.get('username') # WARN : front's parameter name
+    user_id = request.POST.get('userid') # WARN : front's parameter name
     password = request.POST.get('password')
+    print(request.POST)
+    print(user_id, password)
     user_info = users.find_one({'id' : user_id})
+    print(user_info)
     if user_info:
-        if (password == user_info['pw']):
-            login(request, user_info)
-            return redirect('index')
+        print('HIHIHIHIHHI')
+        if password == user_info['pw']:
+            request.session['ID'] = user_id
+            print(request.session['ID'])
+            data = {
+                    "success"      : True,
+                    "redirect_url" : reverse('index') 
+                    }
         else:
-            data = { "message": "wrong pw" }
+            data = { "success" : False }
     else:
-        data = { "message": "wrong id" }
+        data = { "success" : False }
     status_code = 201
-    JsonResponse(data, status=status_code)
+    print(data)
+    return JsonResponse(data, status=status_code)
 
 @require_POST
 def sign_up(request):
@@ -84,7 +95,8 @@ def id_check(request):
     return JsonResponse(data, status=status_code)
 
 def logout_view(request):
-    logout(request)
+    del request.session['ID']
+    print(request.session['ID'])
     return redirect('index')
 
 @require_POST
