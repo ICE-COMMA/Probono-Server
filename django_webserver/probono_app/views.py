@@ -86,7 +86,6 @@ def sign_up(request):
         users.insert_one(form.cleaned_data)
         return redirect('index')
     print(form.errors)
-    print('redirect to index')
     ret = { 'message' : 'error'}
     return JsonResponse(ret)
 
