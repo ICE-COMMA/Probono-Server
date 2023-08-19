@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,9 +39,11 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     #Register probono_app"
     "probono_app.apps.ProbonoAppConfig",
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -90,6 +91,8 @@ MONGO_DB = {
     'password': 'tzlZgVWMs1wFvzDH',
 }
 
+SESSION_ENGINE = 'config.utils'
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -130,9 +133,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Celery ZONE
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_BEAT_SCHEDULE = {
-    'update-api-data': {
-        'task': 'probono_app.tasks.get_subway_elvtr_task',
-        'schedule': crontab(hour=0, minute=0),
-    },
-}
+
+
+# CORS ZONE
+CORS_ALLOW_ALL_ORIGINS = True

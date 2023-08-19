@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>마이페이지</title>
+  </head>
+  <body>
+    <!-- 지도 모달 -->
+    <div id="locationContainer" class="hidden">
+      <div id="locationContent" class="modal-content">
+        <div id="gpsLocation">
+          <span>현재 위치로 설정</span>
+        </div>
+        <div id="mapLocation">
+          <span>지도를 통해 설정</span>
+        </div>
+      </div>
+    </div>
+    <!-- { 헤더 재난 정보 백에서 받아와야 함 } -->
+    <header>
+      <span>서울특별시 전역 폭염주의보 발령</span>
+    </header>
+    <div id="wrapper">
+      <nav id="left-nav">
+        <div id="logo">
+          <div><a href="index.html">COMMA</a></div>
+        </div>
+        <div id="info">
+          <div><a>혼잡정보</a></div>
+          <div><a>교통정보</a></div>
+          <div><a>시위정보</a></div>
+        </div>
+        <div id="contact">
+          <div><a>커스터마이징</a></div>
+          <div><a>제보하기</a></div>
+        </div>
+      </nav>
+      <nav id="right-nav">
+        <div id="user">
+          <div id="login-logout" class="login"><a>로그인</a></div>
+          <div id="signup-mypage" class="sign_up"><a>회원가입</a></div>
+        </div>
+        <div id="location">
+          <div><a>지역설정하기</a></div>
+        </div>
+      </nav>
+      <div class="content-wrapper">
+        <div id="content-image">
+          <img src="../static/images/seoulStation.jpg" alt="서울역" />
+        </div>
+        <!-- 진자 엔진 자리, 해당 지역 매칭해서 -->
+        <div id="content-exp">서울역</div>
+      </div>
+    </div>
+    <footer>
+      <p>dev by team COMMA</p>
+      <button id="start">음성인식</button>
+      <button id="end">인식종료</button>
+    </footer>
+    <script src="../static/js/speech.js"></script>
+    <script src="../static/js/location.js"></script>
+  </body>
+</html>

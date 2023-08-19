@@ -28,12 +28,12 @@ urlpatterns = [
     path('dense_popul_info', views.dense_popul_info, name='dense_popul_info'),
     path('safety_info', views.safety_info, name='safety_info'),
     path('login/', views.login_view, name='login'),
-    path('sign_up', views.sign_up, name='sign_up'),
+    path('sign_up/', views.sign_up, name='sign_up'),
     path('logout/', views.logout_view, name='logout'),
-    path('id_check', views.id_duplicate, name='id_duplicate'),
+    path('id_check', views.id_check, name='id_check'),
     path('get_subway_elvtr/', views.get_subway_elvtr, name='get_subway_elvtr'),
     path('get_safety_guard_house/',views.get_safety_guard_house,name='get_safety_guard_house'),
     path('get_bus_no_to_route/', views.get_bus_no_to_route, name='get_bus_no_to_route'),
-    path('get_bus_route/', views.get_bus_route, name='get_bus_route'),
+    path('get_bus_route/', views.get_bus_route, name='get_bus_route'),,
     path('crawl/<str:target_date>/', views.crawl_notice, name='crawl_notice')
 ]

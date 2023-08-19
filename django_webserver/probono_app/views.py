@@ -1,9 +1,14 @@
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse, JsonResponse
 import requests
 import xmltodict
 from bson.json_util import loads, dumps
+from datetime import datetime
+from itertools import groupby
+
+from .models import SpecialWeather
 # crawling`
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -19,18 +24,21 @@ from urllib.parse import urljoin
 from config import utils
 
 # Session
-from django.contrib.auth import login, logout
+from config.utils import SessionStore
 
 # User
 from .models import CustomUser
 from .forms import SignUpForm
 
 
+
 db_handle = utils.db_handle
 get_collection = utils.get_collection_handle
 
 def index(request):
-    return render(request, 'index.html')
+    collection = get_collection(db_handle, 'special_weather')
+    ret = list(collection.find({}))
+    return render(request, 'index.html', { 'spw' : ret })
 
 def my_page(request):
     return render(request, 'my_page.html')
@@ -50,38 +58,54 @@ def safety_info(request):
 @require_POST
 def login_view(request):
     users = get_collection(db_handle, 'User')
-    user_id = request.POST.get('username') # WARN : front's parameter name
+    user_id = request.POST.get('userid') # WARN : front's parameter name
     password = request.POST.get('password')
-    user_info = users.find_one({'id' : user_id})
+    print(request.POST)
+    print(user_id, password)
+    user_info = users.find_one({'ID' : user_id})
+    print(user_info)
     if user_info:
-        if (password == user_info['pw']):
-            login(request, user_info)
-            return redirect('index')
+        if password == user_info['PW']:
+            request.session['ID'] = user_id
+            print(request.session['ID'])
+            data = {
+                    "success"      : True,
+                    "redirect_url" : reverse('index') 
+                    }
         else:
-            data = { "message": "wrong pw" }
+            data = { "success" : False }
     else:
-        data = { "message": "wrong id" }
+        data = { "success" : False }
     status_code = 201
-    JsonResponse(data, status=status_code)
+    print(data)
+    return JsonResponse(data, status=status_code)
 
 @require_POST
 def sign_up(request):
+    print(request.POST)
     form = SignUpForm(request.POST)
     if form.is_valid():
+        print('GOOD')
+        user_data = form.cleaned_data
+        date_obj = form.cleaned_data['date']
+        datetime_obj = datetime(date_obj.year, date_obj.month, date_obj.day)
+        form.cleaned_data['date'] = datetime_obj
+        user_data['custom'] = ''
+        print(user_data)
         users = get_collection(db_handle, 'User')
-        users.insert_one(form)
-    return redirect('index')
+        users.insert_one(form.cleaned_data)
+        return redirect('index')
+    print(form.errors)
+    ret = { 'message' : 'error'}
+    return JsonResponse(ret)
 
 @require_POST
-def id_duplicate(request):
+def id_check(request):
     users = get_collection(db_handle, 'User')
     data = loads(request.body)
     temp_id = data['check_id']
-    print(temp_id)
     temp = users.find_one({'id' : temp_id})
-    print('temp : ', temp)
     if not temp:
-        print(temp, 'aaaaaaaaa')
         data = { 'valid' : True } # REMIND : front have to know its response.
         status_code = 201
     else:
@@ -90,7 +114,8 @@ def id_duplicate(request):
     return JsonResponse(data, status=status_code)
 
 def logout_view(request):
-    logout(request)
+    del request.session['ID']
+    print(request.session['ID'])
     return redirect('index')
 
 @require_POST
@@ -114,10 +139,11 @@ def get_bus_route(request):
     # route = collection_bus.find_one(num)
     route = 100100001
     url = 'http://ws.bus.go.kr/api/rest/busRouteInfo/getStaionByRoute'
-    params = { 'serviceKey' : 'z3tbVitFT7XffZ43RQ9sMyE0ALiv%2BEtqOysMUKPdg9E5zTIL3lNVHqGCOS9vPqq73zYw6OhwHiskVZj4MYCJ0w%3D%3D', 'busRouteId' : '10010001' }
+    params = { 'ServiceKey' : '4cwiloFmPQxO3hXwmJy3jruoPPh6m8PQZqxBkWecSAgIIeRjq6UIdo0r7ZnmT4Rm4kVErRaD9jd1XU5CS7Chwg==', 'busRouteId' : str(route), 'resultType' : 'xml' }
 
     response = requests.get(url, params=params)
     print(response)
+    print(response.content)
     data_dict = xmltodict.parse(response.content)
     print(data_dict)
     data = data_dict.get('busRoute')

@@ -4,6 +4,7 @@ if (!("webkitSpeechRecognition" in window)) {
   const speech = new webkitSpeechRecognition();
   document.querySelector("#start").addEventListener("click", () => {
     speech.start();
+    console.log("sss");
   });
   document.querySelector("#end").addEventListener("click", () => {
     speech.stop();

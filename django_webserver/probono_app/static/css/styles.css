@@ -97,3 +97,11 @@ form span {
   font-size: 0.4rem;
   cursor: pointer;
 }
+
+form p {
+  font-size: 30%;
+}
+
+p.hidden {
+  display: none;
+}
