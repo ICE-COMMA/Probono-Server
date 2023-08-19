@@ -281,7 +281,7 @@ class SpecialWeather():
                 to_insert.append(result)
         return to_insert
 
-    def two_months_ago():
+    def two_months_ago(self):
         now = datetime.now()
         year = now.year
         month = now.month
