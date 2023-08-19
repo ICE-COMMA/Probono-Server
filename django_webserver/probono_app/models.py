@@ -184,7 +184,10 @@ class demo():
     def __str__(self):
         return self.obj_id
 
-class SpecialWeather:
+class SpecialWeather():
+
+    tmfc1_value = None
+
     def __init__(self):
         self.target_reg = [
             ['L1100100', '서울동남권'],
@@ -206,7 +209,7 @@ class SpecialWeather:
         special_weathers.delete_many({})
         to_insert = []
         for target in self.target_reg:
-            content_str = self.fetch_data(target, self.key)
+            content_str = self.init_fetch_data(target, self.key)
             all_data = self.parse_data(content_str, target)
             all_data.sort(key=lambda x: (x['WRN'], x['TM_EF']))
             grouped_data = {key: list(group) for key, group in groupby(all_data, key=lambda x: x['WRN'])}
@@ -215,15 +218,33 @@ class SpecialWeather:
 
     # main method
     def update_special_weather(self, special_weathers):
+        new_data = []
+        for target in self.target_reg:
+            content_str = self.update_fetch_data(target, self.key)
+            all_data = self.parse_data(content_str, target)
+            all_data.sort(key=lambda x: (x['WRN'], x['TM_EF']))
+            grouped_data = {key: list(group) for key, group in groupby(all_data, key=lambda x: x['WRN'])}
+            new_data.extend(self.process_grouped_data(grouped_data, target))
 
-        
-        
-        
-        return
+        for target in new_data:
+            target_db = special_weathers.find_one(target['WRN'])
+            if not target_db:
+                special_weathers.delete_one(target_db)
+                if target['CMD'] != '3':
+                    special_weathers.insert_one(target)
 
-    def fetch_data(self, target, key):
+    def init_fetch_data(self, target, key):
+        SpecialWeather.tmfc1_value = self.two_months_ago()
         url = 'https://apihub.kma.go.kr/api/typ01/url/wrn_met_data.php'
-        params = {'wrn': 'A', 'reg': target[0], 'tmfc1': self.two_months_ago(), 'disp': '0', 'authKey': key}
+        params = {'wrn': 'A', 'reg': target[0], 'tmfc1': SpecialWeather.tmfc1_value, 'disp': '0', 'authKey': key}
+        SpecialWeather.tmfc1_value = datetime.now().strftime('%Y%m%d%H%M')
+        response = requests.get(url, params=params)
+        return response.content.decode('utf-8')
+
+    def update_fetch_data(self, target, key):
+        url = 'https://apihub.kma.go.kr/api/typ01/url/wrn_met_data.php'
+        params = {'wrn': 'A', 'reg': target[0], 'tmfc1': SpecialWeather.tmfc1_value, 'disp': '0', 'authKey': key}
+        SpecialWeather.tmfc1_value = datetime.now().strftime('%Y%m%d%H%M')
         response = requests.get(url, params=params)
         return response.content.decode('utf-8')
 
