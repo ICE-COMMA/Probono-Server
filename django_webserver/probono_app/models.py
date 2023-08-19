@@ -199,22 +199,31 @@ class SpecialWeather:
             'Y': '황사', 'H': '폭염'
         }
         self.lvl = {'1': '예비', '2': '주의보', '3': '경보'}
+        self.key = 'm4y76-4OTnaMu-vuDg525w'
 
+    # main method
     def init_special_weather(self, special_weathers):
-        key = 'm4y76-4OTnaMu-vuDg525w'
         special_weathers.delete_many({})
         to_insert = []
         for target in self.target_reg:
-            content_str = self.fetch_data(target, key)
+            content_str = self.fetch_data(target, self.key)
             all_data = self.parse_data(content_str, target)
             all_data.sort(key=lambda x: (x['WRN'], x['TM_EF']))
             grouped_data = {key: list(group) for key, group in groupby(all_data, key=lambda x: x['WRN'])}
             to_insert.extend(self.process_grouped_data(grouped_data, target))
         special_weathers.insert_many(to_insert)
 
+    # main method
+    def update_special_weather(self, special_weathers):
+
+        
+        
+        
+        return
+
     def fetch_data(self, target, key):
         url = 'https://apihub.kma.go.kr/api/typ01/url/wrn_met_data.php'
-        params = {'wrn': 'A', 'reg': target[0], 'tmfc1': '202308010000', 'disp': '0', 'authKey': key}
+        params = {'wrn': 'A', 'reg': target[0], 'tmfc1': self.two_months_ago(), 'disp': '0', 'authKey': key}
         response = requests.get(url, params=params)
         return response.content.decode('utf-8')
 
@@ -250,3 +259,15 @@ class SpecialWeather:
                 }
                 to_insert.append(result)
         return to_insert
+
+    def two_months_ago():
+        now = datetime.now()
+        year = now.year
+        month = now.month
+        if month <= 2:
+            month = 10 + month
+            year -= 1
+        else:
+            month -= 2
+        two_months_ago_time = datetime(year, month, now.day, now.hour, now.minute)
+        return two_months_ago_time.strftime('%Y%m%d%H%M')
