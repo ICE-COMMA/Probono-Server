@@ -1,6 +1,7 @@
 import requests
 from celery import shared_task
 from config import settings, utils
+from .models import SpecialWeather
 
 '''
 서버 구동 후, 반드시 터미널 창 두개 열어서 실행해야 함.
@@ -111,4 +112,11 @@ def get_safety_guard_house():
         else:
             break
         start_index += 1
+    return
+
+@shared_task
+def update_special_weather_task():
+    special_weather = SpecialWeather()
+    collection = get_collection(db_handle, 'special_weather')
+    special_weather.update_special_weather(collection)
     return
