@@ -30,8 +30,20 @@ def index(request):
     ret = list(collection.find({}))
     return render(request, 'index.html', { 'spw' : ret })
 
-def my_page(request):
-    return render(request, 'my_page.html')
+
+def my_page(request, id):
+    if request.method == 'GET':
+        collection = get_collection(db_handle, 'User')
+        ret = collection.find_one({'ID' : id})
+        if not ret:
+            return HttpResponse("Can not find user.")
+        return render(request, 'my_page.html', { 'info' : ret })
+    elif request.method == 'POST':
+        collection = get_collection(db_handle, 'User')
+        data = loads(request.body)
+        collection.update_one({ 'ID' : id }, { '$set' : { data } })
+        ret = { 'valid' : True }
+        return JsonResponse(ret)
 
 def transfer_info(request):
     return render(request, 'transfer_info.html')
@@ -148,29 +160,3 @@ def get_safety_guard_house(request):
     
     
     return render(request, 'index.html')
-
-# def update_alerts_from_api():
-    
-#     api_data = get_data_from_api()
-#     alerts_collection = db['alerts']
-
-#     for data in api_data:
-#         existing_alert = alerts_collection.find_one({"REG_ID": data["REG_ID"]})
-
-#         if data["CMD"] == 1:
-#             if not existing_alert:
-#                 data["alert_active"] = True
-#                 alerts_collection.insert_one(data)
-#             else:
-#                 alerts_collection.update_one(
-#                     {"REG_ID": data["REG_ID"]},
-#                     {"$set": {"alert_active": True}}
-#                 )
-#         elif data["CMD"] == 3:
-#             if existing_alert:
-#                 alerts_collection.update_one(
-#                     {"REG_ID": data["REG_ID"]},
-#                     {"$set": {"alert_active": False}}
-#                 )
-
-#     return
