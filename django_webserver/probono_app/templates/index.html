@@ -22,25 +22,23 @@
     <!-- 회원가입 모달 -->
     <div id="signup-container" class="hidden">
       <div id="signup-content" class="modal-content">
-        <form action="/sign_up" method="post">
+        <form action="/sign_up" method="post" id="sign-up-form">
           {% csrf_token %}
-          <p>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              placeholder="* 이름"
-              required
-            />
+          <input
+            type="text"
+            id="name"
+            name="name"
+            placeholder="* 이름"
+            required
+          />
 
-            <input
-              type="text"
-              id="ID"
-              name="ID"
-              placeholder="* 아이디"
-              required
-            />
-          </p>
+          <input
+            type="text"
+            id="ID"
+            name="ID"
+            placeholder="* 아이디"
+            required
+          />
           <input
             type="submit"
             value="중복체크"
@@ -48,7 +46,6 @@
             formaction="/id_check"
             required
           />
-          <p></p>
           <input
             type="password"
             id="PW"
@@ -94,7 +91,8 @@
 
     <div id="login-container" class="hidden">
       <div id="login-content" class="modal-content">
-        <form id="loginForm" name="login" action="/login" method="post">
+        <form id="login-form" name="login" action="/login" method="post">
+          {% csrf_token %}
           <label for="userid">Username</label>
           <input type="text" id="userid" name="userid" required />
           <label for="password">Password</label>
@@ -103,10 +101,17 @@
         </form>
       </div>
     </div>
-
-    <!-- { 헤더 재난 정보 백에서 받아와야 함 } -->
-    <header>
-      <span>서울특별시 전역 폭염주의보 발령</span>
+    <header class="{% if spw is None %}no-data{% endif %}">
+      {% if spw is not None%}
+      <span class="spw-action">현재 특보 정보</span>
+      <div id="spw-data">
+        {% for item in spw %}
+        <span>{{ item.REG_NM }} {{ item.WRN }} {{item.LVL}}</span>
+        {% endfor %}
+      </div>
+      {% else %}
+      <h3>발생 특보 없음</h3>
+      {% endif %}
     </header>
     <div id="wrapper">
       <nav id="left-nav">
@@ -114,9 +119,9 @@
           <div><a href="/">COMMA</a></div>
         </div>
         <div id="info">
-          <div><a>혼잡정보</a></div>
-          <div><a>교통정보</a></div>
-          <div><a>시위정보</a></div>
+          <div><a href="dense_popul_info">혼잡정보</a></div>
+          <div><a href="transfer_info">교통정보</a></div>
+          <div><a href="safety_info">시위정보</a></div>
         </div>
         <div id="contact">
           <div><a>커스터마이징</a></div>
@@ -133,8 +138,24 @@
       </div>
       <nav id="right-nav">
         <div id="user">
-          <div id="login-logout" class="login"><a>로그인</a></div>
-          <div id="signup-mypage" class="sign_up"><a>회원가입</a></div>
+          {% if request.session.ID %}
+          <div id="greeting">
+            <a href="#">{{ request.session.ID }}님 환영합니다!</a>
+          </div>
+          <div id="my_page" class="signup-mypage">
+            <a href="./mypage/{{ request.session.ID }}">마이페이지</a>
+          </div>
+          <div id="logout" class="login-logout">
+            <a href="./logout">로그아웃</a>
+          </div>
+          {% else %}
+          <div id="sign-up" class="signup-mypage">
+            <a>회원가입</a>
+          </div>
+          <div id="login" class="login-logout">
+            <a>로그인</a>
+          </div>
+          {% endif %}
         </div>
         <div id="location">
           <div><a>지역설정하기</a></div>
@@ -149,9 +170,7 @@
     <script src="../static/js/location.js"></script>
     <script src="../static/js/login.js"></script>
     <script src="../static/js/modal.js"></script>
-    {% comment %}
     <script src="../static/js/mypage.js"></script>
-    {% endcomment %}
     <script src="../static/js/sign_up.js"></script>
     <script src="../static/js/speech.js"></script>
   </body>

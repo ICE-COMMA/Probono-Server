@@ -56,9 +56,35 @@ function checkPasswords() {
 passwordInput.addEventListener("input", checkPasswords);
 confirmPasswordInput.addEventListener("input", checkPasswords);
 
-document.querySelector("#sign-up-check").addEventListener("submit", (event) => {
+document.querySelector("#sign-up-form").addEventListener("submit", (event) => {
   event.preventDefault();
-  const signupContainer = document.querySelector("#signup-container");
-  signupContainer.classList.add("hidden");
-  alert("가입완료");
+
+  const formData = new FormData(event.target);
+
+  // ID = forms.CharField(label="User ID", max_length=100, required=True)
+  // name = forms.CharField(label="Name", max_length=100, required=True)
+  // PW = forms.CharField(label="Password", widget=forms.PasswordInput(), required=True)
+  // gender = forms.CharField(label="Gender", max_length=10, required=True)
+  // date = forms.DateField(label="Date", required=True)
+  // impaired = forms.CharField(label="Impaired", max_length=100, required=True)
+
+  fetch("/sign_up/", {
+    method: "POST",
+    headers: {
+      "X-CSRFToken": formData.get("csrfmiddlewaretoken"),
+    },
+    body: formData,
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.message === "success") {
+        alert("회원가입이 완료되었습니다.");
+      } else {
+        console.log(data.message);
+        alert("회원가입에 실패했습니다. 다시 시도해주세요.");
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
 });

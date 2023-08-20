@@ -6,19 +6,28 @@ body {
   text-align: center;
   font-size: 30px;
 }
-/* 모달 테스트 */
-/* 선행과제 : wrapper 세로 3등분 */
 
 header {
   height: 10%;
   background-color: pink;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
 header span {
+  margin: 0;
+}
+
+#spw-data span {
   color: red;
+  font-size: 50%;
+  margin-bottom: 0;
+}
+
+header.no-data {
+  background-color: white;
 }
 
 #wrapper {
@@ -107,7 +116,7 @@ form p {
   font-size: 30%;
 }
 
-p.hidden {
+.hidden {
   display: none;
 }
 

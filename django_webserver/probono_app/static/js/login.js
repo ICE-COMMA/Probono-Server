@@ -1,21 +1,9 @@
-document.addEventListener("DOMContentLoaded", () => {
-  // DOMContentLoaded => JavaScript 이벤트의 하나로, 웹 페이지의 모든 HTML 콘텐츠가 로드되고 파싱된 후에 발생하는 이벤트
-
-  const logButton = document.getElementById("login-logout");
+document.addEventListener("DOMContentLoaded", function () {
+  const logButton = document.querySelector(".login-logout");
   const modal = document.getElementById("login-container");
-  const loginForm = document.getElementById("loginForm");
-  const statusBtn = document.querySelector("#signup-mypage");
-
   logButton.addEventListener("click", () => {
-    if (logButton.classList[0] === "login") {
+    if (logButton.id === "login") {
       modal.classList.remove("hidden");
-    } else {
-      logButton.classList.remove("logout");
-      logButton.classList.add("login");
-      logButton.querySelector("a").innerHTML = "login";
-      statusBtn.classList.add("sign_up");
-      statusBtn.classList.remove("mypage");
-      statusBtn.querySelector("a").innerHTML = "회원가입";
     }
   });
 
@@ -25,47 +13,44 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  loginForm.addEventListener("submit", (event) => {
+  const loginForm = document.getElementById("login-form"); // 로그인 폼의 ID를 사용
+  loginForm.addEventListener("submit", async function (event) {
     event.preventDefault();
-    logButton.classList.remove("login");
-    logButton.classList.add("logout");
-    logButton.querySelector("a").innerHTML = "logout";
-    statusBtn.classList.remove("sign_up");
-    statusBtn.classList.add("mypage");
-    statusBtn.querySelector("a").innerHTML = "마이페이지";
+
+    function getCSRFToken() {
+      const csrfCookie = document.cookie.match(/csrftoken=([\w-]+)/);
+      if (csrfCookie) {
+        return csrfCookie[1];
+      }
+      return null;
+    }
+
     const formData = new FormData(loginForm);
-    fetch("/login/", {
+    const response = await fetch("/login/", {
       method: "POST",
       body: formData,
       headers: {
         "X-Requested-With": "XMLHttpRequest", // AJAX 요청 헤더 추가
         "X-CSRFToken": getCSRFToken(), // CSRF 토큰 추가
       },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          console.log("로그인 성공!");
-          window.location.reload(); // 페이지 리로드
-        } else {
-          // 로그인 실패 시 처리할 코드 작성
-          alert("아이디 또는 비밀번호가 일치하지 않습니다.");
-          const errorContainer = document.getElementById("login-error");
-          errorContainer.textContent = "로그인 실패: " + data.error;
-          console.log(errorContainer);
-        }
-      })
-      .catch((error) => {
-        alert(error);
-      });
-  });
+    });
 
-  // CSRF 토큰을 가져오는 함수
-  function getCSRFToken() {
-    const csrfCookie = document.cookie.match(/csrftoken=([\w-]+)/);
-    if (csrfCookie) {
-      return csrfCookie[1];
+    const responseData = await response.json();
+    if (response.ok) {
+      console.log(response);
+      if (responseData.success) {
+        console.log(responseData);
+        window.location.href = response.redirect_url; //
+
+        modal.classList.add("hidden");
+      } else {
+        console.log("로그인 실패");
+        // 실패 시에 대한 처리
+      }
+    } else {
+      console.log("네트워크 오류");
+      // 네트워크 오류 처리
     }
-    return null;
-  }
+    window.location.href = "/";
+  });
 });
