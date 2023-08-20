@@ -94,7 +94,9 @@ form p {
 }
 
 label,
-input {
+input,
+select,
+span {
   margin-bottom: 2%;
 }
 

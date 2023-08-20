@@ -28,6 +28,9 @@ header span {
   margin-left: 2%;
   margin-right: 2%;
   /* font-size: 0.75em; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #left-nav {
@@ -47,9 +50,11 @@ header span {
 .content-wrapper {
   width: 100%;
   height: 100%;
+  display: flex;
+  justify-content: center;
 }
 
-#content-image > img {
+#content-display > img {
   padding-top: 5%;
   padding-bottom: 2%;
   width: 50%;
@@ -104,4 +109,30 @@ form p {
 
 p.hidden {
   display: none;
+}
+
+/* my_page part */
+
+#profile {
+  width: 60%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 3%;
+  padding: 2%;
+}
+
+#profile input,
+#profile select {
+  padding-top: 2%;
+  padding-bottom: 2%;
+}
+
+#button_box {
+  display: flex;
+  justify-content: space-between;
+}
+
+span > input[type="submit"] {
+  width: 30%;
 }

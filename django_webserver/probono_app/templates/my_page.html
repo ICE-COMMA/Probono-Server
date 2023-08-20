@@ -3,6 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../static/css/styles.css" />
+    <link rel="stylesheet" href="../static/css/modal.css" />
     <title>마이페이지</title>
   </head>
   <body>
@@ -24,7 +26,7 @@
     <div id="wrapper">
       <nav id="left-nav">
         <div id="logo">
-          <div><a href="index.html">COMMA</a></div>
+          <div><a href="/">COMMA</a></div>
         </div>
         <div id="info">
           <div><a>혼잡정보</a></div>
@@ -36,6 +38,70 @@
           <div><a>제보하기</a></div>
         </div>
       </nav>
+
+      <div class="content-wrapper">
+        <form id="profile" action="/my_page/" method="post">
+          {% csrf_token %}
+          <input
+            type="text"
+            name="user_name"
+            id="user_name"
+            value="박세호"
+            disabled
+          />
+          <input
+            type="text"
+            name="user_id"
+            id="user_id"
+            value="323psh"
+            disabled
+          />
+
+          <input
+            type="text"
+            name="user_gender"
+            id="user_gender"
+            value="남"
+            disabled
+          /><input
+            type="text"
+            name="user_birth"
+            id="user_birth"
+            value="2000.03.23"
+            disabled
+          />
+          <select name="user_handicap" id="user_handicap" required>
+            <option value="impaired-init">* 장애여부</option>
+            <option value="panic">공황장애</option>
+            <option value="visually">시각장애</option>
+            <option value="behavior">거동장애</option>
+            <option value="normal">없음</option>
+          </select>
+          <input
+            type="password"
+            name="previous_pw"
+            id="previous_pw"
+            placeholder="기존 비밀번호"
+            required
+          />
+          <input
+            type="password"
+            name="next_pw"
+            id="next_pw"
+            placeholder="새 비밀번호"
+          />
+          <input
+            type="password"
+            name="next_pw_check"
+            id="next_pw_check"
+            placeholder="새 비밀번호 확인"
+          />
+          <span id="button_box">
+            <input id="profile_cancel" type="submit" value="이전" />
+            <input id="profile_complete" type="submit" value="수정" />
+          </span>
+        </form>
+      </div>
       <nav id="right-nav">
         <div id="user">
           <div id="login-logout" class="login"><a>로그인</a></div>
@@ -45,13 +111,6 @@
           <div><a>지역설정하기</a></div>
         </div>
       </nav>
-      <div class="content-wrapper">
-        <div id="content-image">
-          <img src="../static/images/seoulStation.jpg" alt="서울역" />
-        </div>
-        <!-- 진자 엔진 자리, 해당 지역 매칭해서 -->
-        <div id="content-exp">서울역</div>
-      </div>
     </div>
     <footer>
       <p>dev by team COMMA</p>
@@ -60,5 +119,6 @@
     </footer>
     <script src="../static/js/speech.js"></script>
     <script src="../static/js/location.js"></script>
+    <script src="../static/js/mypage.js"></script>
   </body>
 </html>

@@ -22,7 +22,7 @@
     <!-- 회원가입 모달 -->
     <div id="signup-container" class="hidden">
       <div id="signup-content" class="modal-content">
-        <form action="/sign_up/" method="post">
+        <form action="/sign_up" method="post">
           {% csrf_token %}
           <p>
             <input
@@ -87,7 +87,7 @@
           </select>
           <br />
           <input type="submit" value="이전" />
-          <input type="submit" value="회원가입" />
+          <input id="sign-up-check" type="submit" value="회원가입" />
         </form>
       </div>
     </div>
@@ -111,7 +111,7 @@
     <div id="wrapper">
       <nav id="left-nav">
         <div id="logo">
-          <div><a href="index.html">COMMA</a></div>
+          <div><a href="/">COMMA</a></div>
         </div>
         <div id="info">
           <div><a>혼잡정보</a></div>
@@ -123,6 +123,14 @@
           <div><a>제보하기</a></div>
         </div>
       </nav>
+
+      <div class="content-wrapper">
+        <div id="content-display">
+          <img src="../static/images/seoulStation.jpg" alt="서울역" />
+          <div id="content-exp">서울역</div>
+        </div>
+        <!-- 진자 엔진 자리, 해당 지역 매칭해서 -->
+      </div>
       <nav id="right-nav">
         <div id="user">
           <div id="login-logout" class="login"><a>로그인</a></div>
@@ -132,13 +140,6 @@
           <div><a>지역설정하기</a></div>
         </div>
       </nav>
-      <div class="content-wrapper">
-        <div id="content-image">
-          <img src="../static/images/seoulStation.jpg" alt="서울역" />
-        </div>
-        <!-- 진자 엔진 자리, 해당 지역 매칭해서 -->
-        <div id="content-exp">서울역</div>
-      </div>
     </div>
     <footer>
       <p>dev by team COMMA</p>
@@ -148,7 +149,9 @@
     <script src="../static/js/location.js"></script>
     <script src="../static/js/login.js"></script>
     <script src="../static/js/modal.js"></script>
+    {% comment %}
     <script src="../static/js/mypage.js"></script>
+    {% endcomment %}
     <script src="../static/js/sign_up.js"></script>
     <script src="../static/js/speech.js"></script>
   </body>

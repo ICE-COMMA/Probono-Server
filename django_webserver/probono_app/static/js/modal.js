@@ -3,7 +3,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const signupBtn = document.querySelector("#signup-mypage");
 
   signupBtn.addEventListener("click", () => {
-    signupContainer.classList.remove("hidden");
+    if (signupBtn.classList[0] === "sign_up") {
+      signupContainer.classList.remove("hidden");
+    } else {
+      window.location.href = "/my_page";
+    }
   });
 
   window.addEventListener("click", (e) => {

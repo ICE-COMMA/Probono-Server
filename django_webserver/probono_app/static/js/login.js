@@ -27,6 +27,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loginForm.addEventListener("submit", (event) => {
     event.preventDefault();
+    logButton.classList.remove("login");
+    logButton.classList.add("logout");
+    logButton.querySelector("a").innerHTML = "logout";
+    statusBtn.classList.remove("sign_up");
+    statusBtn.classList.add("mypage");
+    statusBtn.querySelector("a").innerHTML = "마이페이지";
     const formData = new FormData(loginForm);
     fetch("/login/", {
       method: "POST",
@@ -39,18 +45,8 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
-          logButton.classList.remove("login");
-          logButton.classList.add("logout");
-          logButton.querySelector("a").innerHTML = "logout";
-          statusBtn.classList.remove("sign_up");
-          statusBtn.classList.add("mypage");
-          statusBtn.querySelector("a").innerHTML = "마이페이지";
-
           console.log("로그인 성공!");
-          // window.location.reload(); // 페이지 리로드
-          if (data.redirect_url) {
-            window.location.href = data.redirect_url;
-          }
+          window.location.reload(); // 페이지 리로드
         } else {
           // 로그인 실패 시 처리할 코드 작성
           alert("아이디 또는 비밀번호가 일치하지 않습니다.");
