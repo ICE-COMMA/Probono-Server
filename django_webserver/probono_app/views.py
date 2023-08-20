@@ -6,9 +6,7 @@ import requests
 import xmltodict
 from bson.json_util import loads, dumps
 from datetime import datetime
-from itertools import groupby
 
-from .models import SpecialWeather
 
 # Mongo DB
 from config import utils
@@ -116,8 +114,10 @@ def id_check(request):
     return JsonResponse(data, status=status_code)
 
 def logout_view(request):
-    del request.session['ID']
+    # del request.session['ID']
     print(request.session['ID'])
+    request.session.flush()
+    # print(request.session['ID'])
     return redirect('index')
 
 @require_POST
@@ -141,15 +141,20 @@ def get_bus_route(request):
     # route = collection_bus.find_one(num)
     route = 100100001
     url = 'http://ws.bus.go.kr/api/rest/busRouteInfo/getStaionByRoute'
-    params = { 'ServiceKey' : '4cwiloFmPQxO3hXwmJy3jruoPPh6m8PQZqxBkWecSAgIIeRjq6UIdo0r7ZnmT4Rm4kVErRaD9jd1XU5CS7Chwg==', 'busRouteId' : str(route), 'resultType' : 'xml' }
+    params = { 'ServiceKey' : '4cwiloFmPQxO3hXwmJy3jruoPPh6m8PQZqxBkWecSAgIIeRjq6UIdo0r7ZnmT4Rm4kVErRaD9jd1XU5CS7Chwg==', 'busRouteId' : str(route), 'resultType' : 'json' }
 
     response = requests.get(url, params=params)
     print(response)
-    print(response.content)
-    data_dict = xmltodict.parse(response.content)
-    print(data_dict)
-    data = data_dict.get('busRoute')
+    data = response.json()
     print(data)
+    item_list = data['msgBody']['itemList']
+    print(item_list[0])
+    print(item_list[1])
+    # print(response.content)
+    # data_dict = xmltodict.parse(response.content)
+    # print(data_dict)
+    # data = data_dict.get('busRoute')
+    # print(data)
 
     return render(request, 'index.html')
 
