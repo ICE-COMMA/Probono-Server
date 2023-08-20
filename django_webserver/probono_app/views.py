@@ -104,7 +104,7 @@ def id_check(request):
     users = get_collection(db_handle, 'User')
     data = loads(request.body)
     temp_id = data['check_id']
-    temp = users.find_one({'id' : temp_id})
+    temp = users.find_one({'ID' : temp_id})
     if not temp:
         data = { 'valid' : True } # REMIND : front have to know its response.
         status_code = 201
@@ -114,10 +114,7 @@ def id_check(request):
     return JsonResponse(data, status=status_code)
 
 def logout_view(request):
-    # del request.session['ID']
-    print(request.session['ID'])
     request.session.flush()
-    # print(request.session['ID'])
     return redirect('index')
 
 @require_POST
