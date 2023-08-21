@@ -192,31 +192,30 @@ def get_safety_guard_house(request):
     
     return
 
-def crawl_notice(request, target_date):
+def get_demo_today(request):
     
     chrome_options=webdriver.ChromeOptions()
     chrome_options.add_argument("--headless")
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()),options=chrome_options)
     
     site_url = "https://www.smpa.go.kr/user/nd54882.do"
     driver.get(site_url)
     
     page_source=driver.page_source
-    soup = BeautifulSoup(page_source, 'html.parser')
+    #soup = BeautifulSoup(page_source, 'html.parser')
     
-    # 원하는 정보 추출
-    target_element = None
-    for td_element in soup.find_all('td', class_='subject'):
-        date_column = td_element.get_text().strip()
-        if date_column == target_date:
-            target_element = td_element
-            break
-       
+    # 오늘 날짜
+    current_date=datetime.now()
+    year=current_date.strftime("%y")
+    today=current_date.weekday()
+    days=["월","화","수","목","금","토","일"]
+    day=days[today]
     link_text="오늘의 집회 "
-    date="230821 월"
+    date=year+current_date.strftime("%m%d") +" "+day # 원하는 날짜로 보려면 target_date로 받아야함
     xpath_expression = f"//a[contains(text(),'{link_text}{date}')]"
     element = driver.find_element(By.XPATH, xpath_expression)
     driver.execute_script("arguments[0].scrollIntoView();", element)
+    
     # 새 페이지로 이동
     element.click()
     current_url=driver.current_url
@@ -224,30 +223,16 @@ def crawl_notice(request, target_date):
     wait = WebDriverWait(driver, 10)
     # 이미지 요소의 XPath로 이미지를 찾고, src 속성을 가져옴
     image_element = wait.until(EC.presence_of_element_located((By.XPATH, "//div[@class='bcontent']//img")))
-    image_url = image_element.get_attribute("src")
-
-    # link_text=None
-    # link_url=None
-    # img_url=None
-    # if target_element:
-    #     link = target_element.find('a')
-    #     link_text = link.get_text()
-    #     link_url = link['href']
-        
+    image_url = image_element.get_attribute("src")    
     
-    
-    # 여기서 javascript함수로 되어있는 동적 정보 url로 접근해야함    
-    dynamic_content=soup.find('div',class_='reply-content')
-    if dynamic_content:
-        print('find')
-        img_url=dynamic_content['src']
     # WebDriver 종료
     driver.quit()
     
+    # 프론트에 던져줄 정보
     context = {
         'link_text': link_text,
         'link_url': current_url,
-        'img_url': image_url,
+        'img_url': image_url, # 이걸 받으면 됨
     }
         
     return render(request, 'crawl_result.html', context)
