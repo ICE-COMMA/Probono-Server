@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../static/css/styles.css" />
     <link rel="stylesheet" href="../static/css/modal.css" />
-    <title>마이페이지</title>
+    <title>제보하기</title>
   </head>
   <body>
     <!-- 지도 모달 -->
@@ -39,77 +39,15 @@
         </div>
       </nav>
 
-      <div class="content-wrapper">
-        <form id="profile" action="/my_page/" method="post">
-          {% csrf_token %}
-          <input
-            type="text"
-            name="user_name"
-            id="user_name"
-            value="박세호"
-            disabled
-          />
-          <input
-            type="text"
-            name="user_id"
-            id="user_id"
-            value="323psh"
-            disabled
-          />
-
-          <input
-            type="text"
-            name="user_gender"
-            id="user_gender"
-            value="남"
-            disabled
-          /><input
-            type="text"
-            name="user_birth"
-            id="user_birth"
-            value="2000.03.23"
-            disabled
-          />
-          <select name="user_handicap" id="user_handicap" required>
-            <option value="impaired-init">* 장애여부</option>
-            <option value="panic">공황장애</option>
-            <option value="visually">시각장애</option>
-            <option value="behavior">거동장애</option>
-            <option value="normal">없음</option>
-          </select>
-          <input
-            type="password"
-            name="previous_pw"
-            id="previous_pw"
-            placeholder="기존 비밀번호"
-            required
-          />
-          <input
-            type="password"
-            name="next_pw"
-            id="next_pw"
-            placeholder="새 비밀번호"
-          />
-          <input
-            type="password"
-            name="next_pw_check"
-            id="next_pw_check"
-            placeholder="새 비밀번호 확인"
-          />
-          <span id="button_box">
-            <input id="profile_cancel" type="submit" value="이전" />
-            <input id="profile_complete" type="submit" value="수정" />
-          </span>
-        </form>
-      </div>
+      <div class="content-wrapper">혼잡도 정보 테스트</div>
       <nav id="right-nav">
         <div id="user">
           {% if request.session.ID %}
           <div id="greeting">
             <a href="#">{{ request.session.ID }}님 환영합니다!</a>
           </div>
-          <div id="my_page" class="signup-mypage">
-            <a href="./mypage/{{ request.session.ID }}">마이페이지</a>
+          <div id="mypage" class="signup-mypage">
+            <a href="./my_page/{{ request.session.ID }}">마이페이지</a>
           </div>
           <div id="logout" class="login-logout">
             <a href="./logout">로그아웃</a>

@@ -6,7 +6,6 @@ import requests
 import xmltodict
 from bson.json_util import loads, dumps
 from datetime import datetime
-from itertools import groupby
 
 from .models import SpecialWeather
 # crawling`
@@ -43,8 +42,20 @@ def index(request):
     ret = list(collection.find({}))
     return render(request, 'index.html', { 'spw' : ret })
 
-def my_page(request):
-    return render(request, 'my_page.html')
+
+def my_page(request, id):
+    if request.method == 'GET':
+        collection = get_collection(db_handle, 'User')
+        ret = collection.find_one({'ID' : id})
+        if not ret:
+            return HttpResponse("Can not find user.")
+        return render(request, 'my_page.html', { 'info' : ret })
+    elif request.method == 'POST':
+        collection = get_collection(db_handle, 'User')
+        data = loads(request.body)
+        collection.update_one({ 'ID' : id }, { '$set' : { data } })
+        ret = { 'valid' : True }
+        return JsonResponse(ret)
 
 def transfer_info(request):
     return render(request, 'transfer_info.html')
@@ -107,7 +118,7 @@ def id_check(request):
     users = get_collection(db_handle, 'User')
     data = loads(request.body)
     temp_id = data['check_id']
-    temp = users.find_one({'id' : temp_id})
+    temp = users.find_one({'ID' : temp_id})
     if not temp:
         data = { 'valid' : True } # REMIND : front have to know its response.
         status_code = 201
@@ -117,8 +128,7 @@ def id_check(request):
     return JsonResponse(data, status=status_code)
 
 def logout_view(request):
-    del request.session['ID']
-    print(request.session['ID'])
+    request.session.flush()
     return redirect('index')
 
 @require_POST
@@ -142,15 +152,20 @@ def get_bus_route(request):
     # route = collection_bus.find_one(num)
     route = 100100001
     url = 'http://ws.bus.go.kr/api/rest/busRouteInfo/getStaionByRoute'
-    params = { 'ServiceKey' : '4cwiloFmPQxO3hXwmJy3jruoPPh6m8PQZqxBkWecSAgIIeRjq6UIdo0r7ZnmT4Rm4kVErRaD9jd1XU5CS7Chwg==', 'busRouteId' : str(route), 'resultType' : 'xml' }
+    params = { 'ServiceKey' : '4cwiloFmPQxO3hXwmJy3jruoPPh6m8PQZqxBkWecSAgIIeRjq6UIdo0r7ZnmT4Rm4kVErRaD9jd1XU5CS7Chwg==', 'busRouteId' : str(route), 'resultType' : 'json' }
 
     response = requests.get(url, params=params)
     print(response)
-    print(response.content)
-    data_dict = xmltodict.parse(response.content)
-    print(data_dict)
-    data = data_dict.get('busRoute')
+    data = response.json()
     print(data)
+    item_list = data['msgBody']['itemList']
+    print(item_list[0])
+    print(item_list[1])
+    # print(response.content)
+    # data_dict = xmltodict.parse(response.content)
+    # print(data_dict)
+    # data = data_dict.get('busRoute')
+    # print(data)
 
     return render(request, 'index.html')
 

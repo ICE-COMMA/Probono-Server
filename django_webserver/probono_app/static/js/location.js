@@ -20,7 +20,8 @@ gpsLocation.addEventListener("click", () => {
 const posOk = (position) => {
   const lat = position.coords.latitude;
   const lon = position.coords.longitude;
-  console.log(`현재 위치는 ${lat}, ${lon}입니다`);
+  alert(`지역 설정을 ${lat}, ${lon}로 완료했습니다`);
+  locationConatiner.classList.add("hidden");
 };
 
 const posError = () => console.log("error");
