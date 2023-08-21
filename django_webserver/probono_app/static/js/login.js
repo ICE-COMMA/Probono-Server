@@ -39,8 +39,11 @@ document.addEventListener("DOMContentLoaded", function () {
     if (response.ok) {
       console.log(response);
       if (responseData.success) {
+         // alert("아이디 혹은 비밀번호가 틀렸습니다.")
+        
         console.log(responseData);
-        window.location.href = response.redirect_url; //
+        window.location.href = responseData.redirect_url; //
+        // window.location.reload();
 
         modal.classList.add("hidden");
       } else {
@@ -51,6 +54,6 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log("네트워크 오류");
       // 네트워크 오류 처리
     }
-    window.location.href = "/";
+    // window.location.href = "/";
   });
 });
