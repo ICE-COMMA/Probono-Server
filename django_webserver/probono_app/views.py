@@ -177,7 +177,7 @@ def get_demo_today(request):
     
     chrome_options=webdriver.ChromeOptions()
     chrome_options.add_argument("--headless")
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()),options=chrome_options)
     
     site_url = "https://www.smpa.go.kr/user/nd54882.do"
     driver.get(site_url)
