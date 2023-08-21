@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.decorators.http import require_POST
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 import requests
 import xmltodict
 from bson.json_util import loads, dumps
@@ -37,11 +37,22 @@ from .forms import SignUpForm
 db_handle = utils.db_handle
 get_collection = utils.get_collection_handle
 
+cnt = 0
+
 def index(request):
     collection = get_collection(db_handle, 'special_weather')
     ret = list(collection.find({}))
-    return render(request, 'index.html', { 'spw' : ret })
+    print(request.session)
+    global cnt
+    
+    print(request.session.items())
 
+    # if cnt > 2:
+        # print(request.session)
+        # print(request.session['ID'])
+    # cnt += 1
+
+    return render(request, 'index.html', { 'spw' : ret })
 
 def my_page(request, id):
     if request.method == 'GET':
@@ -81,17 +92,25 @@ def login_view(request):
     if user_info:
         if password == user_info['PW']:
             request.session['ID'] = user_id
+            request.session.modified = True
+            request.session.save()
+            # request.session.save()
             print(request.session['ID'])
+
+            print(request.session.items())
+            # print(request.session)
             data = {
                     "success"      : True,
                     "redirect_url" : reverse('index') 
                     }
+            # return redirect('/')
+            # return HttpResponseRedirect(reverse('index'))
         else:
             data = { "success" : False }
     else:
         data = { "success" : False }
-    status_code = 201
-    print(data)
+    status_code = 202
+    # print(data)
     return JsonResponse(data, status=status_code)
 
 @require_POST
