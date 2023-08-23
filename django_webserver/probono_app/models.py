@@ -168,7 +168,9 @@ class SpecialWeather():
             all_data.sort(key=lambda x: (x['WRN'], x['TM_EF']))
             grouped_data = {key: list(group) for key, group in groupby(all_data, key=lambda x: x['WRN'])}
             to_insert.extend(self.process_grouped_data(grouped_data, target))
-        special_weathers.insert_many(to_insert)
+        print(to_insert)
+        if to_insert:
+            special_weathers.insert_many(to_insert)
 
     # main method
     def update_special_weather(self, special_weathers):
