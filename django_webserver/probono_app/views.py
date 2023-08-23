@@ -6,6 +6,7 @@ import requests
 import xmltodict
 from bson.json_util import loads, dumps
 from datetime import datetime
+import pandas as pd
 
 from .models import SpecialWeather
 # crawling
@@ -66,7 +67,7 @@ def my_page(request, id):
             update_result = collection.update_one({ 'ID' : id }, { '$set' : { data } })
             if update_result.matched_count == 0:
                 return JsonResponse({ 'valid' : False, 'error' : 'Not found' })
-            elif update_result.modified_count == 0: # Not modified
+            elif update_result.modified_count == 0:
                 return JsonResponse({ 'valid' : False, 'error' : 'Not modified' })
             return JsonResponse({ 'valid' : True })
     except PyMongoError:
@@ -81,13 +82,19 @@ def weather_info(request):
 def dense_popul_info(request):
     
     if request.method == 'GET':
+        reg = []
+        
 
         
-    elif request.method == 'POST':
+        
 
 
 
     # return render(request, 'dense_popul_info.html')
+    return render(request, 'index.html')
+
+def get_hot_place(request):
+    # if 
     return render(request, 'index.html')
 
 def safety_info(request):
