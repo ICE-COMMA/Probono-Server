@@ -70,7 +70,7 @@ def my_page(request, id):
                 return JsonResponse({ 'valid' : False, 'error' : 'Not modified' })
             return JsonResponse({ 'valid' : True })
     except PyMongoError:
-        return JsonResponse({'valid': False, 'error': 'Database error'})
+        return JsonResponse({'valid' : False, 'error': 'Database error'})
 
 def transfer_info(request):
     return render(request, 'transfer_info.html')
@@ -79,7 +79,16 @@ def weather_info(request):
     return render(request, 'weather_info.html')
 
 def dense_popul_info(request):
-    return render(request, 'dense_popul_info.html')
+    
+    if request.method == 'GET':
+
+        
+    elif request.method == 'POST':
+
+
+
+    # return render(request, 'dense_popul_info.html')
+    return render(request, 'index.html')
 
 def safety_info(request):
     return render(request, 'safety_info.html')
@@ -129,7 +138,7 @@ def id_check(request):
     users = get_collection(db_handle, 'User')
     data = loads(request.body)
     temp_id = data['check_id']
-    temp = users.find_one({'ID' : temp_id})
+    temp = users.find_one({ 'ID' : temp_id })
     if not temp:
         data = { 'valid' : True } # REMIND : front have to know its response.
         status_code = 201
