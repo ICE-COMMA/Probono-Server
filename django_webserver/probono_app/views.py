@@ -24,6 +24,7 @@ from urllib.parse import urljoin
 
 # Mongo DB
 from config import utils
+from pymongo.errors import PyMongoError
 
 # Session
 from config.utils import SessionStore
@@ -43,28 +44,34 @@ def index(request):
     return render(request, 'index.html', { 'spw' : ret })
 
 def my_page(request, id):
-
-    current_user_id = request.session.get('ID', None)
-    if not current_user_id:
-        return HttpResponseForbidden("ACCESS DENIED")
-    
-    if request.method == 'GET':
-        collection = get_collection(db_handle, 'User')
-        ret = collection.find_one({'ID' : id})
-        if not ret or str(ret['ID']) != str(current_user_id): 
+    try:
+        current_user_id = request.session.get('ID', None)
+        if not current_user_id:
             return HttpResponseForbidden("ACCESS DENIED")
-        formatted_date = ret['date'].strftime('%Y.%m.%d')
-        ret['date'] = formatted_date
-        print(ret)
-        return render(request, 'my_page.html', { 'info' : ret })
-    elif request.method == 'POST':
-        if str(id) != str(current_user_id): 
-            return HttpResponseForbidden("ACCESS DENIED")
-        collection = get_collection(db_handle, 'User')
-        data = loads(request.body)
-        collection.update_one({ 'ID' : id }, { '$set' : { data } })
-        ret = { 'valid' : True }
-        return JsonResponse(ret)
+        
+        if request.method == 'GET':
+            collection = get_collection(db_handle, 'User')
+            ret = collection.find_one({'ID' : id})
+            if not ret or str(ret['ID']) != str(current_user_id): 
+                return HttpResponseForbidden("ACCESS DENIED")
+            formatted_date = ret['date'].strftime('%Y.%m.%d')
+            ret['date'] = formatted_date
+            print(ret)
+            return render(request, 'my_page.html', { 'info' : ret })
+        elif request.method == 'POST':
+            if str(id) != str(current_user_id): 
+                return HttpResponseForbidden("ACCESS DENIED")
+            collection = get_collection(db_handle, 'User')
+            data = loads(request.body)
+            print(data)
+            update_result = collection.update_one({ 'ID' : id }, { '$set' : { data } })
+            if update_result.matched_count == 0:
+                return JsonResponse({ 'valid' : False, 'error' : 'Not found' })
+            elif update_result.modified_count == 0: # Not modified
+                return JsonResponse({ 'valid' : False, 'error' : 'Not modified' })
+            return JsonResponse({ 'valid' : True })
+    except PyMongoError:
+        return JsonResponse({'valid': False, 'error': 'Database error'})
 
 def transfer_info(request):
     return render(request, 'transfer_info.html')
