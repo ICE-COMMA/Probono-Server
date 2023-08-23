@@ -48,7 +48,6 @@ def my_page(request, id):
         current_user_id = request.session.get('ID', None)
         if not current_user_id:
             return HttpResponseForbidden("ACCESS DENIED")
-        
         if request.method == 'GET':
             collection = get_collection(db_handle, 'User')
             ret = collection.find_one({'ID' : id})
