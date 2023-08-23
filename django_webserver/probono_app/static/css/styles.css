@@ -33,47 +33,80 @@ header.no-data {
 #wrapper {
   height: auto;
   min-height: 80%;
-  padding-bottom: 100px; /* footer height에 맞게 조절 */
+  padding-bottom: 100px;
   margin-left: 2%;
   margin-right: 2%;
   /* font-size: 0.75em; */
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
+}
+
+#wrapper > img {
+  padding-top: 30%;
 }
 
 #left-nav {
   position: sticky;
-  top: 15%;
+  top: 10%;
   float: left;
   width: 15%;
 }
 
 #right-nav {
   position: sticky;
-  top: 15%;
+  top: 10%;
   float: right;
   width: 15%;
 }
 
 .content-wrapper {
   width: 100%;
-  height: 100%;
   display: flex;
   justify-content: center;
 }
 
-#content-display > img {
-  padding-top: 5%;
-  padding-bottom: 2%;
-  width: 50%;
-  height: 70%;
+#demo-display {
+  display: flex;
+  justify-content: center;
+  min-height: 70vh;
+  width: 100%;
+  background-size: 90% 95%;
+  background-position: center 100%;
+  background-repeat: no-repeat;
+  overflow: hidden;
 }
 
-#content-exp {
+.content-slide > span {
+  color: gray;
+}
+
+#content-display {
+  height: 100%;
+  width: 50%;
+  border: 2px black solid;
+  border-radius: 20px;
+}
+
+#content-img {
   width: 100%;
-  height: 20%;
-  text-align: center;
+  height: 45vh;
+  border-radius: 20px 20px 0px 0px;
+  background-image: url("../images/seoulStation.jpg");
+  background-size: auto;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.content-info {
+  padding-top: 5%;
+  height: 7vh;
+}
+
+.content-info span {
+  padding-left: 15%;
+  padding-right: 15%;
 }
 
 nav a {
@@ -144,4 +177,18 @@ form p {
 
 span > input[type="submit"] {
   width: 30%;
+}
+
+.demo {
+  padding-top: 30%;
+  overflow: hidden;
+}
+
+.custom-info {
+  border: 1px solid black;
+  border-radius: 10px;
+  font-size: 0.5rem;
+  padding: 0.2rem;
+  margin-top: 0.15rem;
+  margin-bottom: 0.15rem;
 }

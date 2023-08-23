@@ -40,11 +40,8 @@
         </div>
       </nav>
 
-      <div class="content-wrapper">
-        <form action="/" method="post">
-          <input type="text" name="subway_search" id="subway-search" />
-        </form>
-      </div>
+      <div id="demo-display" data-url="{{img_url}}"></div>
+
       <nav id="right-nav">
         <div id="user">
           {% if request.session.ID %}
@@ -52,7 +49,7 @@
             <a href="#">{{ request.session.ID }}님 환영합니다!</a>
           </div>
           <div id="mypage" class="signup-mypage">
-            <a href="/my_page/{{ request.session.ID }}">마이페이지</a>
+            <a href="./my_page/{{ request.session.ID }}">마이페이지</a>
           </div>
           <div id="logout" class="login-logout">
             <a href="./logout">로그아웃</a>
@@ -79,6 +76,6 @@
     <script src="../static/js/speech.js"></script>
     <script src="../static/js/location.js"></script>
     <script src="../static/js/mypage.js"></script>
-    <script src="../static/js/transfer.js"></script>
+    <script src="../static/js/demo.js"></script>
   </body>
 </html>

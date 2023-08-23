@@ -40,6 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log(response);
       if (responseData.success) {
         console.log(responseData);
+
         modal.classList.add("hidden");
       } else {
         console.log("로그인 실패");

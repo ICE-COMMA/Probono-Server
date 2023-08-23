@@ -9,7 +9,7 @@
   </head>
   <body>
     <!-- 지도 모달 -->
-    <div id="locationContainer" class="hidden">
+    <div id="locationContainer" class="hidden modal-container">
       <div id="locationContent" class="modal-content">
         <div id="gpsLocation">
           <span>현재 위치로 설정</span>
@@ -20,7 +20,7 @@
       </div>
     </div>
     <!-- 회원가입 모달 -->
-    <div id="signup-container" class="hidden">
+    <div id="signup-container" class="hidden modal-container">
       <div id="signup-content" class="modal-content">
         <form action="/sign_up" method="post" id="sign-up-form">
           {% csrf_token %}
@@ -89,7 +89,56 @@
       </div>
     </div>
 
-    <div id="login-container" class="hidden">
+    <div id="custom-container" class="hidden modal-container">
+      <div id="custom-content" class="modal-content">
+        <form action="/" method="post" id="custom-form">
+          {% csrf_token %}
+          <div class="custom-info" id="custom-demo">시위 정보</div>
+          <div class="custom-info" id="custom-elevator">지하철 승강기 정보</div>
+          <div class="custom-info" id="custom-population">인구밀집 정보</div>
+          <div class="custom-info" id="custom-predict">혼잡도 예측</div>
+          <div class="custom-info" id="custom-safety">치안 정보</div>
+          <div class="custom-info" id="custom-safey-loc">안심 시설 정보</div>
+          <div class="custom-info" id="custom-low-bus">저상 버스 정보</div>
+          <div class="custom-info" id="custom-festival">행사 정보</div>
+          <input type="submit" value="이전" />
+          <input id="custom-check" type="submit" value="확인" />
+        </form>
+      </div>
+    </div>
+
+    <div id="report-container" class="hidden modal-container">
+      <div id="report-content" class="modal-content">
+        <form action="/" method="post" id="report-form">
+          {% csrf_token %}
+          <select name="report-case" id="report-case" required>
+            <option value="impaired-init">* 사건분류</option>
+            <option value="panic">범죄</option>
+            <option value="visually">재난</option>
+          </select>
+          <input
+            type="text"
+            id="report-name"
+            name="report_name"
+            placeholder="* 제보명"
+            required
+          />
+          <input
+            type="time"
+            id="report-time"
+            max="00:00"
+            min="23:59"
+            name="time"
+            required
+          />
+          <br />
+          <input type="submit" value="이전" />
+          <input id="report-check" type="submit" value="제보하기" />
+        </form>
+      </div>
+    </div>
+
+    <div id="login-container" class="hidden modal-container">
       <div id="login-content" class="modal-content">
         <form id="login-form" name="login" action="/login" method="post">
           {% csrf_token %}
@@ -121,26 +170,51 @@
         <div id="info">
           <div><a href="dense_popul_info">혼잡정보</a></div>
           <div><a href="transfer_info">교통정보</a></div>
-          <div><a href="safety_info">시위정보</a></div>
+          <div><a href="/get_demo_today">시위정보</a></div>
+          <div><a href="safety_info">안전정보</a></div>
         </div>
         <div id="contact">
-          <div><a>커스터마이징</a></div>
-          <div><a>제보하기</a></div>
+          <div id="custom-btn"><a>커스터마이징</a></div>
+          <div id="report-btn"><a>제보하기</a></div>
         </div>
       </nav>
 
       <div class="content-wrapper">
         <div id="content-display">
-          <img src="../static/images/seoulStation.jpg" alt="서울역" />
-          <div id="content-exp">서울역</div>
+          <div id="content-img"></div>
+          <div class="content-info">
+            <span>서울역</span>
+            <span>혼잡</span>
+          </div>
+          <div class="content-info hidden">
+            <span>테스트1</span>
+            <span>테스트1</span>
+          </div>
+          <div class="content-info hidden">
+            <span>테스트2</span>
+            <span>테스트2</span>
+          </div>
+          <div class="content-info hidden">
+            <span>테스트3</span>
+            <span>테스트3</span>
+          </div>
+          <div class="content-slide">
+            <span class="slide">●</span>
+            <span class="slide">○</span>
+            <span class="slide">○</span>
+            <span class="slide">○</span>
+          </div>
         </div>
+
         <!-- 진자 엔진 자리, 해당 지역 매칭해서 -->
       </div>
       <nav id="right-nav">
         <div id="user">
           {% if request.session.ID %}
           <div id="greeting">
-            <a href="#">{{ request.session.ID }}님 환영합니다!</a>
+            <a href="#" id="greeting-user" data-user="{{request.session.ID}}"
+              >{{ request.session.ID }}님 환영합니다!</a
+            >
           </div>
           <div id="my_page" class="signup-mypage">
             <a href="./my_page/{{ request.session.ID }}">마이페이지</a>
@@ -170,8 +244,10 @@
     <script src="../static/js/location.js"></script>
     <script src="../static/js/login.js"></script>
     <script src="../static/js/modal.js"></script>
-    <script src="../static/js/mypage.js"></script>
     <script src="../static/js/sign_up.js"></script>
     <script src="../static/js/speech.js"></script>
+    <script src="../static/js/report.js"></script>
+    <script src="../static/js/custom.js"></script>
+    <script src="../static/js/main.js"></script>
   </body>
 </html>
