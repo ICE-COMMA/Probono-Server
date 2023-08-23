@@ -8,7 +8,7 @@ from bson.json_util import loads, dumps
 from datetime import datetime
 
 from .models import SpecialWeather
-# crawling`
+# crawling
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
