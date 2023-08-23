@@ -29,14 +29,10 @@
           <div><a href="/">COMMA</a></div>
         </div>
         <div id="info">
-          <div><a href="dense_popul_info">혼잡정보</a></div>
-          <div><a href="transfer_info">교통정보</a></div>
+          <div><a href="/dense_popul_info">혼잡정보</a></div>
+          <div><a href="/transfer_info">교통정보</a></div>
           <div><a href="/get_demo_today">시위정보</a></div>
-          <div><a href="safety_info">안전정보</a></div>
-        </div>
-        <div id="contact">
-          <div><a>커스터마이징</a></div>
-          <div><a>제보하기</a></div>
+          <div><a href="/safety_info">안전정보</a></div>
         </div>
       </nav>
 
@@ -45,32 +41,39 @@
           {% csrf_token %}
           <input
             type="text"
-            name="user_name"
-            id="user_name"
+            name="user-name"
+            id="user-name"
             value="{{ info.name }}"
             disabled
           />
           <input
             type="text"
-            name="user_id"
-            id="user_id"
+            name="user-id"
+            id="user-id"
             value="{{info.ID}}"
             disabled
           />
           <input
             type="text"
-            name="user_gender"
-            id="user_gender"
+            name="user-gender"
+            id="user-gender"
             value="{% if info.gender == 'male' %}남성{% else %}여성{% endif %}"
             disabled
           /><input
             type="text"
-            name="user_birth"
-            id="user_birth"
-            value="{{info.date.date}}"
+            name="user-birth"
+            id="user-birth"
+            value="{{info.date}}"
             disabled
           />
-          <select name="user_handicap" id="user_handicap" required>
+          <input
+            type="text"
+            name="user-custom"
+            id="user-custom"
+            value="{% if info.custom == ''%}관심 정보(커스터마이징) 미설정{% else %}{{info.custom}}{% endif %}"
+            disabled
+          />
+          <select name="user-handicap" id="user-handicap" required>
             <option value="impaired-init">* 장애여부</option>
             <option value="panic">공황장애</option>
             <option value="visually">시각장애</option>
@@ -80,25 +83,25 @@
           <input
             type="password"
             name="{{info.PW}}"
-            id="previous_pw"
+            id="previous-pw"
             placeholder="기존 비밀번호"
             required
           />
           <input
             type="password"
-            name="next_pw"
-            id="next_pw"
+            name="next-pw"
+            id="next-pw"
             placeholder="새 비밀번호"
           />
           <input
             type="password"
-            name="next_pw_check"
-            id="next_pw_check"
+            name="next-pw-check"
+            id="next-pw-check"
             placeholder="새 비밀번호 확인"
           />
-          <span id="button_box">
-            <input id="profile_cancel" type="submit" value="이전" />
-            <input id="profile_complete" type="submit" value="수정" />
+          <span id="button-box">
+            <input id="profile-cancel" type="submit" value="이전" />
+            <input id="profile-complete" type="submit" value="수정" />
           </span>
         </form>
       </div>
@@ -106,10 +109,10 @@
         <div id="user">
           {% if request.session.ID %}
           <div id="greeting">
-            <a href="#">{{ request.session.ID }}님 환영합니다!</a>
+            <a href="#">Hello {{ request.session.ID }}!</a>
           </div>
           <div id="my_page" class="signup-mypage">
-            <a href="/mypage/{{ request.session.ID }}">마이페이지</a>
+            <a href="/my_page/{{ request.session.ID }}">마이페이지</a>
           </div>
           <div id="logout" class="login-logout">
             <a href="/logout">로그아웃</a>
@@ -123,9 +126,6 @@
           </div>
           {% endif %}
         </div>
-        <div id="location">
-          <div><a>지역설정하기</a></div>
-        </div>
       </nav>
     </div>
     <footer>
@@ -134,7 +134,6 @@
       <button id="end">인식종료</button>
     </footer>
     <script src="../static/js/speech.js"></script>
-    <script src="../static/js/location.js"></script>
-    <script src="../static/js/mypage.js"></script>
+    <script src="../static/js/my_page.js"></script>
   </body>
 </html>

@@ -2,7 +2,6 @@ const customContainer = document.querySelector("#custom-container");
 const customBtn = document.querySelector("#custom-btn");
 const customList = document.querySelectorAll(".custom-info");
 const customForm = document.querySelector("#custom-form");
-const userID = document.querySelector("#greeting-user").dataset.user;
 let selectCustom = [];
 
 function getCSRFToken() {
@@ -14,19 +13,30 @@ function getCSRFToken() {
 }
 
 customBtn.addEventListener("click", () => {
-  customContainer.classList.remove("hidden");
+  if (document.querySelector(".signup-mypage").id === "my-page") {
+    customContainer.classList.remove("hidden");
+  } else {
+    alert("로그인 후 이용해주세요.");
+  }
 });
 
 customList.forEach((element) => {
   element.addEventListener("click", () => {
-    element.style.backgroundColor = "red";
-    selectCustom.push(element.id);
+    if (element.style.backgroundColor === "red") {
+      selectCustom.pop(element.id);
+      element.style.backgroundColor = "transparent";
+    } else {
+      selectCustom.push(element.id);
+      element.style.backgroundColor = "red";
+    }
   });
 });
 
 customForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   console.log(selectCustom);
+  const userID = document.querySelector("#greeting-user").dataset.user;
+
   const requestBody = {
     user_ID: userID,
     custom: selectCustom,
@@ -43,7 +53,7 @@ customForm.addEventListener("submit", async (event) => {
 
     const data = await response.json();
 
-    if (data.valid === "ok") {
+    if (data.valid) {
       alert("커스터마이징 수정을 완료했습니다.");
       // 원하는 작업 수행
     } else {
@@ -57,6 +67,7 @@ customForm.addEventListener("submit", async (event) => {
   customList.forEach(
     (element) => (element.style.backgroundColor = "transparent")
   );
+  customContainer.classList.add("hidden");
 });
 
 window.addEventListener("click", (event) => {
