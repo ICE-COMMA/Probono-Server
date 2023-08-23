@@ -14,4 +14,4 @@ class ProbonoAppConfig(AppConfig):
         
         spw_ins = SpecialWeather()
         collection = get_collection(db_handle, 'special_weather')
-        # spw_ins.init_special_weather(collection)
+        spw_ins.init_special_weather(collection)
