@@ -29,7 +29,7 @@ class SessionStore(DBStore):
         if session_collection.find_one({'session_key': session_key}):
             return True
         return False
-#####
+
     def save(self, must_create=False):
         session_data = {
         'session_key': self._get_or_create_session_key(),
@@ -43,19 +43,6 @@ class SessionStore(DBStore):
         else:
             session_collection.update_one({'session_key': self.session_key}, {'$set': session_data}, upsert=True)
     
-    ######
-    # def save(self, must_create=False):
-    #     session_data = {
-    #         'session_key': self._get_or_create_session_key(),
-    #         'session_data': self.encode(self._get_session(no_load=must_create)),
-    #         'expire_date': self._get_session_expiry_date()
-    #     }
-    #     if must_create:
-    #         print('asdfdsfsfslklnklnkjlnlknklnklnklnklnklnkl')
-    #         session_collection.insert_one(session_data)
-    #     else:
-    #         session_collection.update_one({'session_key': self.session_key}, {'$set': session_data})
-
     def delete(self, session_key=None):
         if not session_key:
             session_key = self._get_or_create_session_key()
