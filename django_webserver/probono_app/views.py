@@ -40,10 +40,6 @@ get_collection = utils.get_collection_handle
 def index(request):
     collection = get_collection(db_handle, 'special_weather')
     ret = list(collection.find({}))
-    print(request.session)
-    
-    print(request.session.items())
-
     return render(request, 'index.html', { 'spw' : ret })
 
 def my_page(request, id):
