@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.decorators.http import require_POST
-from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 import requests
 import xmltodict
 from bson.json_util import loads, dumps
@@ -43,13 +43,23 @@ def index(request):
     return render(request, 'index.html', { 'spw' : ret })
 
 def my_page(request, id):
+
+    current_user_id = request.session.get('ID', None)
+    if not current_user_id:
+        return HttpResponseForbidden("ACCESS DENIED")
+    
     if request.method == 'GET':
         collection = get_collection(db_handle, 'User')
         ret = collection.find_one({'ID' : id})
-        if not ret:
-            return HttpResponse("Can not find user.")
+        if not ret or str(ret['ID']) != str(current_user_id): 
+            return HttpResponseForbidden("ACCESS DENIED")
+        formatted_date = ret['date'].strftime('%Y.%m.%d')
+        ret['date'] = formatted_date
+        print(ret)
         return render(request, 'my_page.html', { 'info' : ret })
     elif request.method == 'POST':
+        if str(id) != str(current_user_id): 
+            return HttpResponseForbidden("ACCESS DENIED")
         collection = get_collection(db_handle, 'User')
         data = loads(request.body)
         collection.update_one({ 'ID' : id }, { '$set' : { data } })
