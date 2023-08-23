@@ -37,20 +37,12 @@ from .forms import SignUpForm
 db_handle = utils.db_handle
 get_collection = utils.get_collection_handle
 
-cnt = 0
-
 def index(request):
     collection = get_collection(db_handle, 'special_weather')
     ret = list(collection.find({}))
     print(request.session)
-    global cnt
     
     print(request.session.items())
-
-    # if cnt > 2:
-        # print(request.session)
-        # print(request.session['ID'])
-    # cnt += 1
 
     return render(request, 'index.html', { 'spw' : ret })
 
@@ -164,29 +156,31 @@ def get_bus_no_to_route(request):
     
     return
 
-def get_bus_route(request):
+def get_bus_route(request, bus_num):
 
-    # collection_bus = get_collection(db_handle, 'bus')
-    # num = request.POST.get('bus_num')
-    # route = collection_bus.find_one(num)
-    route = 100100001
+    collection_bus = get_collection(db_handle, 'bus')
+    bus_info = collection_bus.find_one({ 'bus_no' : bus_num })
     url = 'http://ws.bus.go.kr/api/rest/busRouteInfo/getStaionByRoute'
-    params = { 'ServiceKey' : '4cwiloFmPQxO3hXwmJy3jruoPPh6m8PQZqxBkWecSAgIIeRjq6UIdo0r7ZnmT4Rm4kVErRaD9jd1XU5CS7Chwg==', 'busRouteId' : str(route), 'resultType' : 'json' }
+    key = '4cwiloFmPQxO3hXwmJy3jruoPPh6m8PQZqxBkWecSAgIIeRjq6UIdo0r7ZnmT4Rm4kVErRaD9jd1XU5CS7Chwg=='
+    params = { 'ServiceKey' : key, 'busRouteId' : bus_info['route'], 'resultType' : 'json' }
 
     response = requests.get(url, params=params)
     print(response)
     data = response.json()
-    print(data)
     item_list = data['msgBody']['itemList']
-    print(item_list[0])
-    print(item_list[1])
-    # print(response.content)
-    # data_dict = xmltodict.parse(response.content)
-    # print(data_dict)
-    # data = data_dict.get('busRoute')
-    # print(data)
+    print(item_list)
 
-    return render(request, 'index.html')
+    ret = []
+    for target in item_list:
+        data = {
+            'name'  : target['stationNm'],
+            'seq'   : target['seq'],
+            'x'     : target['gpsX'],
+            'y'     : target['gpsY']
+        }
+        ret.append(data)
+    print(ret)
+    return render(request, 'index.html', { 'station' : ret })
 
 def get_safety_guard_house(request):
     
