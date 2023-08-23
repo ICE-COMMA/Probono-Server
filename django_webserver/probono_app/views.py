@@ -77,32 +77,20 @@ def login_view(request):
     users = get_collection(db_handle, 'User')
     user_id = request.POST.get('userid') # WARN : front's parameter name
     password = request.POST.get('password')
-    print(request.POST)
-    print(user_id, password)
     user_info = users.find_one({'ID' : user_id})
-    print(user_info)
     if user_info:
         if password == user_info['PW']:
             request.session['ID'] = user_id
-            request.session.modified = True
-            request.session.save()
-            # request.session.save()
-            print(request.session['ID'])
-
             print(request.session.items())
-            # print(request.session)
             data = {
                     "success"      : True,
                     "redirect_url" : reverse('index') 
                     }
-            # return redirect('/')
-            # return HttpResponseRedirect(reverse('index'))
         else:
             data = { "success" : False }
     else:
         data = { "success" : False }
     status_code = 202
-    # print(data)
     return JsonResponse(data, status=status_code)
 
 @require_POST

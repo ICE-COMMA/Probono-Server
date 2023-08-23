@@ -38,7 +38,7 @@ class SessionStore(DBStore):
         }
         if must_create:
             if self.exists(self.session_key):
-                raise CreateError() # 세션 키가 이미 존재하므로 생성할 수 없습니다.
+                raise CreateError()
             session_collection.insert_one(session_data)
         else:
             session_collection.update_one({'session_key': self.session_key}, {'$set': session_data}, upsert=True)
