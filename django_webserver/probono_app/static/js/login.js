@@ -40,7 +40,6 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log(response);
       if (responseData.success) {
         console.log(responseData);
-        window.location.href = response.redirect_url; //
 
         modal.classList.add("hidden");
       } else {
