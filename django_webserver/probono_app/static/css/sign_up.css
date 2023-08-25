@@ -1,0 +1,29 @@
+@import url(reset.css);
+
+#signup-content form {
+  min-width: 80%;
+  height: 100%;
+  margin: auto 0;
+}
+
+.sign-up-input,
+.sign-form-btn {
+  width: 60%;
+  padding: 2%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-top: 5px;
+}
+
+#ID {
+  width: 45%;
+}
+
+.sign-form-btn {
+  width: calc(15% - 0.25rem);
+  cursor: pointer;
+}
+/* 
+.sign-form-btn:hover {
+  background-color: #0056b3;
+} */

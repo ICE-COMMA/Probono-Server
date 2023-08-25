@@ -16,3 +16,5 @@ const showContent = () => {
 };
 
 showContent();
+
+// 손으로 넘기거나 x,y 좌표 반영해서 넘기는 로직 추가하기

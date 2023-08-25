@@ -1,0 +1,17 @@
+@import url(reset.css);
+
+#locationContent > div {
+  margin-left: 5%;
+  margin-right: 5%;
+  height: 15%;
+  border: 1px solid black;
+  border-radius: 0.5rem;
+  font-size: 0.7rem;
+  background-color: #007bff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  cursor: pointer;
+  /* padding-top: 10%; */
+}

@@ -19,14 +19,14 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 # pdf 읽기
-import fitz # PyMuPDF 라이브러리 모듈
-import os
-from django.http import HttpResponse
+# import fitz # PyMuPDF 라이브러리 모듈
+# import os
+# from django.http import HttpResponse
 #img 처리
-import pytesseract
-from PIL import Image
-import cv2 # img 내 테이블 처리(전처리)
-import numpy as np
+# import pytesseract
+# from PIL import Image
+# import cv2 # img 내 테이블 처리(전처리)
+# import numpy as np
 
 # Mongo DB
 from config import utils
@@ -174,7 +174,7 @@ def get_bus_route(request, bus_num):
     print(response)
     data = response.json()
     item_list = data['msgBody']['itemList']
-    print(item_list)
+    # print(item_list)
 
     ret = []
     for target in item_list:
@@ -185,8 +185,9 @@ def get_bus_route(request, bus_num):
             'y'     : target['gpsY']
         }
         ret.append(data)
-    print(ret)
-    return render(request, 'index.html', { 'station' : ret })
+    return JsonResponse({'station': ret})
+    # print(ret[0])
+    # return render(request, 'index.html', { 'station' : ret })
 
 def get_safety_guard_house(request):
     

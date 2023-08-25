@@ -58,7 +58,11 @@ const posOk = (position) => {
       console.error("Error:", error);
     });
 
-  alert(`지역 설정을 ${lat}, ${lon}로 완료했습니다`);
+  alert(`지역 설정을 ${lon}, ${lat}로 완료했습니다`);
+
+  // x와 y 좌표를 localStorage에 저장
+  sessionStorage.setItem("xCoordinate", lon);
+  sessionStorage.setItem("yCoordinate", lat);
   locationConatiner.classList.add("hidden");
 };
 

@@ -1,0 +1,17 @@
+@import url(reset.css);
+
+#demo-display {
+  display: flex;
+  justify-content: center;
+  min-height: 70vh;
+  width: 100%;
+  background-size: 90% 95%;
+  background-position: center 100%;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+
+/* .demo {
+  padding-top: 30%;
+  overflow: hidden;
+} */

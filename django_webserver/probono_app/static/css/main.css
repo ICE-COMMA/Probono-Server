@@ -1,11 +1,4 @@
-html,
-body {
-  height: 100%;
-  padding: 0px;
-  margin: 0px;
-  text-align: center;
-  font-size: 30px;
-}
+@import url(./reset.css);
 
 header {
   height: 10%;
@@ -27,7 +20,7 @@ header span {
 }
 
 header.no-data {
-  background-color: white;
+  background-color: transparent;
 }
 
 #wrapper {
@@ -36,7 +29,6 @@ header.no-data {
   padding-bottom: 100px;
   margin-left: 2%;
   margin-right: 2%;
-  /* font-size: 0.75em; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -62,20 +54,11 @@ header.no-data {
 }
 
 .content-wrapper {
-  width: 100%;
+  width: 70%;
   display: flex;
   justify-content: center;
-}
-
-#demo-display {
-  display: flex;
-  justify-content: center;
-  min-height: 70vh;
-  width: 100%;
-  background-size: 90% 95%;
-  background-position: center 100%;
-  background-repeat: no-repeat;
-  overflow: hidden;
+  padding-top: 5%;
+  padding-bottom: 5%;
 }
 
 .content-slide > span {
@@ -133,62 +116,4 @@ footer {
   position: relative;
   transform: translateY(-100%);
   font-size: 0.5rem;
-}
-
-a,
-button {
-  cursor: pointer;
-}
-
-form span {
-  font-size: 0.4rem;
-  cursor: pointer;
-}
-
-form p {
-  font-size: 30%;
-}
-
-.hidden {
-  display: none;
-}
-
-/* my_page part */
-
-#profile {
-  width: 60%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 3%;
-  padding: 2%;
-}
-
-#profile input,
-#profile select {
-  padding-top: 2%;
-  padding-bottom: 2%;
-}
-
-#button_box {
-  display: flex;
-  justify-content: space-between;
-}
-
-span > input[type="submit"] {
-  width: 30%;
-}
-
-.demo {
-  padding-top: 30%;
-  overflow: hidden;
-}
-
-.custom-info {
-  border: 1px solid black;
-  border-radius: 10px;
-  font-size: 0.5rem;
-  padding: 0.2rem;
-  margin-top: 0.15rem;
-  margin-bottom: 0.15rem;
 }

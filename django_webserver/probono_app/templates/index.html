@@ -3,8 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../static/css/main.css" />
+    <link rel="stylesheet" href="../static/css/custom.css" />
+    <link rel="stylesheet" href="../static/css/demo.css" />
+    <link rel="stylesheet" href="../static/css/location.css" />
+    <link rel="stylesheet" href="../static/css/login.css" />
     <link rel="stylesheet" href="../static/css/modal.css" />
-    <link rel="stylesheet" href="../static/css/styles.css" />
+    <link rel="stylesheet" href="../static/css/report.css" />
+    <link rel="stylesheet" href="../static/css/sign_up.css" />
+
     <title>Project : Friend</title>
   </head>
   <body>
@@ -13,39 +20,42 @@
       <div id="signup-content" class="modal-content">
         <form action="/sign_up" method="post" id="sign-up-form">
           {% csrf_token %}
+          <h3>회원가입</h3>
+          <!-- <p class="paragraph">
+            이름
+            <span>필수</span>
+          </p> -->
           <input
             type="text"
             id="name"
+            class="sign-up-input"
             name="name"
             placeholder="* 이름"
             required
           />
-
           <input
             type="text"
             id="ID"
+            class="sign-up-input"
             name="ID"
             placeholder="* 아이디"
             required
           />
-          <input
-            type="submit"
-            value="중복체크"
-            id="checkID"
-            formaction="/id_check"
-            required
-          />
+          <button id="check-id" class="sign-form-btn">중복체크</button>
+
           <input
             type="password"
             id="PW"
+            class="sign-up-input"
             name="PW"
             placeholder="* 비밀번호를 입력해주세요."
             required
           />
           <input
             type="password"
-            id="checkPW"
-            name="checkPW"
+            id="check-pw"
+            class="sign-up-input"
+            name="check-pw"
             placeholder="* 비밀번호를 한 번 더 입력해주세요."
             required
           />
@@ -53,18 +63,19 @@
           <input
             type="date"
             id="date"
+            class="sign-up-input"
             max="2024-01-01"
             min="1900-01-01"
             name="date"
             placeholder="생년월일"
             required
           />
-          <select name="gender" id="gender" required>
+          <select name="gender" id="gender" class="sign-up-input" required>
             <option value="gender-init">* 성별</option>
             <option value="male">남성</option>
             <option value="female">여성</option>
           </select>
-          <select name="impaired" id="disabled" required>
+          <select name="impaired" id="disabled" class="sign-up-input" required>
             <option value="impaired-init">* 장애여부</option>
             <option value="panic">공황장애</option>
             <option value="visually">시각장애</option>
@@ -72,8 +83,13 @@
             <option value="normal">없음</option>
           </select>
           <br />
-          <input type="submit" value="이전" />
-          <input id="sign-up-check" type="submit" value="회원가입" />
+          <button class="sign-form-btn">이전</button>
+          <input
+            id="sign-up-check"
+            class="sign-form-btn"
+            type="submit"
+            value="회원가입"
+          />
         </form>
       </div>
     </div>
@@ -96,12 +112,8 @@
     <!-- 관심지역 설정 모달 -->
     <div id="locationContainer" class="hidden modal-container">
       <div id="locationContent" class="modal-content">
-        <div id="gpsLocation">
-          <span>현재 위치로 설정</span>
-        </div>
-        <div id="mapLocation">
-          <span>지도를 통해 설정</span>
-        </div>
+        <div id="gpsLocation">현재 위치로 설정</div>
+        <div id="mapLocation">지도를 통해 설정</div>
       </div>
     </div>
 
@@ -129,7 +141,7 @@
       </div>
     </div>
 
-    <!-- 제보 모달 -->
+    <!-- 제보하기 모달 -->
 
     <div id="report-container" class="hidden modal-container">
       <div id="report-content" class="modal-content">
@@ -155,9 +167,10 @@
             name="time"
             required
           />
-          <br />
-          <input type="submit" value="이전" />
-          <input id="report-check" type="submit" value="제보하기" />
+          <div class="submit-box">
+            <input type="submit" value="이전" />
+            <input id="report-check" type="submit" value="제보하기" />
+          </div>
         </form>
       </div>
     </div>
@@ -215,7 +228,7 @@
             <span>금주의 행사정보</span>
           </div>
           <div class="content-info hidden">
-            <span>충무로역 승강기 위치</span>
+            <span>오늘의 시위정보</span>
           </div>
           <div class="content-slide">
             <span class="slide">●</span>

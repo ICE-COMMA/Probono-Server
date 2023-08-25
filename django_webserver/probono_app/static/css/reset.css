@@ -1,0 +1,48 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  /* padding: 0px;
+  margin: 0px; */
+  text-align: center;
+  font-size: 30px;
+}
+
+a,
+button {
+  cursor: pointer;
+}
+
+form span {
+  font-size: 0.4rem;
+  cursor: pointer;
+}
+
+form p {
+  font-size: 30%;
+}
+
+#button_box {
+  display: flex;
+  justify-content: space-between;
+}
+
+span > input[type="submit"] {
+  width: 30%;
+}
+
+form p {
+  font-size: 30%;
+}
+
+label,
+input,
+select,
+span {
+  margin-bottom: 2%;
+}

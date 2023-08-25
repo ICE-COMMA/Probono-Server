@@ -3,8 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../static/css/styles.css" />
+    <link rel="stylesheet" href="../static/css/report.css" />
+    <link rel="stylesheet" href="../static/css/my_page.css" />
     <link rel="stylesheet" href="../static/css/modal.css" />
+    <link rel="stylesheet" href="../static/css/main.css" />
     <title>마이페이지</title>
   </head>
   <body>
@@ -19,9 +21,41 @@
         </div>
       </div>
     </div>
-    <!-- { 헤더 재난 정보 백에서 받아와야 함 } -->
+
+    <div id="report-container" class="hidden modal-container">
+      <div id="report-content" class="modal-content">
+        <form action="/report" method="post" id="report-form">
+          {% csrf_token %}
+          <select name="report-case" id="report-case" required>
+            <option value="impaired-init">* 사건분류</option>
+            <option value="panic">범죄</option>
+            <option value="visually">재난</option>
+          </select>
+          <input
+            type="text"
+            id="report-name"
+            name="report_name"
+            placeholder="* 제보명"
+            required
+          />
+          <input
+            type="time"
+            id="report-time"
+            max="00:00"
+            min="23:59"
+            name="time"
+            required
+          />
+          <div class="submit-box">
+            <input type="submit" value="이전" />
+            <input id="report-check" type="submit" value="제보하기" />
+          </div>
+        </form>
+      </div>
+    </div>
+
     <header>
-      <span>서울특별시 전역 폭염주의보 발령</span>
+      <span>✓ 테스트 웹 페이지입니다.</span>
     </header>
     <div id="wrapper">
       <nav id="left-nav">
@@ -33,6 +67,9 @@
           <div><a href="/transfer_info">교통정보</a></div>
           <div><a href="/get_demo_today">시위정보</a></div>
           <div><a href="/safety_info">안전정보</a></div>
+        </div>
+        <div id="contact">
+          <div id="report-btn"><a>제보하기</a></div>
         </div>
       </nav>
 
@@ -135,5 +172,6 @@
     </footer>
     <script src="../static/js/speech.js"></script>
     <script src="../static/js/my_page.js"></script>
+    <script src="../static/js/report.js"></script>
   </body>
 </html>

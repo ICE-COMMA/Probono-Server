@@ -3,9 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../static/css/styles.css" />
+    <link rel="stylesheet" href="../static/css/report.css" />
+    <link rel="stylesheet" href="../static/css/my_page.css" />
     <link rel="stylesheet" href="../static/css/modal.css" />
-    <title>제보하기</title>
+    <link rel="stylesheet" href="../static/css/main.css" />
+    <link rel="stylesheet" href="../static/css/transfer.css" />
+    <title>마이페이지</title>
   </head>
   <body>
     <!-- 지도 모달 -->
@@ -19,9 +22,41 @@
         </div>
       </div>
     </div>
-    <!-- { 헤더 재난 정보 백에서 받아와야 함 } -->
+
+    <div id="report-container" class="hidden modal-container">
+      <div id="report-content" class="modal-content">
+        <form action="/report" method="post" id="report-form">
+          {% csrf_token %}
+          <select name="report-case" id="report-case" required>
+            <option value="impaired-init">* 사건분류</option>
+            <option value="panic">범죄</option>
+            <option value="visually">재난</option>
+          </select>
+          <input
+            type="text"
+            id="report-name"
+            name="report_name"
+            placeholder="* 제보명"
+            required
+          />
+          <input
+            type="time"
+            id="report-time"
+            max="00:00"
+            min="23:59"
+            name="time"
+            required
+          />
+          <div class="submit-box">
+            <input type="submit" value="이전" />
+            <input id="report-check" type="submit" value="제보하기" />
+          </div>
+        </form>
+      </div>
+    </div>
+
     <header>
-      <span>서울특별시 전역 폭염주의보 발령</span>
+      <span>✓ 테스트 웹 페이지입니다.</span>
     </header>
     <div id="wrapper">
       <nav id="left-nav">
@@ -35,27 +70,42 @@
           <div><a href="/safety_info">안전정보</a></div>
         </div>
         <div id="contact">
-          <div><a>커스터마이징</a></div>
-          <div><a>제보하기</a></div>
+          <div id="report-btn"><a>제보하기</a></div>
         </div>
       </nav>
 
       <div class="content-wrapper">
-        <form action="/" method="post">
-          <input type="text" name="subway_search" id="subway-search" />
-        </form>
+        <div id="search-bus-box" class="search-container">
+          <input
+            type="text"
+            id="bus-input"
+            class="search-input"
+            placeholder="버스 노선을 검색해주세요."
+          />
+          <button class="search-button" id="search-bus-btn">검색</button>
+        </div>
+        <div id="bus-result-box">
+          {% comment %}
+          <ul id="bus-reulst-list" class="hidden">
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            {% endcomment %}
+          </ul>
+        </div>
       </div>
       <nav id="right-nav">
         <div id="user">
           {% if request.session.ID %}
           <div id="greeting">
-            <a href="#">{{ request.session.ID }}님 환영합니다!</a>
+            <a href="#">Hello {{ request.session.ID }}!</a>
           </div>
-          <div id="mypage" class="signup-mypage">
+          <div id="my_page" class="signup-mypage">
             <a href="/my_page/{{ request.session.ID }}">마이페이지</a>
           </div>
           <div id="logout" class="login-logout">
-            <a href="./logout">로그아웃</a>
+            <a href="/logout">로그아웃</a>
           </div>
           {% else %}
           <div id="sign-up" class="signup-mypage">
@@ -66,9 +116,6 @@
           </div>
           {% endif %}
         </div>
-        <div id="location">
-          <div><a>지역설정하기</a></div>
-        </div>
       </nav>
     </div>
     <footer>
@@ -77,8 +124,7 @@
       <button id="end">인식종료</button>
     </footer>
     <script src="../static/js/speech.js"></script>
-    <script src="../static/js/location.js"></script>
-    <script src="../static/js/mypage.js"></script>
+    <script src="../static/js/report.js"></script>
     <script src="../static/js/transfer.js"></script>
   </body>
 </html>
