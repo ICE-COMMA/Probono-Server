@@ -8,7 +8,6 @@ from bson.json_util import loads, dumps
 from datetime import datetime
 import pandas as pd
 
-from .models import SpecialWeather
 # crawling
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -33,6 +32,9 @@ from config.utils import SessionStore
 # User
 from .models import CustomUser
 from .forms import SignUpForm
+
+# Population_real_time
+from .models import Population_real_time
 
 
 
@@ -81,13 +83,14 @@ def weather_info(request):
 
 def dense_popul_info(request):
     
-    if request.method == 'GET':
-        reg = []
+    # if request.method == 'GET':
+        # reg = []
+    collection = get_collection(db_handle, 'popul_real_time_reg')
         
-
-        
-        
-
+    prt = Population_real_time()
+    data = prt.get_xl_file_info()
+    print(data)
+    # collection.insert_many(data)
 
 
     # return render(request, 'dense_popul_info.html')
