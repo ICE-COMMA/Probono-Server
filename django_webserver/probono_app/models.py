@@ -272,9 +272,7 @@ class Population_real_time():
         #     image_data_dict[(col, row)] = image.image._data
         # print(image_data_dict)
 
-        # 모든 행에 대해 반복
         for row_idx, row in enumerate(xl_sheet.iter_rows(values_only=True), start=1):
-            # 첫 번째 행은 헤더로 생각하고 건너뜁니다.
             if row_idx == 1:
                 continue
 
@@ -282,10 +280,7 @@ class Population_real_time():
             no = row[1]
             area_cd = row[2]
             area_nm = row[3]
-            # photo_data = image_data_dict.get((4, row_idx), None)  # 4는 PHOTO 열의 인덱스입니다. 0-based 인덱스라면 적절히 조정해야 합니다.
 
-            # If we have photo data, convert it to a PIL Image object
-            # photo_data = Image.open(row[4])
             photo_data = None
 
             data_list.append({
@@ -296,7 +291,6 @@ class Population_real_time():
                 'PHOTO': photo_data
             })
 
-        # 확인
         for item in data_list:
             print(item)
         xl_file.close()
@@ -310,7 +304,6 @@ class Population_real_time():
         print(image)
         image.api.Copy() 
 
-        # 클립보드의 이미지를 가져와 PIL Image 객체로 변환
         img = ImageGrab.grabclipboard()
 
         temp_file = "temp_image.jpg"
