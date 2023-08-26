@@ -5,6 +5,7 @@ from .models import SpecialWeather
 
 '''
 서버 구동 후, 반드시 터미널 창 두개 열어서 실행해야 함.
+
 celery -A your_project worker -l info
 celery -A your_project beat -l info
 '''

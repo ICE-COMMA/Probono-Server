@@ -3,60 +3,59 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../static/css/main.css" />
+    <link rel="stylesheet" href="../static/css/custom.css" />
+    <link rel="stylesheet" href="../static/css/demo.css" />
+    <link rel="stylesheet" href="../static/css/location.css" />
+    <link rel="stylesheet" href="../static/css/login.css" />
     <link rel="stylesheet" href="../static/css/modal.css" />
-    <link rel="stylesheet" href="../static/css/styles.css" />
-    <title>도시예보서비스</title>
+    <link rel="stylesheet" href="../static/css/report.css" />
+    <link rel="stylesheet" href="../static/css/sign_up.css" />
+
+    <title>Project : Friend</title>
   </head>
   <body>
-    <!-- 지도 모달 -->
-    <div id="locationContainer" class="hidden">
-      <div id="locationContent" class="modal-content">
-        <div id="gpsLocation">
-          <span>현재 위치로 설정</span>
-        </div>
-        <div id="mapLocation">
-          <span>지도를 통해 설정</span>
-        </div>
-      </div>
-    </div>
     <!-- 회원가입 모달 -->
-    <div id="signup-container" class="hidden">
+    <div id="signup-container" class="hidden modal-container">
       <div id="signup-content" class="modal-content">
         <form action="/sign_up" method="post" id="sign-up-form">
           {% csrf_token %}
+          <h3>회원가입</h3>
+          <!-- <p class="paragraph">
+            이름
+            <span>필수</span>
+          </p> -->
           <input
             type="text"
             id="name"
+            class="sign-up-input"
             name="name"
             placeholder="* 이름"
             required
           />
-
           <input
             type="text"
             id="ID"
+            class="sign-up-input"
             name="ID"
             placeholder="* 아이디"
             required
           />
-          <input
-            type="submit"
-            value="중복체크"
-            id="checkID"
-            formaction="/id_check"
-            required
-          />
+          <button id="check-id" class="sign-form-btn">중복체크</button>
+
           <input
             type="password"
             id="PW"
+            class="sign-up-input"
             name="PW"
             placeholder="* 비밀번호를 입력해주세요."
             required
           />
           <input
             type="password"
-            id="checkPW"
-            name="checkPW"
+            id="check-pw"
+            class="sign-up-input"
+            name="check-pw"
             placeholder="* 비밀번호를 한 번 더 입력해주세요."
             required
           />
@@ -64,18 +63,19 @@
           <input
             type="date"
             id="date"
+            class="sign-up-input"
             max="2024-01-01"
             min="1900-01-01"
             name="date"
             placeholder="생년월일"
             required
           />
-          <select name="gender" id="gender" required>
+          <select name="gender" id="gender" class="sign-up-input" required>
             <option value="gender-init">* 성별</option>
             <option value="male">남성</option>
             <option value="female">여성</option>
           </select>
-          <select name="impaired" id="disabled" required>
+          <select name="impaired" id="disabled" class="sign-up-input" required>
             <option value="impaired-init">* 장애여부</option>
             <option value="panic">공황장애</option>
             <option value="visually">시각장애</option>
@@ -83,13 +83,20 @@
             <option value="normal">없음</option>
           </select>
           <br />
-          <input type="submit" value="이전" />
-          <input id="sign-up-check" type="submit" value="회원가입" />
+          <button class="sign-form-btn">이전</button>
+          <input
+            id="sign-up-check"
+            class="sign-form-btn"
+            type="submit"
+            value="회원가입"
+          />
         </form>
       </div>
     </div>
 
-    <div id="login-container" class="hidden">
+    <!-- 로그인 모달 -->
+
+    <div id="login-container" class="hidden modal-container">
       <div id="login-content" class="modal-content">
         <form id="login-form" name="login" action="/login" method="post">
           {% csrf_token %}
@@ -101,8 +108,78 @@
         </form>
       </div>
     </div>
-    <header class="{% if spw is None %}no-data{% endif %}">
-      {% if spw is not None%}
+
+    <!-- 관심지역 설정 모달 -->
+    <div id="locationContainer" class="hidden modal-container">
+      <div id="locationContent" class="modal-content">
+        <div id="gpsLocation">현재 위치로 설정</div>
+        <div id="mapLocation">지도를 통해 설정</div>
+      </div>
+    </div>
+
+    <!-- 커스터마이징 모달 -->
+
+    <div id="custom-container" class="hidden modal-container">
+      <div id="custom-content" class="modal-content">
+        <form
+          action="/my_page/{{ request.session.ID }}"
+          method="post"
+          id="custom-form"
+        >
+          {% csrf_token %}
+          <div class="custom-info" id="custom-demo">시위 정보</div>
+          <div class="custom-info" id="custom-elevator">지하철 승강기 정보</div>
+          <div class="custom-info" id="custom-population">인구밀집 정보</div>
+          <div class="custom-info" id="custom-predict">혼잡도 예측</div>
+          <div class="custom-info" id="custom-safety">치안 정보</div>
+          <div class="custom-info" id="custom-safey-loc">안심 시설 정보</div>
+          <div class="custom-info" id="custom-low-bus">저상 버스 정보</div>
+          <div class="custom-info" id="custom-festival">행사 정보</div>
+          <input type="submit" value="이전" />
+          <input id="custom-check" type="submit" value="확인" />
+        </form>
+      </div>
+    </div>
+
+    <!-- 제보하기 모달 -->
+
+    <div id="report-container" class="hidden modal-container">
+      <div id="report-content" class="modal-content">
+        <form action="/report" method="post" id="report-form">
+          {% csrf_token %}
+          <select name="report-case" id="report-case" required>
+            <option value="impaired-init">* 사건분류</option>
+            <option value="panic">범죄</option>
+            <option value="visually">재난</option>
+          </select>
+          <input
+            type="text"
+            id="report-name"
+            name="report_name"
+            placeholder="* 제보명"
+            required
+          />
+          <input
+            type="time"
+            id="report-time"
+            max="00:00"
+            min="23:59"
+            name="time"
+            required
+          />
+          <div class="submit-box">
+            <input type="submit" value="이전" />
+            <input id="report-check" type="submit" value="제보하기" />
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- header wrapper footer -->
+    <!-- 헤더 -->
+
+    <header class="{% if not spw%}no-data{% endif %}">
+      {% if spw %}
       <span class="spw-action">현재 특보 정보</span>
       <div id="spw-data">
         {% for item in spw %}
@@ -110,10 +187,15 @@
         {% endfor %}
       </div>
       {% else %}
-      <h3>발생 특보 없음</h3>
+      <h3>광고</h3>
       {% endif %}
     </header>
+
+    <!-- 메인 구조 -->
+
     <div id="wrapper">
+      <!-- 좌측 메뉴바 -->
+
       <nav id="left-nav">
         <div id="logo">
           <div><a href="/">COMMA</a></div>
@@ -121,28 +203,50 @@
         <div id="info">
           <div><a href="dense_popul_info">혼잡정보</a></div>
           <div><a href="transfer_info">교통정보</a></div>
-          <div><a href="safety_info">시위정보</a></div>
+          <div><a href="/get_demo_today">시위정보</a></div>
+          <div><a href="safety_info">안전정보</a></div>
         </div>
         <div id="contact">
-          <div><a>커스터마이징</a></div>
-          <div><a>제보하기</a></div>
+          <div id="custom-btn"><a>커스터마이징</a></div>
+          <div id="report-btn"><a>제보하기</a></div>
         </div>
       </nav>
 
+      <!-- 메인컨텐츠 -->
+
       <div class="content-wrapper">
         <div id="content-display">
-          <img src="../static/images/seoulStation.jpg" alt="서울역" />
-          <div id="content-exp">서울역</div>
+          <div id="content-img"></div>
+          <div class="content-info">
+            <span>동국대</span>
+            <span>여유</span>
+          </div>
+          <div class="content-info hidden">
+            <span>오늘의 시위정보</span>
+          </div>
+          <div class="content-info hidden">
+            <span>금주의 행사정보</span>
+          </div>
+          <div class="content-info hidden">
+            <span>오늘의 시위정보</span>
+          </div>
+          <div class="content-slide">
+            <span class="slide">●</span>
+            <span class="slide">○</span>
+            <span class="slide">○</span>
+            <span class="slide">○</span>
+          </div>
         </div>
-        <!-- 진자 엔진 자리, 해당 지역 매칭해서 -->
+
+        <!-- 우측 메뉴바 -->
       </div>
       <nav id="right-nav">
         <div id="user">
           {% if request.session.ID %}
           <div id="greeting">
-            <a href="#">{{ request.session.ID }}님 환영합니다!</a>
+            <a href="#">Hello {{ request.session.ID }}!</a>
           </div>
-          <div id="my_page" class="signup-mypage">
+          <div id="my-page" class="signup-mypage">
             <a href="./my_page/{{ request.session.ID }}">마이페이지</a>
           </div>
           <div id="logout" class="login-logout">
@@ -158,7 +262,7 @@
           {% endif %}
         </div>
         <div id="location">
-          <div><a>지역설정하기</a></div>
+          <div><a>관심지역 설정</a></div>
         </div>
       </nav>
     </div>
@@ -169,9 +273,10 @@
     </footer>
     <script src="../static/js/location.js"></script>
     <script src="../static/js/login.js"></script>
-    <script src="../static/js/modal.js"></script>
-    <script src="../static/js/mypage.js"></script>
     <script src="../static/js/sign_up.js"></script>
     <script src="../static/js/speech.js"></script>
+    <script src="../static/js/report.js"></script>
+    <script src="../static/js/custom.js"></script>
+    <script src="../static/js/main_content.js"></script>
   </body>
 </html>

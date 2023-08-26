@@ -29,10 +29,10 @@
           <div><a href="/">COMMA</a></div>
         </div>
         <div id="info">
-          <div><a href="dense_popul_info">혼잡정보</a></div>
-          <div><a href="transfer_info">교통정보</a></div>
+          <div><a href="/dense_popul_info">혼잡정보</a></div>
+          <div><a href="/transfer_info">교통정보</a></div>
           <div><a href="/get_demo_today">시위정보</a></div>
-          <div><a href="safety_info">안전정보</a></div>
+          <div><a href="/safety_info">안전정보</a></div>
         </div>
         <div id="contact">
           <div><a>커스터마이징</a></div>
@@ -40,7 +40,8 @@
         </div>
       </nav>
 
-      <div class="content-wrapper">시위 안전 정보 테스트</div>
+      <div id="demo-display" data-url="{{img_url}}"></div>
+
       <nav id="right-nav">
         <div id="user">
           {% if request.session.ID %}
@@ -75,5 +76,6 @@
     <script src="../static/js/speech.js"></script>
     <script src="../static/js/location.js"></script>
     <script src="../static/js/mypage.js"></script>
+    <script src="../static/js/demo.js"></script>
   </body>
 </html>

@@ -3,8 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../static/css/styles.css" />
+    <link rel="stylesheet" href="../static/css/report.css" />
+    <link rel="stylesheet" href="../static/css/my_page.css" />
     <link rel="stylesheet" href="../static/css/modal.css" />
+    <link rel="stylesheet" href="../static/css/main.css" />
     <title>마이페이지</title>
   </head>
   <body>
@@ -19,9 +21,41 @@
         </div>
       </div>
     </div>
-    <!-- { 헤더 재난 정보 백에서 받아와야 함 } -->
+
+    <div id="report-container" class="hidden modal-container">
+      <div id="report-content" class="modal-content">
+        <form action="/report" method="post" id="report-form">
+          {% csrf_token %}
+          <select name="report-case" id="report-case" required>
+            <option value="impaired-init">* 사건분류</option>
+            <option value="panic">범죄</option>
+            <option value="visually">재난</option>
+          </select>
+          <input
+            type="text"
+            id="report-name"
+            name="report_name"
+            placeholder="* 제보명"
+            required
+          />
+          <input
+            type="time"
+            id="report-time"
+            max="00:00"
+            min="23:59"
+            name="time"
+            required
+          />
+          <div class="submit-box">
+            <input type="submit" value="이전" />
+            <input id="report-check" type="submit" value="제보하기" />
+          </div>
+        </form>
+      </div>
+    </div>
+
     <header>
-      <span>서울특별시 전역 폭염주의보 발령</span>
+      <span>✓ 테스트 웹 페이지입니다.</span>
     </header>
     <div id="wrapper">
       <nav id="left-nav">
@@ -29,13 +63,13 @@
           <div><a href="/">COMMA</a></div>
         </div>
         <div id="info">
-          <div><a href="dense_popul_info">혼잡정보</a></div>
-          <div><a href="transfer_info">교통정보</a></div>
-          <div><a href="safety_info">시위정보</a></div>
+          <div><a href="/dense_popul_info">혼잡정보</a></div>
+          <div><a href="/transfer_info">교통정보</a></div>
+          <div><a href="/get_demo_today">시위정보</a></div>
+          <div><a href="/safety_info">안전정보</a></div>
         </div>
         <div id="contact">
-          <div><a>커스터마이징</a></div>
-          <div><a>제보하기</a></div>
+          <div id="report-btn"><a>제보하기</a></div>
         </div>
       </nav>
 
@@ -44,33 +78,39 @@
           {% csrf_token %}
           <input
             type="text"
-            name="user_name"
-            id="user_name"
-            value="박세호"
+            name="user-name"
+            id="user-name"
+            value="{{ info.name }}"
             disabled
           />
           <input
             type="text"
-            name="user_id"
-            id="user_id"
-            value="323psh"
+            name="user-id"
+            id="user-id"
+            value="{{info.ID}}"
             disabled
           />
-
           <input
             type="text"
-            name="user_gender"
-            id="user_gender"
-            value="남"
+            name="user-gender"
+            id="user-gender"
+            value="{% if info.gender == 'male' %}남성{% else %}여성{% endif %}"
             disabled
           /><input
             type="text"
-            name="user_birth"
-            id="user_birth"
-            value="2000.03.23"
+            name="user-birth"
+            id="user-birth"
+            value="{{info.date}}"
             disabled
           />
-          <select name="user_handicap" id="user_handicap" required>
+          <input
+            type="text"
+            name="user-custom"
+            id="user-custom"
+            value="{% if info.custom == ''%}관심 정보(커스터마이징) 미설정{% else %}{{info.custom}}{% endif %}"
+            disabled
+          />
+          <select name="user-handicap" id="user-handicap" required>
             <option value="impaired-init">* 장애여부</option>
             <option value="panic">공황장애</option>
             <option value="visually">시각장애</option>
@@ -79,26 +119,26 @@
           </select>
           <input
             type="password"
-            name="previous_pw"
-            id="previous_pw"
+            name="{{info.PW}}"
+            id="previous-pw"
             placeholder="기존 비밀번호"
             required
           />
           <input
             type="password"
-            name="next_pw"
-            id="next_pw"
+            name="next-pw"
+            id="next-pw"
             placeholder="새 비밀번호"
           />
           <input
             type="password"
-            name="next_pw_check"
-            id="next_pw_check"
+            name="next-pw-check"
+            id="next-pw-check"
             placeholder="새 비밀번호 확인"
           />
-          <span id="button_box">
-            <input id="profile_cancel" type="submit" value="이전" />
-            <input id="profile_complete" type="submit" value="수정" />
+          <span id="button-box">
+            <input id="profile-cancel" type="submit" value="이전" />
+            <input id="profile-complete" type="submit" value="수정" />
           </span>
         </form>
       </div>
@@ -106,13 +146,13 @@
         <div id="user">
           {% if request.session.ID %}
           <div id="greeting">
-            <a href="#">{{ request.session.ID }}님 환영합니다!</a>
+            <a href="#">Hello {{ request.session.ID }}!</a>
           </div>
           <div id="my_page" class="signup-mypage">
-            <a href="./mypage/{{ request.session.ID }}">마이페이지</a>
+            <a href="/my_page/{{ request.session.ID }}">마이페이지</a>
           </div>
           <div id="logout" class="login-logout">
-            <a href="./logout">로그아웃</a>
+            <a href="/logout">로그아웃</a>
           </div>
           {% else %}
           <div id="sign-up" class="signup-mypage">
@@ -123,9 +163,6 @@
           </div>
           {% endif %}
         </div>
-        <div id="location">
-          <div><a>지역설정하기</a></div>
-        </div>
       </nav>
     </div>
     <footer>
@@ -134,7 +171,7 @@
       <button id="end">인식종료</button>
     </footer>
     <script src="../static/js/speech.js"></script>
-    <script src="../static/js/location.js"></script>
-    <script src="../static/js/mypage.js"></script>
+    <script src="../static/js/my_page.js"></script>
+    <script src="../static/js/report.js"></script>
   </body>
 </html>

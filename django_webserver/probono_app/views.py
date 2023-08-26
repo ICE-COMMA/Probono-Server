@@ -12,15 +12,21 @@ import pandas as pd
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-# 구글링해서 찾은것, 지울수도
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 #요소 클릭 위해
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
-#img_url
-from urllib.parse import urljoin
+# pdf 읽기
+# import fitz # PyMuPDF 라이브러리 모듈
+# import os
+# from django.http import HttpResponse
+#img 처리
+# import pytesseract
+# from PIL import Image
+# import cv2 # img 내 테이블 처리(전처리)
+# import numpy as np
 
 # Mongo DB
 from config import utils
@@ -187,7 +193,7 @@ def get_bus_route(request, bus_num):
     print(response)
     data = response.json()
     item_list = data['msgBody']['itemList']
-    print(item_list)
+    # print(item_list)
 
     ret = []
     for target in item_list:
@@ -198,8 +204,9 @@ def get_bus_route(request, bus_num):
             'y'     : target['gpsY']
         }
         ret.append(data)
-    print(ret)
-    return render(request, 'index.html', { 'station' : ret })
+    return JsonResponse({'station': ret})
+    # print(ret[0])
+    # return render(request, 'index.html', { 'station' : ret })
 
 def get_safety_guard_house(request):
     
@@ -248,4 +255,4 @@ def get_demo_today(request):
         'img_url': image_url, # 이걸 받으면 됨
     }
         
-    return render(request, 'crawl_result.html', context)
+    return render(request, 'demo.html', context)

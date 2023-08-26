@@ -1,3 +1,22 @@
+let idFlag = false;
+let pwFlag = false;
+const signupContainer = document.querySelector("#signup-container");
+const signupBtn = document.querySelector(".signup-mypage");
+
+signupBtn.addEventListener("click", () => {
+  if (signupBtn.id === "sign-up") {
+    signupContainer.classList.remove("hidden");
+  } else {
+    window.location.href = "/my_page";
+  }
+});
+
+window.addEventListener("click", (e) => {
+  e.target === signupContainer
+    ? signupContainer.classList.add("hidden")
+    : false;
+});
+
 function getCSRFToken() {
   var csrfCookie = document.cookie.match(/csrftoken=([\w-]+)/);
   if (csrfCookie) {
@@ -6,7 +25,7 @@ function getCSRFToken() {
   return null;
 }
 
-document.getElementById("checkID").addEventListener("click", (event) => {
+document.getElementById("check-id").addEventListener("click", (event) => {
   event.preventDefault();
   const userID = document.getElementById("ID").value;
   let xhr = new XMLHttpRequest();
@@ -16,12 +35,13 @@ document.getElementById("checkID").addEventListener("click", (event) => {
   xhr.onreadystatechange = function () {
     if (xhr.readyState === XMLHttpRequest.DONE) {
       if (xhr.status === 201) {
-        console.log("test");
         let response = JSON.parse(xhr.responseText);
         if (response.valid) {
           alert("사용 가능한 아이디입니다.");
+          idFlag = true;
         } else {
           alert("사용 중인 아이디입니다.");
+          idFlag = false;
         }
       } else {
         console.error("Error:", xhr.statusText);
@@ -29,19 +49,18 @@ document.getElementById("checkID").addEventListener("click", (event) => {
     }
   };
   var data = JSON.stringify({ check_id: userID });
-  console.log(data);
   xhr.send(data);
 });
 
 // HTML에서 비밀번호 입력 필드와 비밀번호 확인 입력 필드의 id를 사용해야 합니다.
 let passwordInput = document.getElementById("PW");
-let confirmPasswordInput = document.getElementById("checkPW");
+let confirmPasswordInput = document.getElementById("check-pw");
 let messageElement = document.getElementById("message");
 
 // 비밀번호 입력 필드나 비밀번호 확인 입력 필드가 변경될 때 실행되는 함수
 function checkPasswords() {
-  var password = passwordInput.value;
-  var confirmPassword = confirmPasswordInput.value;
+  let password = passwordInput.value;
+  let confirmPassword = confirmPasswordInput.value;
   messageElement.classList.remove("hidden");
   if (password === confirmPassword) {
     messageElement.textContent = "비밀번호가 일치합니다.";
@@ -52,39 +71,42 @@ function checkPasswords() {
   }
 }
 
-// 비밀번호 입력 필드나 비밀번호 확인 입력 필드가 변경될 때 checkPasswords 함수 호출
 passwordInput.addEventListener("input", checkPasswords);
 confirmPasswordInput.addEventListener("input", checkPasswords);
+
+// 비밀번호 입력 필드나 비밀번호 확인 입력 필드가 변경될 때 checkPasswords 함수 호출
 
 document.querySelector("#sign-up-form").addEventListener("submit", (event) => {
   event.preventDefault();
 
   const formData = new FormData(event.target);
-
-  // ID = forms.CharField(label="User ID", max_length=100, required=True)
-  // name = forms.CharField(label="Name", max_length=100, required=True)
-  // PW = forms.CharField(label="Password", widget=forms.PasswordInput(), required=True)
-  // gender = forms.CharField(label="Gender", max_length=10, required=True)
-  // date = forms.DateField(label="Date", required=True)
-  // impaired = forms.CharField(label="Impaired", max_length=100, required=True)
-
-  fetch("/sign_up/", {
-    method: "POST",
-    headers: {
-      "X-CSRFToken": formData.get("csrfmiddlewaretoken"),
-    },
-    body: formData,
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.message === "success") {
-        alert("회원가입이 완료되었습니다.");
-      } else {
-        console.log(data.message);
-        alert("회원가입에 실패했습니다. 다시 시도해주세요.");
-      }
+  if (messageElement.style.color === "green") pwFlag = true;
+  if (idFlag && pwFlag) {
+    fetch("/sign_up/", {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": formData.get("csrfmiddlewaretoken"),
+      },
+      body: formData,
     })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        if (data.message) {
+          alert("회원가입이 완료되었습니다.");
+        } else {
+          console.log(data.message);
+          alert("회원가입에 실패했습니다. 다시 시도해주세요.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  } else {
+    if (!idFlag) {
+      alert("사용하지 않는 아이디로 가입해주세요");
+    } else alert("비밀번호 재확인");
+  }
 });
+
+//

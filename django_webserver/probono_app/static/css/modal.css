@@ -1,6 +1,6 @@
-#locationContainer,
-#signup-container,
-#login-container {
+@import url(reset.css);
+
+.modal-container {
   width: 100%;
   height: 100%;
   position: fixed;
@@ -22,49 +22,7 @@
   height: 70%;
 }
 
-#locationContent > div {
-  margin-left: 5%;
-  margin-right: 5%;
-  height: 15%;
-  border: 1px solid black;
-  border-radius: 0.5rem;
-  font-size: 0.7rem;
-  background-color: #007bff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-top: 10%;
-}
-
-#locationContent span {
-  height: 100%;
-  color: white;
-  cursor: pointer;
-}
-
-/* Style for the signup form */
-#signup-content form {
-  min-width: 80%;
-  height: 100%;
-  margin: 0 auto;
-}
-
-#signup-content form p {
-  margin-bottom: 2%;
-}
-
-#signup-content form input[type="text"],
-#signup-content form input[type="password"],
-#signup-content form select,
-#signup-content form input[type="date"] {
-  width: 60%;
-  padding: 2%;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  margin-top: 5px;
-}
-
-#signup-content form input[type="submit"] {
+/* .modal-container form input[type="submit"] {
   background-color: #007bff;
   color: white;
   padding: 10px 20px;
@@ -72,38 +30,15 @@
   border-radius: 5px;
   cursor: pointer;
   margin-top: 10px;
-}
+} */
 
-#signup-content form input[type="submit"]:hover {
-  background-color: #0056b3;
-}
-
-#locationContainer.hidden,
-#signup-container.hidden,
-#login-container.hidden {
+.hidden {
   display: none;
 }
-
-form p {
-  font-size: 30%;
-}
-
-#login-content form {
-  display: flex;
-  flex-direction: column;
-}
-
-label,
-input,
-select,
-span {
-  margin-bottom: 2%;
-}
-
-button {
+/* button {
   padding: 10px;
   background-color: #007bff;
   color: white;
   border: none;
   cursor: pointer;
-}
+} */
