@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Crawl Result</title>
+  </head>
+  <body>
+    {% if error_message %}
+    <p>{{ error_message }}</p>
+    {% else %}
+    <p>hwp_text:{{extracted_text}}</p>
+    {% endif %}
+  </body>
+</html>
