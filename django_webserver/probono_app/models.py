@@ -9,8 +9,16 @@ from bson.json_util import loads, dumps
 from datetime import datetime
 from itertools import groupby
 
-class CustomUser():
+import pandas as pd
+import os
+import openpyxl
+# from openpyxl.drawing.image import Image
+from io import BytesIO
+import xlwings as xw
+from PIL import ImageGrab, Image
 
+class CustomUser():
+    
     # user_id
     ID = models.CharField(max_length=100, unique=True)
 
@@ -248,3 +256,72 @@ class SpecialWeather():
             month -= 2
         two_months_ago_time = datetime(year, month, now.day, now.hour, now.minute)
         return two_months_ago_time.strftime('%Y%m%d%H%M')
+
+
+class Population_real_time():
+    
+    def get_xl_file_info(self):
+        file_path = os.path.join(os.path.dirname(__file__), 'files', 'population_region_info.xlsx')
+        xl_file = openpyxl.load_workbook(file_path)
+        xl_sheet = xl_file.active
+
+        data_list = []
+        # image_data_dict = {}
+        # for image in xl_sheet._images:
+        #     col, row = image.anchor.tl.col, image.anchor.tl.row  # 이미지가 위치한 셀의 좌표
+        #     image_data_dict[(col, row)] = image.image._data
+        # print(image_data_dict)
+
+        for row_idx, row in enumerate(xl_sheet.iter_rows(values_only=True), start=1):
+            if row_idx == 1:
+                continue
+
+            category = row[0]
+            no = row[1]
+            area_cd = row[2]
+            area_nm = row[3]
+
+            photo_data = None
+
+            data_list.append({
+                'CATEGORY': category,
+                'NO': no,
+                'AREA_CD': area_cd,
+                'AREA_NM': area_nm,
+                'PHOTO': photo_data
+            })
+
+        for item in data_list:
+            print(item)
+        xl_file.close()
+
+        app = xw.App(visible=False)
+        wb = app.books.open(file_path)
+        sheet = wb.sheets['region_info']
+
+        # temp_file = "temp_image.jpg"
+        image = sheet.pictures
+        print(image)
+        image.api.Copy() 
+
+        img = ImageGrab.grabclipboard()
+
+        temp_file = "temp_image.jpg"
+        img.save(temp_file)
+        # image.api.Copy()
+        # print(xl_sheet.pictures[0])
+        # xl_sheet.pictures[0].api.Copy()
+        # sheet.pictures[0].api.Copy()
+        # img = ImageGrab.grabclipboard()
+        # image.save(temp_file)
+
+
+        # print(img)
+        # image_bytes = image.image
+        # print(image_bytes)
+        # sheet.pictures[0].api.Copy()
+        # img = ImageGrab.grabclipboard()
+        # print(image)
+
+        wb.close()
+        app.quit()

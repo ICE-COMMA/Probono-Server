@@ -6,8 +6,8 @@ import requests
 import xmltodict
 from bson.json_util import loads, dumps
 from datetime import datetime
+import pandas as pd
 
-from .models import SpecialWeather
 # crawling
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -38,6 +38,9 @@ from config.utils import SessionStore
 # User
 from .models import CustomUser
 from .forms import SignUpForm
+
+# Population_real_time
+from .models import Population_real_time
 
 
 
@@ -72,11 +75,11 @@ def my_page(request, id):
             update_result = collection.update_one({ 'ID' : id }, { '$set' : { data } })
             if update_result.matched_count == 0:
                 return JsonResponse({ 'valid' : False, 'error' : 'Not found' })
-            elif update_result.modified_count == 0: # Not modified
+            elif update_result.modified_count == 0:
                 return JsonResponse({ 'valid' : False, 'error' : 'Not modified' })
             return JsonResponse({ 'valid' : True })
     except PyMongoError:
-        return JsonResponse({'valid': False, 'error': 'Database error'})
+        return JsonResponse({'valid' : False, 'error': 'Database error'})
 
 def transfer_info(request):
     return render(request, 'transfer_info.html')
@@ -85,7 +88,23 @@ def weather_info(request):
     return render(request, 'weather_info.html')
 
 def dense_popul_info(request):
-    return render(request, 'dense_popul_info.html')
+    
+    # if request.method == 'GET':
+        # reg = []
+    collection = get_collection(db_handle, 'popul_real_time_reg')
+        
+    prt = Population_real_time()
+    data = prt.get_xl_file_info()
+    print(data)
+    # collection.insert_many(data)
+
+
+    # return render(request, 'dense_popul_info.html')
+    return render(request, 'index.html')
+
+def get_hot_place(request):
+    # if 
+    return render(request, 'index.html')
 
 def safety_info(request):
     return render(request, 'safety_info.html')
@@ -135,7 +154,7 @@ def id_check(request):
     users = get_collection(db_handle, 'User')
     data = loads(request.body)
     temp_id = data['check_id']
-    temp = users.find_one({'ID' : temp_id})
+    temp = users.find_one({ 'ID' : temp_id })
     if not temp:
         data = { 'valid' : True } # REMIND : front have to know its response.
         status_code = 201
