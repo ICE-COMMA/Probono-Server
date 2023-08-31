@@ -7,7 +7,7 @@ class ProbonoAppConfig(AppConfig):
 
     def ready(self):
         from config import utils
-        from .models import SpecialWeather
+        from .models import SpecialWeather, DemoScraper
 
         db_handle = utils.db_handle
         get_collection = utils.get_collection_handle
@@ -15,3 +15,7 @@ class ProbonoAppConfig(AppConfig):
         spw_ins = SpecialWeather()
         collection = get_collection(db_handle, 'special_weather')
         spw_ins.init_special_weather(collection)
+
+        demo = DemoScraper()
+        collection = get_collection(db_handle, 'demo')
+        demo.get_demo(collection)
