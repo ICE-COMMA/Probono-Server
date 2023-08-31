@@ -1,5 +1,6 @@
 from django.db import models
 import requests
+from pytz import timezone
 
 # DB
 from bson.objectid import ObjectId
@@ -271,7 +272,7 @@ class SpecialWeather():
         return to_insert
 
     def two_months_ago(self):
-        now = datetime.now()
+        now = datetime.now(timezone('Asia/Seoul'))
         year = now.year
         month = now.month
         if month <= 2:
@@ -357,7 +358,11 @@ class DemoScraper:
 
     def __init__(self):
         self.chrome_options = webdriver.ChromeOptions()
+<<<<<<< HEAD
         self.download_path = 'C:\\Users\\admin\\Downloads'
+=======
+        self.download_path = '/Users/choijeongheum/Downloads/'
+>>>>>>> 919ddc3a3d84ac6a76812e3d52a8bb1257afd28d
         self.site_url = "https://www.smpa.go.kr/user/nd54882.do"
 
     def start_driver(self):
@@ -370,7 +375,8 @@ class DemoScraper:
         self.driver.get(self.site_url)
 
     def get_date_info(self):
-        current_date = datetime.now()
+        current_date = datetime.now(timezone('Asia/Seoul'))
+        print('NOW!!!!!!!!!!!', current_date)
         year = current_date.strftime("%y")
         today = current_date.weekday()
         days = ["월", "화", "수", "목", "금", "토", "일"]
@@ -407,7 +413,11 @@ class DemoScraper:
     def process_hwp_file(self):
 
         # 파일명에서 한글 없애기(파일경로 수정 요망)
+<<<<<<< HEAD
         file_path = "C:/Users/admin/Downloads/" + self.date + \
+=======
+        file_path = "/Users/choijeongheum/Downloads/" + self.date + \
+>>>>>>> 919ddc3a3d84ac6a76812e3d52a8bb1257afd28d
             "(" + self.day + ")" + " " + "인터넷집회.hwp"
         new_filename = self.date + 'data.hwp'
         new_file_path = os.path.join(os.path.dirname(file_path), new_filename)
@@ -498,23 +508,31 @@ class DemoScraper:
 
         return to_insert
 
-    def update_demo(self, demos):
-
+    def update_demo(self, collection):
+        collection.delete_many({})
         new_data = []
         new_data.extend(self.process_hwp_file())
+<<<<<<< HEAD
         for target in new_data:
             demos.insert_one(target)
             print(target)
+=======
+        for idx, target in enumerate(new_data):
+            new_data[idx]['date'] = target['date'].group()
+
+        print(new_data)
+        collection.insert_many(new_data)
+>>>>>>> 919ddc3a3d84ac6a76812e3d52a8bb1257afd28d
 
     def close_driver(self):
         self.driver.quit()
 
-    def get_demo(self, demos):
+    def get_demo(self, collection):
         self.start_driver()
         self.navigate_to_site()
         self.get_date_info()
         self.click_on_today_demo()
         self.download_hwp()
-        self.update_demo(demos)
+        self.update_demo(collection)
         self.close_driver()
         return
