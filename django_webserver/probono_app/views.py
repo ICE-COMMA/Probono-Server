@@ -109,7 +109,8 @@ def get_hot_place(request):
 def safety_info(request):
     collection = get_collection(db_handle, 'safety_guard_house')
     ret = collection.find()
-    return render(request, 'safety_info.html', { 'result' : ret })
+    print(list(ret))
+    return render(request, 'safety_info.html', { 'result' : list(ret) })
 
 @require_POST
 def login_view(request):
