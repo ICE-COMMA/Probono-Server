@@ -1,17 +1,44 @@
 @import url(reset.css);
 
-#demo-display {
-  display: flex;
-  justify-content: center;
-  min-height: 70vh;
-  width: 100%;
-  background-size: 90% 95%;
-  background-position: center 100%;
-  background-repeat: no-repeat;
-  overflow: hidden;
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f5f5f5; /* light gray background */
 }
 
-/* .demo {
-  padding-top: 30%;
+#demo-data {
+  max-width: 60%; /* 너무 크면 제한 */
+  margin: 20px auto; /* 상하 마진 추가 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff; /* white background */
+  border-radius: 8px;
   overflow: hidden;
-} */
+  font-size: 0.85rem;
+}
+
+.demo-action {
+  text-align: center;
+  background-color: #333; /* dark background */
+  color: #fff; /* white text */
+  padding: 12px;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  text-align: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #ddd; /* light gray border */
+}
+
+th {
+  background-color: #f0f0f0; /* light gray background */
+}
+
+tr:hover {
+  background-color: #f5f5f5; /* light gray background on hover */
+}
