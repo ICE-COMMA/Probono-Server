@@ -8,41 +8,15 @@ from bson.json_util import loads, dumps
 from datetime import datetime
 import pandas as pd
 
-# crawling
-from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.support.ui import WebDriverWait
-#요소 클릭 위해
-from selenium.webdriver.support import expected_conditions as EC
-from webdriver_manager.chrome import ChromeDriverManager
-# pdf 읽기
-# import fitz # PyMuPDF 라이브러리 모듈
-# import os
-# from django.http import HttpResponse
-#img 처리
-# import pytesseract
-# from PIL import Image
-# import cv2 # img 내 테이블 처리(전처리)
-# import numpy as np
-
 # Mongo DB
 from config import utils
 from pymongo.errors import PyMongoError
 
-# Session
-from config.utils import SessionStore
-
 # User
-from .models import CustomUser
 from .forms import SignUpForm
 
 # Population_real_time
 from .models import Population_real_time
-
-
 
 db_handle = utils.db_handle
 get_collection = utils.get_collection_handle
