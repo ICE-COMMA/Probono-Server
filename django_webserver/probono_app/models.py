@@ -506,6 +506,7 @@ class DemoScraper:
 
         return to_insert
 
+    # MODIFY LATER
     def update_demo(self, collection):
         collection.delete_many({})
         new_data = []
