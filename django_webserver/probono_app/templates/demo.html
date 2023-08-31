@@ -42,19 +42,16 @@
 
       <div id="demo-display" data-url="{{img_url}}"></div>
       {% if demo %}
-        <span class="spw-action">오늘의 시위 정보</span>
-        <div id="spw-data">
-        {% for item in spw %}
-          <span>{{ item.REG_NM }} {{ item.WRN }} {{item.LVL}}</span>
+        <span class="demo-action">오늘의 시위 정보</span>
+        <div id="demo-data">
+        {% for item in demo %}
+          <span>{{  }} {{ item.WRN }} {{item.LVL}}</span>
         {% endfor %}
         </div>
       {% else %}
         <span class="spw-action">오늘의 시위 정보</span>
       {% endif %}
 
-
-
-        
       <nav id="right-nav">
         <div id="user">
           {% if request.session.ID %}
