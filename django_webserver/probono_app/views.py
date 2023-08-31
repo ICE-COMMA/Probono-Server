@@ -223,4 +223,5 @@ def get_demo_today(request):
     
     collection = get_collection(db_handle, 'demo')
     ret = list(collection.find({}))
+    print(ret)
     return render(request, 'demo.html', { 'demo' : ret })
