@@ -1,25 +1,27 @@
 getdatas = []
-info_m = []
+m_infos = []
 positions = []
 
 $.ajax({
     type: 'get',
-    url: "/safety_info",
+    url: "/safety_info/data",
     success: function (response) {
-        getdatas = response['result']
+        getdatas = response.ret;
+
+        console.log(getdatas);
         for (i = 0; i < getdatas.length; i++) {
             let name = getdatas[i]['name']
             let x = getdatas[i]['x']
             let y = getdatas[i]['y']
-            let info_m = { 'name': name, 'x': x, 'y': y }
-            m_infos.push(info_m)
+            let m_info = { 'name': name, 'x': x, 'y': y }
+            m_infos.push(m_info)
         }
 
         //  아래는 마커와 인포윈도우 여러개 표시
-        for (var i = 0; i < info_m.length; i++) {
-            var m_i_name = info_m[i]['name']
-            var m_i_x = info_m[i]['x']
-            var m_i_y = info_m[i]['y']
+        for (var i = 0; i < m_infos.length; i++) {
+            var m_i_name = m_infos[i]['name']
+            var m_i_x = m_infos[i]['x']
+            var m_i_y = m_infos[i]['y']
             var gb_position = { content: `<div class="ifw"><h5>${m_i_name}</h5></div>`, latlng: new kakao.maps.LatLng(m_i_y, m_i_x) }
             positions.push(gb_position)
         }
@@ -40,6 +42,9 @@ $.ajax({
             });
             kakao.maps.event.addListener(marker, 'click', makeOverListener(map, marker, infowindow));
         }
+    },
+    error: function (error) {
+        console.error("Error fetching data:", error);
     }
 })
 
