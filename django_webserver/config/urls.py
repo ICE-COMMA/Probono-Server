@@ -27,6 +27,7 @@ urlpatterns = [
     path('weather_info/', views.weather_info, name='weather_info'),
     path('dense_popul_info', views.dense_popul_info, name='dense_popul_info'),
     path('safety_info', views.safety_info, name='safety_info'),
+    path('safety_info/data', views.safety_info_data, name='safety_info_data'),
     path('login/', views.login_view, name='login'),
     path('sign_up/', views.sign_up, name='sign_up'),
     path('logout/', views.logout_view, name='logout'),
@@ -35,5 +36,5 @@ urlpatterns = [
     path('get_safety_guard_house/',views.get_safety_guard_house,name='get_safety_guard_house'),
     path('get_bus_no_to_route/', views.get_bus_no_to_route, name='get_bus_no_to_route'),
     path('get_bus_route/<str:bus_num>', views.get_bus_route, name='get_bus_route'),
-    path('get_demo_today/', views.get_demo_today, name='get_demo_today')
+    path('get_demo_today/', views.get_demo_today, name='get_demo_today'),
 ]
