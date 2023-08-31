@@ -107,16 +107,12 @@ def get_hot_place(request):
     return render(request, 'index.html')
 
 def safety_info(request):
-    # collection = get_collection(db_handle, 'safety_guard_house')
-    # ret = collection.find()
-    # print(list(ret))
-    # return render(request, 'safety_info.html', { 'result' : list(ret) })
     return render(request, 'safety_info.html')
 
 def safety_info_data(request):
     collection = get_collection(db_handle, 'safety_guard_house')
     ret = collection.find()
-    ret_list = [{'name': item['name'], 'x': item['x'], 'y': item['y']} for item in ret]
+    ret_list = [{'name': item['name'], 'x': item['y'], 'y': item['x']} for item in ret]
     return JsonResponse({ 'ret' : ret_list })
     
 
