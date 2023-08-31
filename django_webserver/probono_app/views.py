@@ -94,13 +94,13 @@ def dense_popul_info(request):
     collection = get_collection(db_handle, 'popul_real_time_reg')
         
     prt = Population_real_time()
-    data = prt.get_xl_file_info()
-    print(data)
+    # data = prt.get_xl_file_info()
+    # print(data)
     # collection.insert_many(data)
 
 
-    # return render(request, 'dense_popul_info.html')
-    return render(request, 'index.html')
+    return render(request, 'dense_popul_info.html')
+    # return render(request, 'index.html')
 
 def get_hot_place(request):
     # if 
