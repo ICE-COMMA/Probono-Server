@@ -151,8 +151,6 @@ def get_hwp_txt():
     site_url = "https://www.smpa.go.kr/user/nd54882.do"
     driver.get(site_url)
     
-    page_source=driver.page_source
-
     # 오늘 날짜
     current_date=datetime.now()
     year=current_date.strftime("%y")

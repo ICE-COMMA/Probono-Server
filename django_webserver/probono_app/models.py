@@ -258,7 +258,6 @@ class SpecialWeather():
         two_months_ago_time = datetime(year, month, 1, now.hour, now.minute)
         return two_months_ago_time.strftime('%Y%m%d%H%M')
 
-
 class Population_real_time():
     
     def get_xl_file_info(self):
