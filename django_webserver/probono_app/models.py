@@ -254,7 +254,8 @@ class SpecialWeather():
             year -= 1
         else:
             month -= 2
-        two_months_ago_time = datetime(year, month, now.day, now.hour, now.minute)
+        print(now)
+        two_months_ago_time = datetime(year, month, 1, now.hour, now.minute)
         return two_months_ago_time.strftime('%Y%m%d%H%M')
 
 
