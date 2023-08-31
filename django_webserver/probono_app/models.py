@@ -17,6 +17,18 @@ from io import BytesIO
 import xlwings as xw
 from PIL import ImageGrab, Image
 
+# DemoScraper
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+import os
+import olefile
+import re
+import zlib
+import struct
+
 class CustomUser():
     
     # user_id
@@ -325,3 +337,69 @@ class Population_real_time():
 
         wb.close()
         app.quit()
+
+class DemoScraper:
+    
+    def __init__(self):
+        self.chrome_options = webdriver.ChromeOptions()
+        self.download_path = 'C:\\Users\\limhs\\Downloads'
+        self.site_url = "https://www.smpa.go.kr/user/nd54882.do"
+    
+    def start_driver(self):
+        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=self.chrome_options)
+        self.wait = WebDriverWait(self.driver, 10)
+        
+    def navigate_to_site(self):
+        self.driver.get(self.site_url)
+    
+    def get_date_info(self):
+        current_date = datetime.now()
+        year = current_date.strftime("%y")
+        today = current_date.weekday()
+        days = ["월", "화", "수", "목", "금", "토", "일"]
+        day = days[today]
+        self.date = year + current_date.strftime("%m%d")
+        self.day = day
+    
+    def click_on_today_demo(self):
+        link_text = "오늘의 집회"
+        blank = " "
+        xpath_expression = f"//a[contains(text(),'{link_text}{blank}{self.date}{blank}{self.day}')]"
+        element = self.driver.find_element(By.XPATH, xpath_expression)
+        self.driver.execute_script("arguments[0].scrollIntoView();", element)
+        element.click()
+
+    def download_hwp(self):
+        target_filename = self.date + "(" + self.day + ")" + " " + "인터넷집회.hwp"
+        xpath_expression = f"//a[contains(text(), '{target_filename}')]"
+        links = self.driver.find_elements(By.XPATH, f"//a[@class='doc_link']")
+        download_link = None
+        for link in links:
+            if target_filename in link.text:
+                download_link = link
+                break
+        if download_link:
+            self.driver.execute_script("arguments[0].scrollIntoView();", download_link)
+            download_link.click()
+            self.wait.until(lambda driver: target_filename in os.listdir(self.download_path))
+
+    def process_hwp_file(self):
+        file_path = "C:/Users/limhs/Downloads/" + self.date + "(" + self.day + ")" + " " + "인터넷집회.hwp"
+        new_filename = self.date + 'demo.hwp'
+        new_file_path = os.path.join(os.path.dirname(file_path), new_filename)
+        os.rename(file_path, new_file_path)
+        
+        # ... 여기에 HWP 파일을 처리하는 나머지 코드를 넣을 수 있습니다.
+
+    def close_driver(self):
+        self.driver.quit()
+
+    def get_hwp_txt(self):
+        self.start_driver()
+        self.navigate_to_site()
+        self.get_date_info()
+        self.click_on_today_demo()
+        self.download_hwp()
+        self.process_hwp_file()
+        self.close_driver()
+        return
