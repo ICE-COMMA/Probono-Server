@@ -11,11 +11,15 @@ class ProbonoAppConfig(AppConfig):
 
         db_handle = utils.db_handle
         get_collection = utils.get_collection_handle
-        
-        spw_ins = SpecialWeather()
-        collection = get_collection(db_handle, 'special_weather')
-        spw_ins.init_special_weather(collection)
 
-        demo = DemoScraper()
-        collection = get_collection(db_handle, 'demo')
-        demo.get_demo(collection)
+        import os
+        
+        if os.environ.get('RUN_MAIN') == 'true':
+            spw_ins = SpecialWeather()
+            collection = get_collection(db_handle, 'special_weather')
+            spw_ins.init_special_weather(collection)
+
+            print('!!!!!!!!!!!!!!!!!!!!!!!!')
+            demo = DemoScraper()
+            collection = get_collection(db_handle, 'demo')
+            demo.get_demo(collection)
