@@ -2,6 +2,9 @@ const customContainer = document.querySelector("#custom-container");
 const customBtn = document.querySelector("#custom-btn");
 const customList = document.querySelectorAll(".custom-info");
 const customForm = document.querySelector("#custom-form");
+const userID = document
+  .querySelector("#greeting > a")
+  .innerHTML.match(new RegExp("Hello ([^\n]+)!"))[1];
 let selectCustom = [];
 
 function getCSRFToken() {
@@ -35,8 +38,8 @@ customList.forEach((element) => {
 customForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   console.log(selectCustom);
-  const userID = document.querySelector("#greeting-user").dataset.user;
-
+  // const userID = document.querySelector("#greeting-user").dataset.user;
+  sessionStorage.setItem(userID, selectCustom);
   const requestBody = {
     user_ID: userID,
     custom: selectCustom,
@@ -68,6 +71,7 @@ customForm.addEventListener("submit", async (event) => {
     (element) => (element.style.backgroundColor = "transparent")
   );
   customContainer.classList.add("hidden");
+  window.location.href = "/";
 });
 
 window.addEventListener("click", (event) => {

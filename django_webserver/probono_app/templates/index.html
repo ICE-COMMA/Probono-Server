@@ -11,8 +11,11 @@
     <link rel="stylesheet" href="../static/css/modal.css" />
     <link rel="stylesheet" href="../static/css/report.css" />
     <link rel="stylesheet" href="../static/css/sign_up.css" />
-
     <title>Project : Friend</title>
+    <script
+      type="text/javascript"
+      src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6ee412d78406a7c87395be1b401473b1"
+    ></script>
   </head>
   <body>
     <!-- 회원가입 모달 -->
@@ -110,11 +113,12 @@
     </div>
 
     <!-- 관심지역 설정 모달 -->
-    <div id="locationContainer" class="hidden modal-container">
-      <div id="locationContent" class="modal-content">
+    <div id="location-container" class="hidden modal-container">
+      <div id="location-content" class="modal-content">
         <div id="gpsLocation">현재 위치로 설정</div>
-        <div id="mapLocation">지도를 통해 설정</div>
+        <div id="map-location">지도를 통해 설정</div>
       </div>
+      <div id="display-map" class="hidden"></div>
     </div>
 
     <!-- 커스터마이징 모달 -->
@@ -186,9 +190,7 @@
         <span>{{ item.REG_NM }} {{ item.WRN }} {{item.LVL}}</span>
         {% endfor %}
       </div>
-      {% else %}
-      <h3>광고</h3>
-      {% endif %}
+      {% else %} {% endif %}
     </header>
 
     <!-- 메인 구조 -->
@@ -217,21 +219,23 @@
       <div class="content-wrapper">
         <div id="content-display">
           <div id="content-img"></div>
-          <div class="content-info">
-            <span>동국대</span>
-            <span>여유</span>
+          <div id="place-content" class="content-info hidden">
+            <span></span>
+          </div>
+          <div id="demo-content" class="content-info hidden">
+            <span></span>
           </div>
           <div class="content-info hidden">
-            <span>오늘의 시위정보</span>
+            <span></span>
           </div>
           <div class="content-info hidden">
-            <span>금주의 행사정보</span>
+            <span></span>
           </div>
-          <div class="content-info hidden">
-            <span>오늘의 시위정보</span>
+          <div id="init-content" class="hidden">
+            <span>커스터마이징을 진행해주세요.</span>
           </div>
           <div class="content-slide">
-            <span class="slide">●</span>
+            <span class="slide">○</span>
             <span class="slide">○</span>
             <span class="slide">○</span>
             <span class="slide">○</span>

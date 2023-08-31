@@ -1,11 +1,16 @@
 @import url(reset.css);
 
-.search-container {
+#transfer-wrapper {
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* .search-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 100px;
-}
+} */
 
 .search-input {
   padding: 10px;
@@ -34,4 +39,18 @@ p {
 
 .hidden {
   display: none;
+}
+
+#display-bus-map {
+  /* display: flex;
+  align-items: center;
+  justify-content: center; */
+  margin-top: 5%;
+  width: 60vw;
+  height: 50vh;
+}
+
+#display-bus-map div {
+  all: initial; /* 모든 스타일 속성 초기화 */
+  font-size: 12px;
 }
