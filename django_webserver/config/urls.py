@@ -37,5 +37,4 @@ urlpatterns = [
     path('get_bus_no_to_route/', views.get_bus_no_to_route, name='get_bus_no_to_route'),
     path('get_bus_route/<str:bus_num>', views.get_bus_route, name='get_bus_route'),
     path('get_demo_today/', views.get_demo_today, name='get_demo_today'),
-    path('get_hwp_txt/',views.get_hwp_txt,name='get_hwp_txt')
 ]
