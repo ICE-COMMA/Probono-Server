@@ -267,3 +267,165 @@ def get_demo_today(request):
     }
         
     return render(request, 'demo.html', context)
+
+import olefile
+import zlib
+import struct
+import os
+import re
+from datetime import datetime
+# crawling
+from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.support.ui import WebDriverWait
+#요소 클릭 위해
+from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.chrome import ChromeDriverManager
+
+
+def get_hwp_txt(request):
+    chrome_options=webdriver.ChromeOptions()
+    # chrome 창 안보이게
+    # chrome_options.add_argument("--headless")
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()),options=chrome_options)
+    wait=WebDriverWait(driver,10) # wait time define
+    download_path='C:\\Users\\admin\\Downloads'
+    
+    site_url = "https://www.smpa.go.kr/user/nd54882.do"
+    driver.get(site_url)
+    
+    page_source=driver.page_source
+
+    # 오늘 날짜
+    current_date=datetime.now()
+    year=current_date.strftime("%y")
+    today=current_date.weekday()
+    days=["월","화","수","목","금","토","일"]
+    day=days[today]
+    link_text="오늘의 집회"
+    date=year+current_date.strftime("%m%d") # 원하는 날짜로 보려면 target_date로 받아야함
+    blank=" "
+    xpath_expression = f"//a[contains(text(),'{link_text}{blank}{date}{blank}{day}')]"
+    element = driver.find_element(By.XPATH, xpath_expression)
+    driver.execute_script("arguments[0].scrollIntoView();", element) #해당 요소로 스크롤 이동
+
+    # 새 페이지로 이동
+    element.click()
+
+    target_filename=date+"("+day+")"+blank+"인터넷집회.hwp"
+    xpath_expression=f"//a[contains(text(), '{target_filename}')]"
+    #links = driver.find_element(By.XPATH, xpath_expression)
+    links = driver.find_elements(By.XPATH, f"//a[@class='doc_link']")
+    download_link = None
+    text=""
+
+    for link in links:
+        if target_filename in link.text:
+            text="find"
+            download_link = link
+            break
+
+    # 링크가 찾아지면 클릭해서 다운로드
+    if download_link:
+        driver.execute_script("arguments[0].scrollIntoView();", download_link) #해당 요소로 스크롤 이동
+        download_link.click()
+        # 해당 경로에 해당 파일이 있을 때까지 대기
+        wait.until(lambda driver: target_filename in os.listdir(download_path))
+
+    # WebDriver 종료
+    driver.quit()
+
+    file_path="C:/Users/admin/Downloads/"+target_filename
+    new_filename=date+'demo.hwp'
+    new_file_path=os.path.join(os.path.dirname(file_path),new_filename)
+    os.rename(file_path,new_file_path)
+    
+    f=olefile.OleFileIO(new_file_path)
+    dirs = f.listdir()
+
+    # HWP 파일 검증
+    if ["FileHeader"] not in dirs or \
+       ["\x05HwpSummaryInformation"] not in dirs:
+        raise Exception("Not Valid HWP.")
+
+    # 문서 포맷 압축 여부 확인
+    header = f.openstream("FileHeader")
+    header_data = header.read()
+    is_compressed = (header_data[36] & 1) == 1
+
+    # Body Sections 불러오기
+    nums = []
+    for d in dirs:
+        if d[0] == "BodyText":
+            nums.append(int(d[1][len("Section"):]))
+    sections = ["BodyText/Section"+str(x) for x in sorted(nums)]
+
+    # 전체 text 추출
+    text = ""
+    for section in sections:
+        
+        bodytext = f.openstream(section)
+        data = bodytext.read()
+        if is_compressed:
+            unpacked_data = zlib.decompress(data, -15)
+        else:
+            unpacked_data = data
+    
+        # 각 Section 내 text 추출    
+        section_text = ""
+        i = 0
+        size = len(unpacked_data)
+        while i < size:
+            header = struct.unpack_from("<I", unpacked_data, i)[0]
+            rec_type = header & 0x3ff
+            rec_len = (header >> 20) & 0xfff
+
+            if rec_type in [67]:
+                rec_data = unpacked_data[i+4:i+4+rec_len]
+                section_text += rec_data.decode('utf-16')
+                section_text += "\n"
+
+            i += 4 + rec_len
+
+        text += section_text
+        text += "\n"
+    
+    context={
+        'extracted_text': text
+    }
+    # collenction_demo=get_collection(db_handle,'demo')
+    # collenction_demo.delete_many({})
+        
+    # cnt=len(re.findall(r'(\d{2}:\d{2})[∼~](\d{2}:\d{2})',text))
+    # text = text.replace('\r','').replace('\n','')
+    # for i in range(cnt+1):
+    #     match = re.search(r'(\d{2}:\d{2})[∼~](\d{2}:\d{2})',text)
+    #     if match:
+    #         time=text[match.start():match.end()]
+    #         text=text[match.end():]
+    #         print(time)
+        
+    #     match = re.search(r'<[^>]+>',text)
+    #     if match:
+    #         place=text[:match.end()]
+    #         text=text[match.end():]
+    #         print(place)
+        
+    #     match = re.search(r'\d{1,3}(,\d{3})*',text)
+    #     if match:
+    #         amount=text[match.start():match.end()]
+    #         text=text[match.end():]
+    #         print(amount)
+            
+    #     demo={
+    #         'time': time,
+    #         'location':place,
+    #         'amount':amount
+    #     }
+    #     collenction_demo.insert_one(demo)
+    #     i+=1
+
+    return render(request,'hwp.html',context)
