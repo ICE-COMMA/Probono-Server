@@ -72,6 +72,10 @@ header.no-data {
   border-radius: 20px;
 }
 
+#content-display span {
+  font-size: 0.6rem;
+}
+
 #content-img {
   width: 100%;
   height: 45vh;
@@ -116,4 +120,8 @@ footer {
   position: relative;
   transform: translateY(-100%);
   font-size: 0.5rem;
+}
+
+.hidden {
+  display: none;
 }
