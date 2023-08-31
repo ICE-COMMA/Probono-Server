@@ -7,8 +7,6 @@ $.ajax({
     url: "/safety_info/data",
     success: function (response) {
         getdatas = response.ret;
-
-        console.log(getdatas);
         for (i = 0; i < getdatas.length; i++) {
             let name = getdatas[i]['name']
             let x = getdatas[i]['x']
@@ -31,7 +29,7 @@ $.ajax({
             var marker = new kakao.maps.Marker({
                 map: map,
                 position: positions[i].latlng,
-                clickable: true
+                clickable: true,
             })
             var iwContent = `<div id="iw_con_info"><h5>${m_i_name2}</h5></div>`, // 인포윈도우에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
                 iwRemoveable = true; // removeable 속성을 ture 로 설정하면 인포윈도우를 닫을 수 있는 x버튼이 표시됩니다
