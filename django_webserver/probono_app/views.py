@@ -263,7 +263,6 @@ import struct
 import os
 
 def get_hwp_text(request):
-    
     chrome_options=webdriver.ChromeOptions()
     # chrome 창 안보이게
     # chrome_options.add_argument("--headless")
@@ -321,8 +320,8 @@ def get_hwp_text(request):
     os.rename(file_path,new_file_path)
     
     f=olefile.OleFileIO(new_file_path)
-    dirs=f.listdir()
-    
+    dirs = f.listdir()
+
     # HWP 파일 검증
     if ["FileHeader"] not in dirs or \
        ["\x05HwpSummaryInformation"] not in dirs:
@@ -343,6 +342,7 @@ def get_hwp_text(request):
     # 전체 text 추출
     text = ""
     for section in sections:
+        
         bodytext = f.openstream(section)
         data = bodytext.read()
         if is_compressed:
@@ -369,8 +369,10 @@ def get_hwp_text(request):
         text += section_text
         text += "\n"
         
-        context={
-            'extracted_text':text
-        }
-
+    context={
+        'extracted_text': text,
+    }
+    
+    print(type(text))
+    
     return render(request,'hwp.html',context)
