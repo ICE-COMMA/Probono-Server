@@ -477,6 +477,12 @@ class DemoScraper:
                     text = text[match.end():]
                     # print(time)
 
+                i=0
+                while(1):
+                    if text[i].isalnum()and not 0x4E00 <= ord(text[i]) <= 0x9FFF:
+                        break
+                    i+=1
+
                 match = re.search(r'<[^>]+>', text)
                 if match:
                     place = text[:match.end()]
