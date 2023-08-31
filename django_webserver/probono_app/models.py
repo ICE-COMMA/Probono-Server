@@ -485,7 +485,7 @@ class DemoScraper:
 
                 match = re.search(r'<[^>]+>', text)
                 if match:
-                    place = text[:match.end()]
+                    place = text[i:match.end()]
                     text = text[match.end():]
                     # print(place)
 
