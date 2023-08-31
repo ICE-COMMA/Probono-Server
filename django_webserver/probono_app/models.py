@@ -357,7 +357,7 @@ class DemoScraper:
 
     def __init__(self):
         self.chrome_options = webdriver.ChromeOptions()
-        self.download_path = 'C:\\Users\\limhs\\Downloads'
+        self.download_path = '/Users/choijeongheum/Downloads'
         self.site_url = "https://www.smpa.go.kr/user/nd54882.do"
 
     def start_driver(self):
@@ -407,7 +407,7 @@ class DemoScraper:
     def process_hwp_file(self):
 
         # 파일명에서 한글 없애기(파일경로 수정 요망)
-        file_path = "C:/Users/limhs/Downloads/" + self.date + \
+        file_path = "/Users/choijeongheum/Downloads" + self.date + \
             "(" + self.day + ")" + " " + "인터넷집회.hwp"
         new_filename = self.date + 'data.hwp'
         new_file_path = os.path.join(os.path.dirname(file_path), new_filename)
@@ -498,22 +498,22 @@ class DemoScraper:
 
         return to_insert
 
-    def update_demo(self, demos):
+    def update_demo(self, collection):
 
         new_data = []
         new_data.extend(self.process_hwp_file())
         for target in new_data:
-            demos.insert_one(target)
+            collection.insert_one(target)
 
     def close_driver(self):
         self.driver.quit()
 
-    def get_demo(self, demos):
+    def get_demo(self, collection):
         self.start_driver()
         self.navigate_to_site()
         self.get_date_info()
         self.click_on_today_demo()
         self.download_hwp()
-        self.update_demo(demos)
+        self.update_demo(collection)
         self.close_driver()
         return
