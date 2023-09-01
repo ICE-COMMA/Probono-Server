@@ -17,7 +17,7 @@ const showContent = () => {
   if (contentInfo[slideIndex].id === "custom-demo") {
     contentInfo[slideIndex].querySelector("span").innerText =
       "오늘의 시위 정보";
-    const siteNum = "00232600";
+    const siteNum = "00232765";
     // 시위 사진은 백에서 00232600 부분만 알아오면 수정 가능
     url = `https://www.smpa.go.kr/common/attachfile/attachfileView.do?attachNo=${siteNum}&imgType=L`;
   } else if (contentInfo[slideIndex].id === "custom-population") {
@@ -37,7 +37,7 @@ const showContent = () => {
   slideInfo[slideIndex].innerHTML = "●";
   setTimeout(showContent, 3000);
 };
-const initImg = "static/images/team.png";
+const initImg = "static/images/custom.png";
 if (userBox.children.length === 3) {
   const greeting = document.querySelector("#greeting > a").innerHTML;
   const userID = greeting.match(regex)[1];

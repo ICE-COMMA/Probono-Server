@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../static/css/styles.css" />
     <link rel="stylesheet" href="../static/css/modal.css" />
-    <title>마이페이지</title>
+    <title>가입</title>
   </head>
   <body>
     <!-- 지도 모달 -->
@@ -19,9 +19,15 @@
         </div>
       </div>
     </div>
-    <!-- { 헤더 재난 정보 백에서 받아와야 함 } -->
-    <header>
-      <span>서울특별시 전역 폭염주의보 발령</span>
+    <header class="{% if not spw%}no-data{% endif %}">
+      {% if spw %}
+      <span class="spw-action">현재 특보 정보</span>
+      <div id="spw-data">
+        {% for item in spw %}
+        <span>{{ item.REG_NM }} {{ item.WRN }} {{item.LVL}}</span>
+        {% endfor %}
+      </div>
+      {% else %} 발생한 특보가 없습니다. {% endif %}
     </header>
     <div id="wrapper">
       <nav id="left-nav">
@@ -29,7 +35,7 @@
           <div><a href="/">COMMA</a></div>
         </div>
         <div id="info">
-          <div><a href="dense_popul_info">혼잡정보</a></div>
+          {% comment %} <div><a href="dense_popul_info">혼잡정보</a></div> {% endcomment %}
           <div><a href="transfer_info">교통정보</a></div>
           <div><a href="/get_demo_today">시위정보</a></div>
           <div><a href="safety_info">안전정보</a></div>
@@ -130,8 +136,8 @@
     </div>
     <footer>
       <p>dev by team COMMA</p>
-      <button id="start">음성인식</button>
-      <button id="end">인식종료</button>
+      {% comment %} <button id="start">음성인식</button>
+      <button id="end">인식종료</button> {% endcomment %}
     </footer>
     <script src="../static/js/speech.js"></script>
     <script src="../static/js/location.js"></script>

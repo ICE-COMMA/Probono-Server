@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="../static/css/modal.css" />
     <link rel="stylesheet" href="../static/css/report.css" />
     <link rel="stylesheet" href="../static/css/sign_up.css" />
-    <title>Project : Friend</title>
+    <title>COMMA</title>
     <script
       type="text/javascript"
       src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6ee412d78406a7c87395be1b401473b1"
@@ -190,7 +190,7 @@
         <span>{{ item.REG_NM }} {{ item.WRN }} {{item.LVL}}</span>
         {% endfor %}
       </div>
-      {% else %} {% endif %}
+      {% else %} 발생한 특보가 없습니다. {% endif %}
     </header>
 
     <!-- 메인 구조 -->
@@ -203,7 +203,9 @@
           <div><a href="/">COMMA</a></div>
         </div>
         <div id="info">
+          {% comment %}
           <div><a href="dense_popul_info">혼잡정보</a></div>
+          {% endcomment %}
           <div><a href="transfer_info">교통정보</a></div>
           <div><a href="/get_demo_today">시위정보</a></div>
           <div><a href="safety_info">안전정보</a></div>
@@ -272,15 +274,16 @@
     </div>
     <footer>
       <p>dev by team COMMA</p>
-      <button id="start">음성인식</button>
-      <button id="end">인식종료</button>
+      {% comment %} <button id="start">음성인식</button> {% endcomment %}
+      {% comment %} <button id="end">인식종료</button> {% endcomment %}
     </footer>
+    <script src="../static/js/main_content.js"></script>
+
     <script src="../static/js/location.js"></script>
     <script src="../static/js/login.js"></script>
     <script src="../static/js/sign_up.js"></script>
     <script src="../static/js/speech.js"></script>
     <script src="../static/js/report.js"></script>
     <script src="../static/js/custom.js"></script>
-    <script src="../static/js/main_content.js"></script>
   </body>
 </html>

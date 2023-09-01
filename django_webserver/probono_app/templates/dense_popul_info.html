@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../static/css/styles.css" />
     <link rel="stylesheet" href="../static/css/modal.css" />
-    <title>제보하기</title>
+    <title>혼잡도 상세페이지</title>
   </head>
   <body>
     <!-- 지도 모달 -->
@@ -29,10 +29,10 @@
           <div><a href="/">COMMA</a></div>
         </div>
         <div id="info">
-          <div><a href="dense_popul_info">혼잡정보</a></div>
-          <div><a href="transfer_info">교통정보</a></div>
+          {% comment %} <div><a href="dense_popul_info">혼잡정보</a></div> {% endcomment %}
+          <div><a href="/transfer_info">교통정보</a></div>
           <div><a href="/get_demo_today">시위정보</a></div>
-          <div><a href="safety_info">안전정보</a></div>
+          <div><a href="/safety_info">안전정보</a></div>
         </div>
         <div id="contact">
           <div><a>커스터마이징</a></div>
@@ -69,8 +69,8 @@
     </div>
     <footer>
       <p>dev by team COMMA</p>
-      <button id="start">음성인식</button>
-      <button id="end">인식종료</button>
+      {% comment %} <button id="start">음성인식</button> {% endcomment %}
+      {% comment %} <button id="end">인식종료</button> {% endcomment %}
     </footer>
     <script src="../static/js/speech.js"></script>
     <script src="../static/js/location.js"></script>

@@ -2,9 +2,7 @@ const customContainer = document.querySelector("#custom-container");
 const customBtn = document.querySelector("#custom-btn");
 const customList = document.querySelectorAll(".custom-info");
 const customForm = document.querySelector("#custom-form");
-const userID = document
-  .querySelector("#greeting > a")
-  .innerHTML.match(new RegExp("Hello ([^\n]+)!"))[1];
+const userID = document.querySelector("#greeting > a").innerHTML.match(new RegExp("Hello ([^\n]+)!"))[1];
 let selectCustom = [];
 
 function getCSRFToken() {
@@ -18,19 +16,20 @@ function getCSRFToken() {
 customBtn.addEventListener("click", () => {
   if (document.querySelector(".signup-mypage").id === "my-page") {
     customContainer.classList.remove("hidden");
-  } else {
-    alert("로그인 후 이용해주세요.");
+  }
+  else {
+    console.log("!!!");
   }
 });
 
 customList.forEach((element) => {
   element.addEventListener("click", () => {
-    if (element.style.backgroundColor === "red") {
+    if (element.style.backgroundColor === "blue") {
       selectCustom.pop(element.id);
       element.style.backgroundColor = "transparent";
     } else {
       selectCustom.push(element.id);
-      element.style.backgroundColor = "red";
+      element.style.backgroundColor = "blue";
     }
   });
 });
@@ -38,7 +37,6 @@ customList.forEach((element) => {
 customForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   console.log(selectCustom);
-  // const userID = document.querySelector("#greeting-user").dataset.user;
   sessionStorage.setItem(userID, selectCustom);
   const requestBody = {
     user_ID: userID,
