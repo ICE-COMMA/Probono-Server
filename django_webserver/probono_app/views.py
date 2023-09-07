@@ -68,6 +68,7 @@ def dense_popul_info(request):
     collection = get_collection(db_handle, 'popul_real_time_reg')
         
     prt = Population_real_time()
+    print('success!!!!!!!!!!!!!!')
     # data = prt.get_xl_file_info()
     # print(data)
     # collection.insert_many(data)

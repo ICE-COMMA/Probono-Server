@@ -303,56 +303,19 @@ class Population_real_time():
         for row_idx, row in enumerate(xl_sheet.iter_rows(values_only=True), start=1):
             if row_idx == 1:
                 continue
-
             category = row[0]
             no = row[1]
             area_cd = row[2]
             area_nm = row[3]
-
-            photo_data = None
-
             data_list.append({
                 'CATEGORY': category,
                 'NO': no,
                 'AREA_CD': area_cd,
                 'AREA_NM': area_nm,
-                'PHOTO': photo_data
             })
-
         for item in data_list:
             print(item)
         xl_file.close()
-
-        app = xw.App(visible=False)
-        wb = app.books.open(file_path)
-        sheet = wb.sheets['region_info']
-
-        # temp_file = "temp_image.jpg"
-        image = sheet.pictures
-        print(image)
-        image.api.Copy()
-
-        img = ImageGrab.grabclipboard()
-
-        temp_file = "temp_image.jpg"
-        img.save(temp_file)
-        # image.api.Copy()
-        # print(xl_sheet.pictures[0])
-        # xl_sheet.pictures[0].api.Copy()
-        # sheet.pictures[0].api.Copy()
-        # img = ImageGrab.grabclipboard()
-        # image.save(temp_file)
-
-        # print(img)
-        # image_bytes = image.image
-        # print(image_bytes)
-        # sheet.pictures[0].api.Copy()
-        # img = ImageGrab.grabclipboard()
-        # print(image)
-
-        wb.close()
-        app.quit()
-
 
 class DemoScraper:
 
