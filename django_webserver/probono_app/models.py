@@ -326,7 +326,6 @@ class Population_real_time():
         print(response)
         print(response.content)
 
-
 class DemoScraper:
 
     def __init__(self):
