@@ -18,6 +18,9 @@ from io import BytesIO
 import xlwings as xw
 from PIL import ImageGrab, Image
 
+# Population_real_time
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
 # DemoScraper
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -290,6 +293,11 @@ class Population_real_time():
     def __init__(self):
         self.base_url = 'http://openapi.seoul.go.kr:8088/68666f624d6c696d373249736e7649/json/citydata_ppltn'
 
+    def init_population_info(self, region_info):
+        region_info.delete_many({})
+        to_insert = self.get_xl_file_info()
+        region_info.insert_many(to_insert)
+
     def get_xl_file_info(self):
         file_path = os.path.join(os.path.dirname(
             __file__), 'files', 'population_region_info.xlsx')
@@ -313,18 +321,64 @@ class Population_real_time():
         xl_file.close()
         return data_list
 
-    def init_population_info(self, region_info):
-        region_info.delete_many({})
-        to_insert = self.get_xl_file_info()
-        region_info.insert_many(to_insert)
+    def fetch_data(self, url):
+        response = requests.get(url)
+        return response.json()
 
-    def get_real_time_popul(self):
+    # def get_real_time_popul(self, region_info):
+    #     start_index = 1
+    #     end_index = 5
+
+    #     ret = []
+    #     for target in region_info:
+    #         code_target = target['AREA_CD']
+    #         print(code_target)
+    #         url = f"{self.base_url}/{start_index}/{end_index}/{code_target}"
+    #         response = requests.get(url)
+    #         temp = response.json()
+    #         temp = temp['SeoulRtd.citydata_ppltn'][0]
+    #         print(temp)
+    #         data = {
+    #             'area_name'         : temp['AREA_NM'],
+    #             'area_code'         : temp['AREA_CD'],
+    #             'area_congest'      : temp['AREA_CONGEST_LVL'],
+    #             'message'           : temp['AREA_CONGEST_MSG'],
+    #             'area_popul_min'    : temp['AREA_PPLTN_MIN'],
+    #             'area_popul_max'    : temp['AREA_PPLTN_MAX'],
+    #             'area_update_time'  : temp['PPLTN_TIME']
+    #         }
+    #         ret.append(data)
+    #     return ret
+
+    def get_real_time_popul(self, region_info):
         start_index = 1
         end_index = 5
-        url = f"{self.base_url}/{start_index}/{end_index}/"
-        response = requests.get(url)
-        print(response)
-        print(response.content)
+
+        ret = []
+        # Multithreading for optimization
+        with ThreadPoolExecutor() as executor:
+            future_to_url = {executor.submit(self.fetch_data, f"{self.base_url}/{start_index}/{end_index}/{target['AREA_CD']}"): target for target in region_info}
+            for future in as_completed(future_to_url):
+                target = future_to_url[future]
+                try:
+                    temp = future.result()['SeoulRtd.citydata_ppltn'][0]
+                    area_popul_average = round((int(temp['AREA_PPLTN_MIN']) + int(temp['AREA_PPLTN_MAX'])) / 2)
+                    data = {
+                        'area_name': temp['AREA_NM'],
+                        'area_code'         : temp['AREA_CD'],
+                        'area_congest'      : temp['AREA_CONGEST_LVL'],
+                        'message'           : temp['AREA_CONGEST_MSG'],
+                        'area_popul_min'    : temp['AREA_PPLTN_MIN'],
+                        'area_popul_max'    : temp['AREA_PPLTN_MAX'],
+                        'area_popul_avg'    : area_popul_average,
+                        'area_update_time'  : temp['PPLTN_TIME']
+                    }
+                    ret.append(data)
+                except Exception as exc:
+                    print(f'{target["AREA_CD"]} generated an exception: {exc}')
+
+        ret = sorted(ret, key=lambda x: x['area_popul_avg'], reverse=True)
+        return ret
 
 class DemoScraper:
 
