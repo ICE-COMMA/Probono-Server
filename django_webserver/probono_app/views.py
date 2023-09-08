@@ -63,15 +63,13 @@ def weather_info(request):
 
 def dense_popul_info(request):
     
-    # if request.method == 'GET':
-        # reg = []
-    collection = get_collection(db_handle, 'popul_real_time_reg')
-        
-    prt = Population_real_time()
-    prt.get_real_time_popul()
-
-
-    return render(request, 'dense_popul_info.html')
+    if request.method == 'GET':
+        prt = Population_real_time()
+        collection = get_collection(db_handle, 'popul_real_time_reg')
+        region_info = list(collection.find({}))
+        ret = prt.get_real_time_popul(region_info)
+        return JsonResponse({ 'ret' : ret })
+    # return render(request, 'dense_popul_info.html')
     # return render(request, 'index.html')
 
 def get_hot_place(request):
