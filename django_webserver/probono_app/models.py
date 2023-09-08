@@ -555,3 +555,29 @@ class DemoScraper:
         self.update_demo(collection)
         self.close_driver()
         return
+
+class Population_AI_model():
+    
+    def __init__(self):
+        # self.base_url = 'http://openapi.seoul.go.kr:8088/4b4c477a766c696d39314965686a66/json/SPOP_LOCAL_RESD_DONG/1/5/20200617/ '
+        self.base_url = 'http://openapi.seoul.go.kr:8088/4b4c477a766c696d39314965686a66/json/SPOP_LOCAL_RESD_DONG/1/5/20230907/ '
+        self.region_code = ['11500540', '11380625', '11380690', '11740685']
+    
+    def init_population_AI(self):
+        return
+
+    def update_population_AI(self):
+
+        cnt = 1
+        for target in self.region_code:
+            # ret = self.fetch_data(f"{self.base_url}/{target}")
+            url = f"{self.base_url}/{target}"
+            print(url)
+            ret = self.fetch_data(url)
+            print(cnt, ' : ', ret)
+            cnt += 1
+        return
+
+    def fetch_data(self, url):
+        response = requests.get(url)
+        return response.json()
