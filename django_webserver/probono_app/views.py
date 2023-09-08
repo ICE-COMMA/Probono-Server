@@ -21,6 +21,14 @@ from .models import Population_real_time
 db_handle = utils.db_handle
 get_collection = utils.get_collection_handle
 
+def test_AI(request):
+
+    from .models import Population_AI_model
+    popul_ai = Population_AI_model()
+    popul_ai.update_population_AI()
+    
+    return JsonResponse({ 'popul_ai' : popul_ai})
+
 def index(request):
     collection = get_collection(db_handle, 'special_weather')
     ret = list(collection.find({}))
