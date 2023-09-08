@@ -25,4 +25,4 @@ class ProbonoAppConfig(AppConfig):
 
             prt = Population_real_time()
             collection = get_collection(db_handle, 'popul_real_time_reg')
-            prt.init_population_info()
+            prt.init_population_info(collection)
