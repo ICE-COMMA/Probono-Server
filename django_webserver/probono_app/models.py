@@ -287,6 +287,9 @@ class SpecialWeather():
 
 class Population_real_time():
 
+    def __init__(self):
+        self.base_url = 'http://openapi.seoul.go.kr:8088/68666f624d6c696d373249736e7649/json/citydata_ppltn'
+
     def get_xl_file_info(self):
         file_path = os.path.join(os.path.dirname(
             __file__), 'files', 'population_region_info.xlsx')
@@ -294,12 +297,6 @@ class Population_real_time():
         xl_sheet = xl_file.active
 
         data_list = []
-        # image_data_dict = {}
-        # for image in xl_sheet._images:
-        #     col, row = image.anchor.tl.col, image.anchor.tl.row  # 이미지가 위치한 셀의 좌표
-        #     image_data_dict[(col, row)] = image.image._data
-        # print(image_data_dict)
-
         for row_idx, row in enumerate(xl_sheet.iter_rows(values_only=True), start=1):
             if row_idx == 1:
                 continue
@@ -313,9 +310,22 @@ class Population_real_time():
                 'AREA_CD': area_cd,
                 'AREA_NM': area_nm,
             })
-        for item in data_list:
-            print(item)
         xl_file.close()
+        return data_list
+
+    def init_population_info(self, region_info):
+        region_info.delete_many({})
+        to_insert = self.get_xl_file_info()
+        region_info.insert_many(to_insert)
+
+    def get_real_time_popul(self):
+        start_index = 1
+        end_index = 5
+        url = f"{self.base_url}/{start_index}/{end_index}/"
+        response = requests.get(url)
+        print(response)
+        print(response.content)
+
 
 class DemoScraper:
 
