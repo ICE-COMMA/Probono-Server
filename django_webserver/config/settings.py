@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     #Register probono_app"
     "probono_app.apps.ProbonoAppConfig",
     'corsheaders',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
