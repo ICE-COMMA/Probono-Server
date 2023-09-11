@@ -574,9 +574,6 @@ class Population_AI_model():
         ret = []
         for target in self.region_code:
             data = self.fetch_data(f"{self.base_url}/{target}")
-            # url = f"{self.base_url}/{target}"
-            # print(url)
-            # ret = self.fetch_data(url)
             ret.append(data)
         return ret
 
