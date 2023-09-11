@@ -54,7 +54,13 @@ def my_page(request, id):
             collection = get_collection(db_handle, 'User')
             data = loads(request.body)
             print(data)
-            update_result = collection.update_one({ 'ID' : id }, { '$set' : { data } })
+
+            new_data = {
+                'PW' : data['next_pw'],
+                'impaired'  : data['user_handicap']
+            }
+            print(new_data)
+            update_result = collection.update_one({ 'ID' : id }, { '$set' : new_data })
             if update_result.matched_count == 0:
                 return JsonResponse({ 'valid' : False, 'error' : 'Not found' })
             elif update_result.modified_count == 0:
