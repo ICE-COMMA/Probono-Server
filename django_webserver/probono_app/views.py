@@ -6,7 +6,6 @@ import requests
 import xmltodict
 from bson.json_util import loads, dumps
 from datetime import datetime
-import pandas as pd
 
 # Mongo DB
 from config import utils
@@ -30,9 +29,15 @@ def test_AI(request):
     return JsonResponse({ 'popul_ai' : popul_ai})
 
 def index(request):
-    collection = get_collection(db_handle, 'special_weather')
-    ret = list(collection.find({}))
-    return render(request, 'index.html', { 'spw' : ret })
+    if request.method == 'GET':
+        collection = get_collection(db_handle, 'special_weather')
+        ret = list(collection.find({}))
+        return render(request, 'index.html', { 'spw' : ret })
+    elif request.method == 'POST':
+        collection = get_collection(db_handle, 'report')
+        data = loads(request.body)
+        print('TEST : ', data)
+        # collection.insert_one()
 
 def my_page(request, id):
     try:
