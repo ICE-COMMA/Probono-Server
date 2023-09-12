@@ -10,13 +10,9 @@ from bson.json_util import loads, dumps
 from datetime import datetime
 from itertools import groupby
 
-import pandas as pd
+
 import os
 import openpyxl
-# from openpyxl.drawing.image import Image
-from io import BytesIO
-import xlwings as xw
-from PIL import ImageGrab, Image
 
 # Population_real_time
 from concurrent.futures import ThreadPoolExecutor, as_completed
