@@ -14,6 +14,9 @@ from pymongo.errors import PyMongoError
 # User
 from .forms import SignUpForm
 
+# Transfer info
+from .models import Bus_info
+
 # Population_real_time
 from .models import Population_real_time
 
@@ -28,6 +31,13 @@ def test_AI(request):
     
     return JsonResponse({ 'popul_ai' : popul_ai})
 
+def test_bus(request):
+
+    temp = Bus_info()
+    ret = temp.get_bus_pos('100100410')
+
+    return JsonResponse({ 'bus_pos' : ret})
+
 def index(request):
     if request.method == 'GET':
         collection = get_collection(db_handle, 'special_weather')
@@ -36,7 +46,7 @@ def index(request):
     elif request.method == 'POST':
         collection = get_collection(db_handle, 'report')
         data = loads(request.body)
-        print('TEST : ', data)
+        print('TEST : ', data, '\n', 'TYPE : ', type(data))
         # collection.insert_one()
 
 def my_page(request, id):
