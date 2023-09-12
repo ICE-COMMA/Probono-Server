@@ -33,7 +33,6 @@ import re
 import zlib
 import struct
 
-
 class CustomUser():
 
     # user_id
@@ -54,7 +53,6 @@ class CustomUser():
     def __str__(self):
         return self.ID
 
-
 class Bus():
 
     # object_id
@@ -66,7 +64,6 @@ class Bus():
 
     def __str__(self):
         return self.obj_id
-
 
 class Bus_Station():
 
@@ -81,7 +78,6 @@ class Bus_Station():
 
     def __str__(self):
         return self.stat_name
-
 
 class Subway_Station():
 
@@ -101,7 +97,6 @@ class Subway_Station():
     def __str__(self):
         return self.stat_name
 
-
 class Police_Station():
 
     # object_id
@@ -115,7 +110,6 @@ class Police_Station():
 
     def __str__(self):
         return self.stat_name
-
 
 class Population_Density_Info():
 
@@ -135,7 +129,6 @@ class Population_Density_Info():
     def __str__(self):
         return self.obj_id
 
-
 class Safety_Guard_House():
 
     # object_id
@@ -149,7 +142,6 @@ class Safety_Guard_House():
 
     def __str__(self):
         return self.obj_id
-
 
 class data():
 
@@ -168,7 +160,6 @@ class data():
 
     def __str__(self):
         return self.obj_id
-
 
 class SpecialWeather():
 
@@ -287,7 +278,6 @@ class SpecialWeather():
         two_months_ago_time = datetime(year, month, 1, now.hour, now.minute)
         return two_months_ago_time.strftime('%Y%m%d%H%M')
 
-
 class Population_real_time():
 
     def __init__(self):
@@ -379,6 +369,27 @@ class Population_real_time():
 
         ret = sorted(ret, key=lambda x: x['area_popul_avg'], reverse=True)
         return ret
+
+class Population_AI_model():
+    
+    def __init__(self):
+        self.base_url = 'http://openapi.seoul.go.kr:8088/4b4c477a766c696d39314965686a66/json/SPOP_LOCAL_RESD_DONG/1/5/20230907/ '
+        self.region_code = ['11500540', '11380625', '11380690', '11740685']
+    
+    def init_population_AI(self):
+        return
+
+    def update_population_AI(self):
+
+        ret = []
+        for target in self.region_code:
+            data = self.fetch_data(f"{self.base_url}/{target}")
+            ret.append(data)
+        return ret
+
+    def fetch_data(self, url):
+        response = requests.get(url)
+        return response.json()
 
 class DemoScraper:
 
@@ -555,24 +566,3 @@ class DemoScraper:
         self.update_demo(collection)
         self.close_driver()
         return
-
-class Population_AI_model():
-    
-    def __init__(self):
-        self.base_url = 'http://openapi.seoul.go.kr:8088/4b4c477a766c696d39314965686a66/json/SPOP_LOCAL_RESD_DONG/1/5/20230907/ '
-        self.region_code = ['11500540', '11380625', '11380690', '11740685']
-    
-    def init_population_AI(self):
-        return
-
-    def update_population_AI(self):
-
-        ret = []
-        for target in self.region_code:
-            data = self.fetch_data(f"{self.base_url}/{target}")
-            ret.append(data)
-        return ret
-
-    def fetch_data(self, url):
-        response = requests.get(url)
-        return response.json()
