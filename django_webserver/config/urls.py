@@ -38,4 +38,5 @@ urlpatterns = [
     path('get_bus_route/<str:bus_num>', views.get_bus_route, name='get_bus_route'),
     path('get_demo_today/', views.get_demo_today, name='get_demo_today'),
     path('popul_test/', views.test_AI, name='test_AI'),
+    path('bus_test/', views.test_bus, name='test_bus'),
 ]
