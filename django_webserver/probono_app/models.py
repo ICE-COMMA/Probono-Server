@@ -350,7 +350,7 @@ class Population_real_time():
                     temp = future.result()['SeoulRtd.citydata_ppltn'][0]
                     area_popul_average = round((int(temp['AREA_PPLTN_MIN']) + int(temp['AREA_PPLTN_MAX'])) / 2)
                     data = {
-                        'area_name': temp['AREA_NM'],
+                        'area_name'         : temp['AREA_NM'],
                         'area_code'         : temp['AREA_CD'],
                         'area_congest'      : temp['AREA_CONGEST_LVL'],
                         'message'           : temp['AREA_CONGEST_MSG'],
