@@ -338,32 +338,7 @@ class Population_real_time():
     def fetch_data(self, url):
         response = requests.get(url)
         return response.json()
-
-    # def get_real_time_popul(self, region_info):
-    #     start_index = 1
-    #     end_index = 5
-
-    #     ret = []
-    #     for target in region_info:
-    #         code_target = target['AREA_CD']
-    #         print(code_target)
-    #         url = f"{self.base_url}/{start_index}/{end_index}/{code_target}"
-    #         response = requests.get(url)
-    #         temp = response.json()
-    #         temp = temp['SeoulRtd.citydata_ppltn'][0]
-    #         print(temp)
-    #         data = {
-    #             'area_name'         : temp['AREA_NM'],
-    #             'area_code'         : temp['AREA_CD'],
-    #             'area_congest'      : temp['AREA_CONGEST_LVL'],
-    #             'message'           : temp['AREA_CONGEST_MSG'],
-    #             'area_popul_min'    : temp['AREA_PPLTN_MIN'],
-    #             'area_popul_max'    : temp['AREA_PPLTN_MAX'],
-    #             'area_update_time'  : temp['PPLTN_TIME']
-    #         }
-    #         ret.append(data)
-    #     return ret
-
+    
     def get_real_time_popul(self, region_info):
         start_index = 1
         end_index = 5
