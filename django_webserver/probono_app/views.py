@@ -199,16 +199,17 @@ def get_bus_route(request, bus_num):
     print(response)
     data = response.json()
     item_list = data['msgBody']['itemList']
-    # print(item_list)
 
     ret = []
     for target in item_list:
         data = {
-            'name'  : target['stationNm'],
-            'seq'   : target['seq'],
-            'x'     : target['gpsX'],
-            'y'     : target['gpsY']
+            'station_id'    : target['station'],
+            'name'          : target['stationNm'],
+            'seq'           : target['seq'],
+            'x'             : target['gpsX'],
+            'y'             : target['gpsY']
         }
+        print(data)
         ret.append(data)
     return JsonResponse({'station': ret})
     # print(ret[0])
