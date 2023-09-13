@@ -7,7 +7,7 @@ from bson.objectid import ObjectId
 from bson.json_util import loads, dumps
 
 # Special Weather
-from datetime import datetime
+from datetime import datetime, timedelta
 from itertools import groupby
 
 
@@ -381,16 +381,45 @@ class Population_AI_model():
         return
 
     def update_population_AI(self):
-
+        one_week_ago = self.get_one_week_ago_date()
+        url = f"{self.base_url}/{one_week_ago}/ "
         ret = []
         for target in self.region_code:
-            data = self.fetch_data(f"{self.base_url}/{target}")
+            data = self.fetch_data(f"{url}/{target}")
             ret.append(data)
+
         return ret
 
     def fetch_data(self, url):
         response = requests.get(url)
         return response.json()
+
+    # Jian
+    def predict_popul(self):
+        data = self.update_population_AI()
+
+        for target in data:
+            print(target)
+        
+        return
+
+    def get_one_week_ago_date(self):
+
+        current_date = datetime.now().strftime('%Y-%m-%d')
+        date = datetime.strptime(current_date, '%Y-%m-%d')
+
+        one_week_ago_datetime = date - timedelta(days=7)
+
+        month_diff = (date.month - one_week_ago_datetime.month) % 12
+        if month_diff < 0:
+            one_week_ago_datetime = one_week_ago_datetime.replace(year=date.year - 1)
+            one_week_ago_datetime = one_week_ago_datetime.replace(month=date.month)
+
+        if one_week_ago_datetime.day > date.day:
+            one_week_ago_datetime = one_week_ago_datetime.replace(day=date.day)
+        result_date = one_week_ago_datetime.strftime('%Y%m%d')
+        return result_date
+
 
 class DemoScraper:
 
