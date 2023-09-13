@@ -1,6 +1,0 @@
-@import url(reset.css);
-
-#login-content form {
-  display: flex;
-  flex-direction: column;
-}
