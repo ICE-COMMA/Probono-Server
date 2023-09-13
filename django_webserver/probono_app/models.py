@@ -280,16 +280,20 @@ class Bus_info():
         self.base_url = 'http://ws.bus.go.kr/api/rest/buspos/getBusPosByRtid'
         self.key = '4cwiloFmPQxO3hXwmJy3jruoPPh6m8PQZqxBkWecSAgIIeRjq6UIdo0r7ZnmT4Rm4kVErRaD9jd1XU5CS7Chwg=='
         self.bus_type = { '0' : False, '1' : True, '2' : False }
+        self.bool = { '0' : False, '1' : True }
 
     def get_bus_pos(self, route_id):
         params = { 'serviceKey' : self.key, 'busRouteId' : route_id, 'resultType' : 'json' }
         data = self.fetch_data(params)
         data = data['bus_pos']['msgBody']['itemList']
         ret = {
-            'is_low' : data['busType'],
-            'is_bus_stopped' :  data['stopFlag'],
-            'is_full'           : data['isFullFlag']
-
+            'is_low'            : data['busType'],
+            'is_bus_stopped'    : data['stopFlag'],
+            'is_full'           : data['isFullFlag'],
+            'is_last'           : data['islastyn'],
+            'congestion'        : data['congetion'],
+            'next_station_id'   : data['nextStId'],
+            'next_time'         : data['nextStTm']
         }
         print(ret)
         return ret
