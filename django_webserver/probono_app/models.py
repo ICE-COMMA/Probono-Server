@@ -283,7 +283,7 @@ class Bus_info():
         self.bool = { '0' : False, '1' : True }
 
     def get_bus_pos(self, route_id):
-        params = { 'serviceKey' : self.key, 'busRouteId' : route_id, 'resultType' : 'json' }
+        params = {'serviceKey' : self.key, 'busRouteId' : route_id, 'resultType' : 'json'}
         data = self.fetch_data(params)
         data = data['bus_pos']['msgBody']['itemList']
         ret = {
@@ -371,21 +371,23 @@ class Population_real_time():
         ret = []
         # Multithreading for optimization
         with ThreadPoolExecutor() as executor:
-            future_to_url = {executor.submit(self.fetch_data, f"{self.base_url}/{start_index}/{end_index}/{target['AREA_CD']}"): target for target in region_info}
+            future_to_url = {executor.submit(
+                self.fetch_data, f"{self.base_url}/{start_index}/{end_index}/{target['AREA_CD']}"): target for target in region_info}
             for future in as_completed(future_to_url):
                 target = future_to_url[future]
                 try:
                     temp = future.result()['SeoulRtd.citydata_ppltn'][0]
-                    area_popul_average = round((int(temp['AREA_PPLTN_MIN']) + int(temp['AREA_PPLTN_MAX'])) / 2)
+                    area_popul_average = round(
+                        (int(temp['AREA_PPLTN_MIN']) + int(temp['AREA_PPLTN_MAX'])) / 2)
                     data = {
-                        'area_name'         : temp['AREA_NM'],
-                        'area_code'         : temp['AREA_CD'],
-                        'area_congest'      : temp['AREA_CONGEST_LVL'],
-                        'message'           : temp['AREA_CONGEST_MSG'],
-                        'area_popul_min'    : temp['AREA_PPLTN_MIN'],
-                        'area_popul_max'    : temp['AREA_PPLTN_MAX'],
-                        'area_popul_avg'    : area_popul_average,
-                        'area_update_time'  : temp['PPLTN_TIME']
+                        'area_name': temp['AREA_NM'],
+                        'area_code': temp['AREA_CD'],
+                        'area_congest': temp['AREA_CONGEST_LVL'],
+                        'message': temp['AREA_CONGEST_MSG'],
+                        'area_popul_min': temp['AREA_PPLTN_MIN'],
+                        'area_popul_max': temp['AREA_PPLTN_MAX'],
+                        'area_popul_avg': area_popul_average,
+                        'area_update_time': temp['PPLTN_TIME']
                     }
                     ret.append(data)
                 except Exception as exc:
@@ -395,11 +397,11 @@ class Population_real_time():
         return ret
 
 class Population_AI_model():
-    
+
     def __init__(self):
         self.base_url = 'http://openapi.seoul.go.kr:8088/4b4c477a766c696d39314965686a66/json/SPOP_LOCAL_RESD_DONG/1/5/20230907/ '
         self.region_code = ['11500540', '11380625', '11380690', '11740685']
-    
+
     def init_population_AI(self):
         return
 
@@ -419,7 +421,7 @@ class DemoScraper:
 
     def __init__(self):
         self.chrome_options = webdriver.ChromeOptions()
-        self.download_path = '/Users/choijeongheum/Downloads/'
+        self.download_path = 'C:/Users/limhs/Downloads/'
         self.site_url = "https://www.smpa.go.kr/user/nd54882.do"
 
     def start_driver(self):
@@ -470,7 +472,7 @@ class DemoScraper:
     def process_hwp_file(self):
 
         # 파일명에서 한글 없애기(파일경로 수정 요망)
-        file_path = "/Users/choijeongheum/Downloads/" + self.date + \
+        file_path = "C:/Users/limhs/Downloads/" + self.date + \
             "(" + self.day + ")" + " " + "인터넷집회.hwp"
         new_filename = self.date + 'data.hwp'
         new_file_path = os.path.join(os.path.dirname(file_path), new_filename)
@@ -538,11 +540,11 @@ class DemoScraper:
                     text = text[match.end():]
                     # print(time)
 
-                i=0
-                while(1):
-                    if text[i].isalnum()and not 0x4E00 <= ord(text[i]) <= 0x9FFF:
+                i = 0
+                while (1):
+                    if text[i].isalnum() and not 0x4E00 <= ord(text[i]) <= 0x9FFF:
                         break
-                    i+=1
+                    i += 1
 
                 match = re.search(r'<[^>]+>', text)
                 if match:
