@@ -29,6 +29,7 @@ import re
 import zlib
 import struct
 
+
 class CustomUser():
 
     # user_id
@@ -49,6 +50,7 @@ class CustomUser():
     def __str__(self):
         return self.ID
 
+
 class Bus():
 
     # object_id
@@ -60,6 +62,7 @@ class Bus():
 
     def __str__(self):
         return self.obj_id
+
 
 class Bus_Station():
 
@@ -74,6 +77,7 @@ class Bus_Station():
 
     def __str__(self):
         return self.stat_name
+
 
 class Subway_Station():
 
@@ -93,6 +97,7 @@ class Subway_Station():
     def __str__(self):
         return self.stat_name
 
+
 class Police_Station():
 
     # object_id
@@ -106,6 +111,7 @@ class Police_Station():
 
     def __str__(self):
         return self.stat_name
+
 
 class Population_Density_Info():
 
@@ -125,6 +131,7 @@ class Population_Density_Info():
     def __str__(self):
         return self.obj_id
 
+
 class Safety_Guard_House():
 
     # object_id
@@ -138,6 +145,7 @@ class Safety_Guard_House():
 
     def __str__(self):
         return self.obj_id
+
 
 class data():
 
@@ -156,6 +164,7 @@ class data():
 
     def __str__(self):
         return self.obj_id
+
 
 class SpecialWeather():
 
@@ -274,26 +283,28 @@ class SpecialWeather():
         two_months_ago_time = datetime(year, month, 1, now.hour, now.minute)
         return two_months_ago_time.strftime('%Y%m%d%H%M')
 
+
 class Bus_info():
 
     def __init__(self):
         self.base_url = 'http://ws.bus.go.kr/api/rest/buspos/getBusPosByRtid'
         self.key = '4cwiloFmPQxO3hXwmJy3jruoPPh6m8PQZqxBkWecSAgIIeRjq6UIdo0r7ZnmT4Rm4kVErRaD9jd1XU5CS7Chwg=='
-        self.bus_type = { '0' : False, '1' : True, '2' : False }
-        self.bool = { '0' : False, '1' : True }
+        self.bus_type = {'0': False, '1': True, '2': False}
+        self.bool = {'0': False, '1': True}
 
     def get_bus_pos(self, route_id):
-        params = {'serviceKey' : self.key, 'busRouteId' : route_id, 'resultType' : 'json'}
+        params = {'serviceKey': self.key,
+                  'busRouteId': route_id, 'resultType': 'json'}
         data = self.fetch_data(params)
         data = data['bus_pos']['msgBody']['itemList']
         ret = {
-            'is_low'            : data['busType'],
-            'is_bus_stopped'    : data['stopFlag'],
-            'is_full'           : data['isFullFlag'],
-            'is_last'           : data['islastyn'],
-            'congestion'        : data['congetion'],
-            'next_station_id'   : data['nextStId'],
-            'next_time'         : data['nextStTm']
+            'is_low': data['busType'],
+            'is_bus_stopped': data['stopFlag'],
+            'is_full': data['isFullFlag'],
+            'is_last': data['islastyn'],
+            'congestion': data['congetion'],
+            'next_station_id': data['nextStId'],
+            'next_time': data['nextStTm']
         }
         print(ret)
         return ret
@@ -301,6 +312,7 @@ class Bus_info():
     def fetch_data(self, params):
         response = requests.get(self.base_url, params=params)
         return response.json()
+
 
 class Population_real_time():
 
@@ -338,7 +350,7 @@ class Population_real_time():
     def fetch_data(self, url):
         response = requests.get(url)
         return response.json()
-    
+
     def get_real_time_popul(self, region_info):
         start_index = 1
         end_index = 5
@@ -355,14 +367,14 @@ class Population_real_time():
                     area_popul_average = round(
                         (int(temp['AREA_PPLTN_MIN']) + int(temp['AREA_PPLTN_MAX'])) / 2)
                     data = {
-                        'area_name'         : temp['AREA_NM'],
-                        'area_code'         : temp['AREA_CD'],
-                        'area_congest'      : temp['AREA_CONGEST_LVL'],
-                        'message'           : temp['AREA_CONGEST_MSG'],
-                        'area_popul_min'    : temp['AREA_PPLTN_MIN'],
-                        'area_popul_max'    : temp['AREA_PPLTN_MAX'],
-                        'area_popul_avg'    : area_popul_average,
-                        'area_update_time'  : temp['PPLTN_TIME']
+                        'area_name': temp['AREA_NM'],
+                        'area_code': temp['AREA_CD'],
+                        'area_congest': temp['AREA_CONGEST_LVL'],
+                        'message': temp['AREA_CONGEST_MSG'],
+                        'area_popul_min': temp['AREA_PPLTN_MIN'],
+                        'area_popul_max': temp['AREA_PPLTN_MAX'],
+                        'area_popul_avg': area_popul_average,
+                        'area_update_time': temp['PPLTN_TIME']
                     }
                     ret.append(data)
                 except Exception as exc:
@@ -370,6 +382,7 @@ class Population_real_time():
 
         ret = sorted(ret, key=lambda x: x['area_popul_avg'], reverse=True)
         return ret
+
 
 class Population_AI_model():
 
@@ -392,11 +405,12 @@ class Population_AI_model():
         response = requests.get(url)
         return response.json()
 
+
 class DemoScraper:
 
     def __init__(self):
         self.chrome_options = webdriver.ChromeOptions()
-        self.download_path = '/Users/choijeongheum/Downloads/'
+        self.download_path = '/Users/limhs/Downloads/'
         self.site_url = "https://www.smpa.go.kr/user/nd54882.do"
 
     def start_driver(self):
@@ -447,7 +461,7 @@ class DemoScraper:
     def process_hwp_file(self):
 
         # 파일명에서 한글 없애기(파일경로 수정 요망)
-        file_path = "/Users/choijeongheum/Downloads/" + self.date + \
+        file_path = "/Users/limhs/Downloads/" + self.date + \
             "(" + self.day + ")" + " " + "인터넷집회.hwp"
         new_filename = self.date + 'data.hwp'
         new_file_path = os.path.join(os.path.dirname(file_path), new_filename)
