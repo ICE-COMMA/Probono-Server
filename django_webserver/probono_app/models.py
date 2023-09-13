@@ -380,14 +380,14 @@ class Population_real_time():
                     area_popul_average = round(
                         (int(temp['AREA_PPLTN_MIN']) + int(temp['AREA_PPLTN_MAX'])) / 2)
                     data = {
-                        'area_name': temp['AREA_NM'],
-                        'area_code': temp['AREA_CD'],
-                        'area_congest': temp['AREA_CONGEST_LVL'],
-                        'message': temp['AREA_CONGEST_MSG'],
-                        'area_popul_min': temp['AREA_PPLTN_MIN'],
-                        'area_popul_max': temp['AREA_PPLTN_MAX'],
-                        'area_popul_avg': area_popul_average,
-                        'area_update_time': temp['PPLTN_TIME']
+                        'area_name'         : temp['AREA_NM'],
+                        'area_code'         : temp['AREA_CD'],
+                        'area_congest'      : temp['AREA_CONGEST_LVL'],
+                        'message'           : temp['AREA_CONGEST_MSG'],
+                        'area_popul_min'    : temp['AREA_PPLTN_MIN'],
+                        'area_popul_max'    : temp['AREA_PPLTN_MAX'],
+                        'area_popul_avg'    : area_popul_average,
+                        'area_update_time'  : temp['PPLTN_TIME']
                     }
                     ret.append(data)
                 except Exception as exc:
