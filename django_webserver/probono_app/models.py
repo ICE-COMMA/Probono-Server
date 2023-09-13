@@ -284,6 +284,32 @@ class SpecialWeather():
         return two_months_ago_time.strftime('%Y%m%d%H%M')
 
 
+class Bus_info():
+
+    def __init__(self):
+        self.base_url = 'http://ws.bus.go.kr/api/rest/buspos/getBusPosByRtid'
+        self.key = '4cwiloFmPQxO3hXwmJy3jruoPPh6m8PQZqxBkWecSAgIIeRjq6UIdo0r7ZnmT4Rm4kVErRaD9jd1XU5CS7Chwg=='
+        self.bus_type = {'0': False, '1': True, '2': False}
+
+    def get_bus_pos(self, route_id):
+        params = {'serviceKey': self.key,
+                  'busRouteId': route_id, 'resultType': 'json'}
+        data = self.fetch_data(params)
+        data = data['bus_pos']['msgBody']['itemList']
+        ret = {
+            'is_low': data['busType'],
+            'is_bus_stopped':  data['stopFlag'],
+            'is_full': data['isFullFlag']
+
+        }
+        print(ret)
+        return ret
+
+    def fetch_data(self, params):
+        response = requests.get(self.base_url, params=params)
+        return response.json()
+
+
 class Population_real_time():
 
     def __init__(self):

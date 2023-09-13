@@ -6,7 +6,6 @@ import requests
 import xmltodict
 from bson.json_util import loads, dumps
 from datetime import datetime
-import pandas as pd
 
 # Mongo DB
 from config import utils
@@ -14,6 +13,9 @@ from pymongo.errors import PyMongoError
 
 # User
 from .forms import SignUpForm
+
+# Transfer info
+from .models import Bus_info
 
 # Population_real_time
 from .models import Population_real_time
@@ -31,10 +33,25 @@ def test_AI(request):
     return JsonResponse({'popul_ai': popul_ai})
 
 
+def test_bus(request):
+
+    temp = Bus_info()
+    ret = temp.get_bus_pos('100100410')
+
+    return JsonResponse({'bus_pos': ret})
+
+
 def index(request):
-    collection = get_collection(db_handle, 'special_weather')
-    ret = list(collection.find({}))
-    return render(request, 'index.html', {'spw': ret})
+    if request.method == 'GET':
+        collection = get_collection(db_handle, 'special_weather')
+        ret = list(collection.find({}))
+        return render(request, 'index.html', {'spw': ret})
+
+    elif request.method == 'POST':
+        collection = get_collection(db_handle, 'report')
+        data = loads(request.body)
+        print('TEST : ', data, '\n', 'TYPE : ', type(data))
+        # collection.insert_one()
 
 
 def my_page(request, id):
