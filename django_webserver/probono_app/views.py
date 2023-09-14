@@ -45,7 +45,7 @@ def index(request):
     if request.method == 'GET':
         collection = get_collection(db_handle, 'special_weather')
         ret = list(collection.find({}))
-        return render(request, 'index.html', {'user': request.session['ID'], 'spw': ret})
+        return render(request, 'index.html', {'spw': ret})
         # return JsonResponse({'user': request.session['ID'], 'spw': ret})
 
     elif request.method == 'POST':
