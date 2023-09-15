@@ -173,13 +173,13 @@ def sign_up(request):
 def id_check(request):
     users = get_collection(db_handle, 'User')
     data = loads(request.body)
-    temp_id = data['check_id']
+    temp_id = data['userId']
     temp = users.find_one({'ID': temp_id})
     if not temp:
         data = {'valid': True}  # REMIND : front have to know its response.
-        status_code = 201
+        status_code = 200
     else:
-        status_code = 201
+        status_code = 200
         data = {'valid': False}  # REMIND : front have to know its response.
     return JsonResponse(data, status=status_code)
 

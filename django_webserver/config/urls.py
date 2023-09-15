@@ -30,7 +30,7 @@ urlpatterns = [
     path('api/login/', views.login_view, name='login'),
     path('api/sign_up/', views.sign_up, name='sign_up'),
     path('api/logout/', views.logout_view, name='logout'),
-    path('api/id_check', views.id_check, name='id_check'),
+    path('api/id_check/', views.id_check, name='id_check'),
     path('api/get_subway_elvtr/', views.get_subway_elvtr, name='get_subway_elvtr'),
     path('api/get_safety_guard_house/', views.get_safety_guard_house,
          name='get_safety_guard_house'),
