@@ -28,9 +28,11 @@ def test_AI(request):
 
     from .models import Population_AI_model
     popul_ai = Population_AI_model()
-    popul_ai.update_population_AI()
+    ret = popul_ai.update_population_AI()
+    # popul_ai = dumps(popul_ai)
+    # print(popul_ai)
 
-    return JsonResponse({'popul_ai': popul_ai})
+    return JsonResponse({ 'popul_ai': ret }, safe=False)
 
 
 def test_bus(request):
