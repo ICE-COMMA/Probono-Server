@@ -387,7 +387,7 @@ class Population_real_time():
 class Population_AI_model():
 
     def __init__(self):
-        self.base_url = 'http://openapi.seoul.go.kr:8088/4b4c477a766c696d39314965686a66/json/SPOP_LOCAL_RESD_DONG/1/5/20230907/ '
+        self.base_url = 'http://openapi.seoul.go.kr:8088/4b4c477a766c696d39314965686a66/json/SPOP_LOCAL_RESD_DONG/1/24'
         self.region_code = ['11500540', '11380625', '11380690', '11740685']
 
     def init_population_AI(self):
@@ -395,12 +395,27 @@ class Population_AI_model():
 
     def update_population_AI(self):
         one_week_ago = self.get_one_week_ago_date()
-        url = f"{self.base_url}/{one_week_ago}/ "
+        print(one_week_ago)
+        url = f"{self.base_url}/{one_week_ago}"
+        print(url)
         ret = []
         for target in self.region_code:
-            data = self.fetch_data(f"{url}/{target}")
+            real = f"{url}/ /{target}"
+            print(real)
+            fetched_data = self.fetch_data(real)
+            fetched_data = fetched_data['SPOP_LOCAL_RESD_DONG']['row']
+            data = []
+            for data_row in fetched_data:
+                temp = {
+                    'STDR_DE_ID'        : data_row['STDR_DE_ID'],
+                    'TMZON_PD_SE'       : data_row['TMZON_PD_SE'],
+                    'ADSTRD_CODE_SE'    : data_row['ADSTRD_CODE_SE'],
+                    'TOT_LVPOP_CO'      : data_row['TOT_LVPOP_CO']
+                }
+                data.append(temp)
+                print(temp)
             ret.append(data)
-
+        print(ret)
         return ret
 
     def fetch_data(self, url):
