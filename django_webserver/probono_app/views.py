@@ -31,6 +31,7 @@ def test_AI(request):
     from .models import Population_AI_model
     popul_ai = Population_AI_model()
     ret = popul_ai.update_population_AI()
+    popul_ai.get_holiday()
     # popul_ai = dumps(popul_ai)
     # print(popul_ai)
 

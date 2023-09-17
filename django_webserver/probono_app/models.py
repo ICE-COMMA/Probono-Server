@@ -399,6 +399,8 @@ class Population_AI_model():
     def __init__(self):
         self.base_url = 'http://openapi.seoul.go.kr:8088/4b4c477a766c696d39314965686a66/json/SPOP_LOCAL_RESD_DONG/1/24'
         self.region_code = ['11500540', '11380625', '11380690', '11740685']
+        self.holi_url = 'https://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo'
+        self.holi_key = '4cwiloFmPQxO3hXwmJy3jruoPPh6m8PQZqxBkWecSAgIIeRjq6UIdo0r7ZnmT4Rm4kVErRaD9jd1XU5CS7Chwg=='
 
     def init_population_AI(self):
         return
@@ -440,6 +442,17 @@ class Population_AI_model():
             print(target)
 
         return
+
+    def get_holiday(self):
+        
+        ret = []
+        params = { 'serviceKey' : self.holi_key, 'solYear' : '2023', 'solMonth' : '09' }
+        response = requests.get(self.base_url, params=params)
+        print(response)
+        print(response.content)
+        
+        
+        return ret
 
     def get_one_week_ago_date(self):
 
