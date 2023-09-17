@@ -1,3 +1,4 @@
+import logging
 from django.db import models
 import requests
 from pytz import timezone
@@ -166,6 +167,11 @@ class data():
         return self.obj_id
 
 
+logger = logging.getLogger(__name__)
+
+# ... [중략] ...
+
+
 class SpecialWeather():
 
     tmfc1_value = None
@@ -244,7 +250,11 @@ class SpecialWeather():
         for line in lines:
             if line.startswith("#"):
                 continue
+
             fields = line.split(',')
+            if len(fields) < 2:
+                logger.error(f"Unexpected fields data: {fields}")
+                raise ValueError("Insufficient data in fields!")
             tm_ef = datetime.strptime(fields[1].strip(), "%Y%m%d%H%M")
             data = {
                 'TM_EF': tm_ef,
@@ -407,10 +417,10 @@ class Population_AI_model():
             data = []
             for data_row in fetched_data:
                 temp = {
-                    'STDR_DE_ID'        : data_row['STDR_DE_ID'],
-                    'TMZON_PD_SE'       : data_row['TMZON_PD_SE'],
-                    'ADSTRD_CODE_SE'    : data_row['ADSTRD_CODE_SE'],
-                    'TOT_LVPOP_CO'      : data_row['TOT_LVPOP_CO']
+                    'STDR_DE_ID': data_row['STDR_DE_ID'],
+                    'TMZON_PD_SE': data_row['TMZON_PD_SE'],
+                    'ADSTRD_CODE_SE': data_row['ADSTRD_CODE_SE'],
+                    'TOT_LVPOP_CO': data_row['TOT_LVPOP_CO']
                 }
                 data.append(temp)
                 print(temp)
@@ -455,7 +465,7 @@ class DemoScraper:
 
     def __init__(self):
         self.chrome_options = webdriver.ChromeOptions()
-        self.download_path = '/Users/choijeongheum/Downloads/'
+        self.download_path = '/Users/limhs/Downloads/'
         self.site_url = "https://www.smpa.go.kr/user/nd54882.do"
 
     def start_driver(self):
@@ -506,7 +516,7 @@ class DemoScraper:
     def process_hwp_file(self):
 
         # 파일명에서 한글 없애기(파일경로 수정 요망)
-        file_path = "/Users/choijeongheum/Downloads/" + self.date + \
+        file_path = "/Users/limhs/Downloads/" + self.date + \
             "(" + self.day + ")" + " " + "인터넷집회.hwp"
         new_filename = self.date + 'data.hwp'
         new_file_path = os.path.join(os.path.dirname(file_path), new_filename)

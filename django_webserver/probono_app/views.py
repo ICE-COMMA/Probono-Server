@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 import requests
 import xmltodict
+import json
 from bson.json_util import loads, dumps
 from datetime import datetime
 
@@ -32,7 +34,7 @@ def test_AI(request):
     # popul_ai = dumps(popul_ai)
     # print(popul_ai)
 
-    return JsonResponse({ 'popul_ai': ret }, safe=False)
+    return JsonResponse({'popul_ai': ret}, safe=False)
 
 
 def test_bus(request):
@@ -47,7 +49,7 @@ def index(request):
     if request.method == 'GET':
         collection = get_collection(db_handle, 'special_weather')
         ret = list(collection.find({}))
-        return render(request, 'index.html', { 'user' : request.session['ID'], 'spw': ret})
+        return render(request, 'index.html', {'user': request.session['ID'], 'spw': ret})
         # return JsonResponse({'user': request.session['ID'], 'spw': ret})
 
     elif request.method == 'POST':
@@ -129,11 +131,13 @@ def safety_info_data(request):
     return JsonResponse({'ret': ret_list})
 
 
+@csrf_exempt
 @require_POST
 def login_view(request):
+    data = json.loads(request.body)
     users = get_collection(db_handle, 'User')
-    user_id = request.POST.get('userid')  # WARN : front's parameter name
-    password = request.POST.get('password')
+    user_id = data.get('id')  # WARN : front's parameter name
+    password = data.get('password')
     user_info = users.find_one({'ID': user_id})
     if user_info:
         if password == user_info['PW']:
@@ -143,41 +147,73 @@ def login_view(request):
                 "success": True,
                 "redirect_url": reverse('index')
             }
+            status_code = 200
         else:
             data = {"success": False}
+            status_code = 401
     else:
         data = {"success": False}
-    status_code = 202
+        status_code = 401
+
     return JsonResponse(data, status=status_code)
 
 
 @require_POST
 def sign_up(request):
-    print(request.POST)
-    form = SignUpForm(request.POST)
-    if form.is_valid():
-        print('GOOD')
-        user_data = form.cleaned_data
-        date_obj = form.cleaned_data['date']
-        datetime_obj = datetime(date_obj.year, date_obj.month, date_obj.day)
-        form.cleaned_data['date'] = datetime_obj
-        user_data['custom'] = ''
-        print(user_data)
+    data = json.loads(request.body.decode('utf-8'))
+
+    user_name = data.get('userName')
+    print(user_name)
+    user_id = data.get('userId')
+    print(user_id)
+    password = data.get('password')
+    print(password)
+    # date_obj = data.get('date')
+    # datetime_obj = datetime(date_obj.year, date_obj.month, date_obj.day)
+
+    user_data = {
+        "ID": user_id,
+        "name": user_name,
+        "PW": password,
+        "gender": "",
+        "date": "",
+        "impaired": "",
+        "custom": ""  # custom 필드는 빈 문자열로 초기화
+    }
+    try:
         users = get_collection(db_handle, 'User')
-        users.insert_one(form.cleaned_data)
-        return redirect('index')
-    print(form.errors)
-    ret = {'message': 'error'}
-    return JsonResponse(ret)
+        users.insert_one(user_data)
+
+        return JsonResponse({'success': True, 'message': '회원가입에 성공하였습니다.'})
+
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
+    # print(request.POST)
+    # form = SignUpForm(request.POST)
+    # if form.is_valid():
+    #     print('GOOD')
+    #     user_data = form.cleaned_data
+    #     date_obj = form.cleaned_data['date']
+    #     datetime_obj = datetime(date_obj.year, date_obj.month, date_obj.day)
+    #     form.cleaned_data['date'] = datetime_obj
+    #     user_data['custom'] = ''
+    #     print(user_data)
+    #     users = get_collection(db_handle, 'User')
+    #     users.insert_one(form.cleaned_data)
+    #     return redirect('index')
+    # print(form.errors)
+    # ret = {'message': 'error'}
+    # return JsonResponse(ret)
 
 
 @require_POST
 def id_check(request):
     users = get_collection(db_handle, 'User')
-    data = loads(request.body)
+    data = json.loads(request.body)
     temp_id = data['userId']
     temp = users.find_one({'ID': temp_id})
     if not temp:
+        print("already ID")
         data = {'valid': True}  # REMIND : front have to know its response.
         status_code = 200
     else:
@@ -189,6 +225,13 @@ def id_check(request):
 def logout_view(request):
     request.session.flush()
     return redirect('index')
+
+
+@csrf_exempt
+@require_POST
+def update_custom(request):
+    data = loads(request.body)  # select 정보 가져오기
+    user_id = request.session.get('ID')  # 세션을 통해 uesr_id가져오기
 
 
 @require_POST
