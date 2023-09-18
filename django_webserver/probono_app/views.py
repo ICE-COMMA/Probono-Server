@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_GET
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 import requests
@@ -135,25 +135,29 @@ def safety_info_data(request):
 @csrf_exempt
 @require_POST
 def login_view(request):
-    data = json.loads(request.body)
+    print(request.body)
+    data = json.loads(request.body.decode('utf-8'))
     users = get_collection(db_handle, 'User')
     user_id = data.get('id')  # WARN : front's parameter name
     password = data.get('password')
     user_info = users.find_one({'ID': user_id})
+    username = user_info['name']
     if user_info:
         if password == user_info['PW']:
-            request.session['ID'] = user_id
+            request.session['ID'] = user_id  # session에 로그인한 user의 id저장
             print(request.session.items())
             data = {
                 "success": True,
-                "redirect_url": reverse('index')
+                "username": username
             }
             status_code = 200
         else:
             data = {"success": False}
+            print("wrong pw")
             status_code = 401
     else:
         data = {"success": False}
+        print("no id")
         status_code = 401
 
     return JsonResponse(data, status=status_code)
@@ -231,8 +235,18 @@ def logout_view(request):
 @csrf_exempt
 @require_POST
 def update_custom(request):
-    data = loads(request.body)  # select 정보 가져오기
-    user_id = request.session.get('ID')  # 세션을 통해 uesr_id가져오기
+
+    try:
+        data = loads(request.body)  # select 정보 가져오기
+        user_id = request.session.get('ID')  # 세션을 통해 uesr_id가져오기
+
+        custom_data = data.get('select', {})
+        users = get_collection(db_handle, 'User')
+        users.update_one({'ID': user_id}, {'custom': custom_data})
+
+        return JsonResponse({'success': True})
+    except Exception as e:
+        return JsonResponse({'success': False})
 
 
 @require_POST
