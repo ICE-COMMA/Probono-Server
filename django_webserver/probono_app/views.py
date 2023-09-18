@@ -174,6 +174,17 @@ def sign_up(request):
     # date_obj = data.get('date')
     # datetime_obj = datetime(date_obj.year, date_obj.month, date_obj.day)
 
+    default_custom_settings = {
+        "custom-demo": False,
+        "custom-elevator": False,
+        "custom-population": False,
+        "custom-predict": False,
+        "custom-safety": False,
+        "custom-safey-loc": False,
+        "custom-low-bus": False,
+        "custom-festival": False
+    }
+
     user_data = {
         "ID": data.get('userId'),
         "name": data.get('userName'),
@@ -181,7 +192,7 @@ def sign_up(request):
         "gender": data.get('gender'),
         "date": data.get('birth'),
         "impaired": data.get('impaired'),
-        "custom": ""  # custom 필드는 빈 문자열로 초기화
+        "custom": default_custom_settings  # custom 필드는 빈 문자열로 초기화
     }
     try:
         users = get_collection(db_handle, 'User')
@@ -241,7 +252,7 @@ def update_custom(request):
 
         custom_data = data.get('select', {})
         users = get_collection(db_handle, 'User')
-        users.update_one({'ID': user_id}, {'custom': custom_data})
+        users.update_one({'ID': user_id}, {"$set": {'custom': custom_data}})
 
         return JsonResponse({'success': True})
     except Exception as e:
