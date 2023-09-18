@@ -170,22 +170,17 @@ def login_view(request):
 def sign_up(request):
     data = json.loads(request.body.decode('utf-8'))
 
-    user_name = data.get('userName')
-    print(user_name)
-    user_id = data.get('userId')
-    print(user_id)
-    password = data.get('password')
-    print(password)
+    print(data)
     # date_obj = data.get('date')
     # datetime_obj = datetime(date_obj.year, date_obj.month, date_obj.day)
 
     user_data = {
-        "ID": user_id,
-        "name": user_name,
-        "PW": password,
-        "gender": "",
-        "date": "",
-        "impaired": "",
+        "ID": data.get('userId'),
+        "name": data.get('userName'),
+        "PW": data.get('password'),
+        "gender": data.get('gender'),
+        "date": data.get('birth'),
+        "impaired": data.get('impaired'),
         "custom": ""  # custom 필드는 빈 문자열로 초기화
     }
     try:
