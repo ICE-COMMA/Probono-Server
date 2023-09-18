@@ -444,14 +444,14 @@ class Population_AI_model():
         return
 
     def get_holiday(self):
-        
+
         ret = []
-        params = { 'serviceKey' : self.holi_key, 'solYear' : '2023', 'solMonth' : '09' }
+        params = {'serviceKey': self.holi_key,
+                  'solYear': '2023', 'solMonth': '09'}
         response = requests.get(self.base_url, params=params)
         print(response)
         print(response.content)
-        
-        
+
         return ret
 
     def get_one_week_ago_date(self):
@@ -481,6 +481,13 @@ class DemoScraper:
         self.download_path = '/Users/limhs/Downloads/'
         self.site_url = "https://www.smpa.go.kr/user/nd54882.do"
 
+    def check_file(self):  # 파일명에서 한글 없애기(파일경로 수정 요망)
+        file_path = "/Users/limhs/Downloads/"
+        new_filename = self.date + 'data.hwp'
+        new_file_path = file_path+new_filename
+        print(new_file_path)
+        return os.path.exists(new_file_path)
+
     def start_driver(self):
         # self.chrome_options.add_argument("--headless")
         self.driver = webdriver.Chrome(service=Service(
@@ -492,7 +499,6 @@ class DemoScraper:
 
     def get_date_info(self):
         current_date = datetime.now(timezone('Asia/Seoul'))
-        print('NOW!!!!!!!!!!!', current_date)
         year = current_date.strftime("%y")
         today = current_date.weekday()
         days = ["월", "화", "수", "목", "금", "토", "일"]
@@ -641,9 +647,11 @@ class DemoScraper:
         self.driver.quit()
 
     def get_demo(self, collection):
+        self.get_date_info()
+        if self.check_file():
+            return
         self.start_driver()
         self.navigate_to_site()
-        self.get_date_info()
         self.click_on_today_demo()
         self.download_hwp()
         self.update_demo(collection)
