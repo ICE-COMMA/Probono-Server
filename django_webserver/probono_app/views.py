@@ -50,10 +50,11 @@ def index(request):
     if request.method == 'GET':
         collection = get_collection(db_handle, 'special_weather')
         ret = list(collection.find({}))
+        # MongoDB의 _id는 JSON serializable하지 않기 때문에 문자열로 변환
         for item in ret:
             item['_id'] = str(item['_id'])
-
-        return JsonResponse({'user': request.session.get('ID'), 'spw': ret})
+        return render(request, 'index.html', {'user': request.session['ID'], 'spw': ret})
+        # return JsonResponse({'user': request.session['ID'], 'spw': ret})
 
     elif request.method == 'POST':
         collection = get_collection(db_handle, 'report')
