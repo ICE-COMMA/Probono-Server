@@ -50,8 +50,10 @@ def index(request):
     if request.method == 'GET':
         collection = get_collection(db_handle, 'special_weather')
         ret = list(collection.find({}))
-        return render(request, 'index.html', {'user': request.session['ID'], 'spw': ret})
-        # return JsonResponse({'user': request.session['ID'], 'spw': ret})
+        for item in ret:
+            item['_id'] = str(item['_id'])
+
+        return JsonResponse({'user': request.session.get('ID'), 'spw': ret})
 
     elif request.method == 'POST':
         collection = get_collection(db_handle, 'report')
@@ -216,12 +218,13 @@ def id_check(request):
     users = get_collection(db_handle, 'User')
     data = json.loads(request.body)
     temp_id = data['userId']
+    print(request.body)
     temp = users.find_one({'ID': temp_id})
     if not temp:
-        print("already ID")
         data = {'valid': True}  # REMIND : front have to know its response.
         status_code = 200
     else:
+        print("already ID")
         status_code = 200
         data = {'valid': False}  # REMIND : front have to know its response.
     return JsonResponse(data, status=status_code)
