@@ -478,11 +478,11 @@ class DemoScraper:
 
     def __init__(self):
         self.chrome_options = webdriver.ChromeOptions()
-        self.download_path = '/Users/limhs/Downloads/'
+        self.download_path = '/Users/choijeongheum/Downloads/'
         self.site_url = "https://www.smpa.go.kr/user/nd54882.do"
 
     def check_file(self):  # 파일명에서 한글 없애기(파일경로 수정 요망)
-        file_path = "/Users/limhs/Downloads/"
+        file_path = "/Users/choijeongheum/Downloads/"
         new_filename = self.date + 'data.hwp'
         new_file_path = file_path+new_filename
         print(new_file_path)
@@ -535,7 +535,7 @@ class DemoScraper:
     def process_hwp_file(self):
 
         # 파일명에서 한글 없애기(파일경로 수정 요망)
-        file_path = "/Users/limhs/Downloads/" + self.date + \
+        file_path = "/Users/choijeongheum/Downloads/" + self.date + \
             "(" + self.day + ")" + " " + "인터넷집회.hwp"
         new_filename = self.date + 'data.hwp'
         new_file_path = os.path.join(os.path.dirname(file_path), new_filename)
