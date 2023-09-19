@@ -197,7 +197,11 @@ class SpecialWeather():
         special_weathers.delete_many({})
         to_insert = []
         for target in self.target_reg:
-            content_str = self.init_fetch_data(target, self.key)
+            ret_fetch_data = self.init_fetch_data(target, self.key)
+            if not ret_fetch_data[1]:
+                return
+            content_str = ret_fetch_data[0]
+            # print(content_str)
             all_data = self.parse_data(content_str, target)
             all_data.sort(key=lambda x: (x['WRN'], x['TM_EF']))
             grouped_data = {key: list(group) for key, group in groupby(
@@ -231,8 +235,21 @@ class SpecialWeather():
         params = {
             'wrn': 'A', 'reg': target[0], 'tmfc1': SpecialWeather.tmfc1_value, 'disp': '0', 'authKey': key}
         SpecialWeather.tmfc1_value = datetime.now().strftime('%Y%m%d%H%M')
-        response = requests.get(url, params=params)
-        return response.content.decode('utf-8')
+        try:
+            response = requests.get(url, params=params)
+            response.raise_for_status()
+            return response.content.decode('utf-8'), True
+        except requests.exceptions.HTTPError as http_err:
+            if response.status_code == 500:
+                print("Internal Server Error : Special weather API server.")
+            else:
+                print(f"HTTP Error : {http_err}")
+        except requests.exceptions.RequestException as req_err:
+                print(f"Request Error : {req_err}")
+        except Exception as e:
+                print(f"Error : {e}")
+                print(response)
+        return response.content.decode('utf-8'), False
 
     def update_fetch_data(self, target, key):
         url = 'https://apihub.kma.go.kr/api/typ01/url/wrn_met_data.php'
