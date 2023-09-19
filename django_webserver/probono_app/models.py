@@ -15,6 +15,12 @@ from itertools import groupby
 import os
 import openpyxl
 
+# Population AI
+from keras.models import load_model
+from sklearn.preprocessing import MinMaxScaler
+import pandas as pd
+import numpy as np
+
 # Population_real_time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -24,7 +30,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-import os
 import olefile
 import re
 import zlib
@@ -410,10 +415,6 @@ class Population_real_time():
         ret = sorted(ret, key=lambda x: x['area_popul_avg'], reverse=True)
         return ret
     
-from keras.models import load_model
-from sklearn.preprocessing import MinMaxScaler
-import pandas as pd
-import numpy as np
 
 ## update_batch 부분 수정
 class district_info: #해당 지역 정보
@@ -541,7 +542,10 @@ class Population_AI_model():
         p_jingwan = self.predict_pop('jingwan')
         p_gil = self.predict_pop('gil')
         
-        predict_dict = {'11500540' : p_hwagok1, '11380625' : p_yeokchon, '11380690' : p_jingwan, '11740685' : p_gil}        
+        predict_dict = {'11500540' : p_hwagok1,
+                        '11380625' : p_yeokchon,
+                        '11380690' : p_jingwan,
+                        '11740685' : p_gil}        
 
         return predict_dict
 
