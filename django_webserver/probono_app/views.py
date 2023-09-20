@@ -130,23 +130,26 @@ def login_view(request):
     user_id = data.get('id')  # WARN : front's parameter name
     password = data.get('password')
     user_info = users.find_one({'ID': user_id})
-    username = user_info['name']
+    # print(user_info)
+    print('Login : ', end='')
     if user_info:
+        username = user_info['name']
         if password == user_info['PW']:
             request.session['ID'] = user_id  # session에 로그인한 user의 id저장
-            print(request.session.items())
+            # print(request.session.items())
             data = {
                 "success": True,
                 "username": username
             }
+            print(user_id)
             status_code = 200
         else:
             data = {"success": False}
-            print("wrong pw")
+            print('Invalid password')
             status_code = 401
     else:
         data = {"success": False}
-        print("no id")
+        print("Invalid ID")
         status_code = 401
 
     return JsonResponse(data, status=status_code)
@@ -211,13 +214,14 @@ def id_check(request):
     users = get_collection(db_handle, 'User')
     data = json.loads(request.body)
     temp_id = data['userId']
-    print(request.body)
+    print('ID_check : ', end='')
     temp = users.find_one({'ID': temp_id})
     if not temp:
+        print('Success')
         data = {'valid': True}  # REMIND : front have to know its response.
         status_code = 200
     else:
-        print("already ID")
+        print(temp_id, 'is already exist')
         status_code = 200
         data = {'valid': False}  # REMIND : front have to know its response.
     return JsonResponse(data, status=status_code)
