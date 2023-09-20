@@ -116,6 +116,7 @@ def get_hot_place(request):
     return render(request, 'index.html')
 
 
+@require_GET
 def safety_info_data(request):
     collection = get_collection(db_handle, 'safety_guard_house')
     ret = collection.find()
@@ -274,6 +275,7 @@ def get_bus_no_to_route(request):
     return
 
 
+@require_GET
 def get_bus_route(request, bus_num):
 
     collection_bus = get_collection(db_handle, 'bus')
@@ -302,6 +304,7 @@ def get_bus_route(request, bus_num):
     return JsonResponse({'station': ret})
 
 
+@require_GET
 def get_demo_today(request):
     collection = get_collection(db_handle, 'demo')
     ret = list(collection.find({}))
