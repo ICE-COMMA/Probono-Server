@@ -97,7 +97,6 @@ def my_page(request, id):
 
 
 def dense_popul_info(request):
-
     if request.method == 'GET':
         prt = Population_real_time()
         collection = get_collection(db_handle, 'popul_real_time_reg')

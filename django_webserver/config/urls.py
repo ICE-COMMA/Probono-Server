@@ -22,7 +22,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path('api/', views.index, name='index'),
     path('api/my_page/<str:id>', views.my_page, name='my_page'),
-    path('api/transfer_info/', views.transfer_info, name='transfer_info'),
     path('api/dense_popul_info/', views.dense_popul_info, name='dense_popul_info'),
     path('api/safety_info/data', views.safety_info_data, name='safety_info_data'),
     path('api/login/', views.login_view, name='login'),
