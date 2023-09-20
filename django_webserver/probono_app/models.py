@@ -208,6 +208,7 @@ class SpecialWeather():
         for target in self.target_reg:
             ret_fetch_data = self.init_fetch_data(target, self.key)
             if not ret_fetch_data[1]:
+                print('Special Weather Error!')
                 return
             content_str = ret_fetch_data[0]
             # print(content_str)
@@ -332,16 +333,19 @@ class Bus_info():
         params = {'serviceKey': self.key,
                   'busRouteId': route_id, 'resultType': 'json'}
         data = self.fetch_data(params)
-        data = data['bus_pos']['msgBody']['itemList']
-        ret = {
-            'is_low': data['busType'],
-            'is_bus_stopped': data['stopFlag'],
-            'is_full': data['isFullFlag'],
-            'is_last': data['islastyn'],
-            'congestion': data['congetion'],
-            'next_station_id': data['nextStId'],
-            'next_time': data['nextStTm']
-        }
+        data = data['msgBody']['itemList']
+        ret = []
+        for temp_data in data:
+            temp = {
+                'is_low': self.bus_type.get(temp_data['busType']),
+                'is_bus_stopped': self.bool.get(temp_data['stopFlag']),
+                'is_full': self.bool.get(temp_data['isFullFlag']),
+                'is_last': temp_data['islastyn'],
+                'congestion': temp_data['congetion'],
+                'next_station_id': temp_data['nextStId'],
+                'next_time': temp_data['nextStTm']
+            }
+            ret.append(temp)
         print(ret)
         return ret
 
