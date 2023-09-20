@@ -262,9 +262,18 @@ def get_subway_elvtr(request):
     search = request.POST.get('name')
     result = collection_elvtr.find({'sw_nm': search})
     result = list(result)
+
+    ret = []
+    for temp in result:
+        data = {
+            'sw_nm' : temp['sw_nm'],
+            'x'     : temp['x'],
+            'y'     : temp['y']
+        }
+        ret.append(data)
     if not result:
         return JsonResponse({'message': 'No results'})
-    return JsonResponse({'result': result})
+    return JsonResponse({'elvtr': ret})
 
 
 def get_bus_no_to_route(request):
