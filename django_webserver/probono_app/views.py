@@ -73,7 +73,7 @@ def my_page(request, id):
             formatted_date = ret['date'].strftime('%Y.%m.%d')
             ret['date'] = formatted_date
             print(ret)
-            return render(request, 'my_page.html', {'info': ret})
+            return JsonResponse({'info': ret})
         elif request.method == 'POST':
             if str(id) != str(current_user_id):
                 return HttpResponseForbidden("ACCESS DENIED")
