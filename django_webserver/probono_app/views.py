@@ -2,9 +2,8 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.decorators.http import require_POST, require_GET
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
+from django.http import HttpResponseForbidden, JsonResponse
 import requests
-import xmltodict
 import json
 from bson.json_util import loads, dumps
 from datetime import datetime
@@ -19,8 +18,10 @@ from .forms import SignUpForm
 # Transfer info
 from .models import Bus_info
 
-# Population_real_time
+# Population_real_time, predict
 from .models import Population_real_time
+from .models import Population_AI_model
+
 
 db_handle = utils.db_handle
 get_collection = utils.get_collection_handle
@@ -30,7 +31,6 @@ def test_AI(request):
     from .models import Population_AI_model
     popul_ai = Population_AI_model()
     ret = popul_ai.return_predict_value()
-
 
     return JsonResponse({'popul_ai': ret}, safe=False)
 
@@ -46,11 +46,11 @@ def index(request):
     if request.method == 'GET':
         collection = get_collection(db_handle, 'special_weather')
         ret = list(collection.find({}))
+        sess_ret = request.session.get('ID', False)
         # MongoDB의 _id는 JSON serializable하지 않기 때문에 문자열로 변환
         for item in ret:
             item['_id'] = str(item['_id'])
-        return render(request, 'index.html', {'user': request.session['ID'], 'spw': ret})
-        # return JsonResponse({'user': request.session['ID'], 'spw': ret})
+        return JsonResponse({'user': sess_ret, 'spw': ret})
 
     elif request.method == 'POST':
         collection = get_collection(db_handle, 'report')
@@ -72,14 +72,13 @@ def my_page(request, id):
             formatted_date = ret['date'].strftime('%Y.%m.%d')
             ret['date'] = formatted_date
             print(ret)
-            return render(request, 'my_page.html', {'info': ret})
+            return JsonResponse({'info': ret})
         elif request.method == 'POST':
             if str(id) != str(current_user_id):
                 return HttpResponseForbidden("ACCESS DENIED")
             collection = get_collection(db_handle, 'User')
             data = loads(request.body)
             print(data)
-
             new_data = {
                 'PW': data['next_pw'],
                 'impaired': data['user_handicap']
@@ -96,33 +95,23 @@ def my_page(request, id):
         return JsonResponse({'valid': False, 'error': 'Database error'})
 
 
-def transfer_info(request):
-    return render(request, 'transfer_info.html')
+@require_GET
+def real_dense_popul_info(request):
+    prt = Population_real_time()
+    collection = get_collection(db_handle, 'popul_real_time_reg')
+    region_info = list(collection.find({}))
+    ret = prt.get_real_time_popul(region_info)
+    return JsonResponse({'real_time': ret})
 
 
-def weather_info(request):
-    return render(request, 'weather_info.html')
+@require_GET
+def predict_dense_popul_info(request):
+    popul_ai = Population_AI_model()
+    ret = popul_ai.return_predict_value()
+    return JsonResponse({'predict': ret})
 
 
-def dense_popul_info(request):
-
-    if request.method == 'GET':
-        prt = Population_real_time()
-        collection = get_collection(db_handle, 'popul_real_time_reg')
-        region_info = list(collection.find({}))
-        ret = prt.get_real_time_popul(region_info)
-        return JsonResponse({'ret': ret})
-
-
-def get_hot_place(request):
-    # if
-    return render(request, 'index.html')
-
-
-def safety_info(request):
-    return render(request, 'safety_info.html')
-
-
+@require_GET
 def safety_info_data(request):
     collection = get_collection(db_handle, 'safety_guard_house')
     ret = collection.find()
@@ -134,29 +123,31 @@ def safety_info_data(request):
 @csrf_exempt
 @require_POST
 def login_view(request):
-    print(request.body)
     data = json.loads(request.body.decode('utf-8'))
     users = get_collection(db_handle, 'User')
     user_id = data.get('id')  # WARN : front's parameter name
     password = data.get('password')
     user_info = users.find_one({'ID': user_id})
-    username = user_info['name']
+    # print(user_info)
+    print('Login : ', end='')
     if user_info:
+        username = user_info['name']
         if password == user_info['PW']:
             request.session['ID'] = user_id  # session에 로그인한 user의 id저장
-            print(request.session.items())
+            # print(request.session.items())
             data = {
                 "success": True,
                 "username": username
             }
+            print(user_id)
             status_code = 200
         else:
             data = {"success": False}
-            print("wrong pw")
+            print('Invalid password')
             status_code = 401
     else:
         data = {"success": False}
-        print("no id")
+        print("Invalid ID")
         status_code = 401
 
     return JsonResponse(data, status=status_code)
@@ -221,13 +212,14 @@ def id_check(request):
     users = get_collection(db_handle, 'User')
     data = json.loads(request.body)
     temp_id = data['userId']
-    print(request.body)
+    print('ID_check : ', end='')
     temp = users.find_one({'ID': temp_id})
     if not temp:
+        print('Success')
         data = {'valid': True}  # REMIND : front have to know its response.
         status_code = 200
     else:
-        print("already ID")
+        print(temp_id, 'is already exist')
         status_code = 200
         data = {'valid': False}  # REMIND : front have to know its response.
     return JsonResponse(data, status=status_code)
@@ -235,7 +227,7 @@ def id_check(request):
 
 def logout_view(request):
     request.session.flush()
-    return redirect('index')
+    return
 
 
 @csrf_exempt
@@ -255,15 +247,25 @@ def update_custom(request):
         return JsonResponse({'success': False})
 
 
+@csrf_exempt
 @require_POST
 def get_subway_elvtr(request):
     collection_elvtr = get_collection(db_handle, 'subway_elevator')
     search = request.POST.get('name')
     result = collection_elvtr.find({'sw_nm': search})
     result = list(result)
+
+    ret = []
+    for temp in result:
+        data = {
+            'sw_nm' : temp['sw_nm'],
+            'x'     : temp['x'],
+            'y'     : temp['y']
+        }
+        ret.append(data)
     if not result:
         return JsonResponse({'message': 'No results'})
-    return JsonResponse({'result': result})
+    return JsonResponse({'elvtr': ret})
 
 
 def get_bus_no_to_route(request):
@@ -271,6 +273,7 @@ def get_bus_no_to_route(request):
     return
 
 
+@require_GET
 def get_bus_route(request, bus_num):
 
     collection_bus = get_collection(db_handle, 'bus')
@@ -299,18 +302,10 @@ def get_bus_route(request, bus_num):
     return JsonResponse({'station': ret})
 
 
-def get_safety_guard_house(request):
-
-    return
-
-
+@require_GET
 def get_demo_today(request):
     collection = get_collection(db_handle, 'demo')
     ret = list(collection.find({}))
-    # print(ret)
-    # return render(request, 'demo.html', {'demo': ret})
-
-    # react에 맞게 api 엔드포인트 생성
     ret = []
     for item in ret:
         item_data = {
@@ -320,5 +315,4 @@ def get_demo_today(request):
             "amount": str(item["amount"])
         }
         ret.append(item_data)
-
     return JsonResponse({'demo': ret})

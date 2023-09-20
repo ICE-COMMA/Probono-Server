@@ -1,3 +1,7 @@
+from keras.models import load_model
+import numpy as np
+import pandas as pd
+from sklearn.preprocessing import MinMaxScaler
 import logging
 from django.db import models
 import requests
@@ -21,7 +25,6 @@ from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
 import numpy as np
 
-
 # Population_real_time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -31,7 +34,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-
 import olefile
 import re
 import zlib
@@ -206,6 +208,7 @@ class SpecialWeather():
         for target in self.target_reg:
             ret_fetch_data = self.init_fetch_data(target, self.key)
             if not ret_fetch_data[1]:
+                print('Special Weather Error!')
                 return
             content_str = ret_fetch_data[0]
             # print(content_str)
@@ -252,10 +255,10 @@ class SpecialWeather():
             else:
                 print(f"HTTP Error : {http_err}")
         except requests.exceptions.RequestException as req_err:
-                print(f"Request Error : {req_err}")
+            print(f"Request Error : {req_err}")
         except Exception as e:
-                print(f"Error : {e}")
-                print(response)
+            print(f"Error : {e}")
+            print(response)
         return response.content.decode('utf-8'), False
 
     def update_fetch_data(self, target, key):
@@ -330,16 +333,19 @@ class Bus_info():
         params = {'serviceKey': self.key,
                   'busRouteId': route_id, 'resultType': 'json'}
         data = self.fetch_data(params)
-        data = data['bus_pos']['msgBody']['itemList']
-        ret = {
-            'is_low': data['busType'],
-            'is_bus_stopped': data['stopFlag'],
-            'is_full': data['isFullFlag'],
-            'is_last': data['islastyn'],
-            'congestion': data['congetion'],
-            'next_station_id': data['nextStId'],
-            'next_time': data['nextStTm']
-        }
+        data = data['msgBody']['itemList']
+        ret = []
+        for temp_data in data:
+            temp = {
+                'is_low': self.bus_type.get(temp_data['busType']),
+                'is_bus_stopped': self.bool.get(temp_data['stopFlag']),
+                'is_full': self.bool.get(temp_data['isFullFlag']),
+                'is_last': temp_data['islastyn'],
+                'congestion': temp_data['congetion'],
+                'next_station_id': temp_data['nextStId'],
+                'next_time': temp_data['nextStTm']
+            }
+            ret.append(temp)
         print(ret)
         return ret
 
@@ -436,19 +442,20 @@ class district_info: #해당 지역 정보
         
         print(file_path)
         return file_path
-    
-    #datasets(csv파일)을 호출하는 함수
+
+    # datasets(csv파일)을 호출하는 함수
     def read_csv(self, file_name):
-        datasets = pd.read_csv(self.file_loc(file_name), index_col=0, parse_dates=True)
-        datasets.index.freq = 'H'#index를 1시간 단위로 설정
+        datasets = pd.read_csv(self.file_loc(file_name),
+                               index_col=0, parse_dates=True)
+        datasets.index.freq = 'H'  # index를 1시간 단위로 설정
 
         return datasets
-    
+
     def fetch_data(self, url):
         response = requests.get(url)
         return response.json()
 
-    def get_one_week_ago_date(self): #일주일전 날짜를 반환해주는 함수
+    def get_one_week_ago_date(self):  # 일주일전 날짜를 반환해주는 함수
 
         current_date = datetime.now().strftime('%Y-%m-%d')
         date = datetime.strptime(current_date, '%Y-%m-%d')
@@ -466,12 +473,13 @@ class district_info: #해당 지역 정보
             one_week_ago_datetime = one_week_ago_datetime.replace(day=date.day)
         result_date = one_week_ago_datetime.strftime('%Y%m%d')
         return result_date
-    
+
     def update_batch(self, district_name):
-        district_code = {'hwagok1':'11500540', 'yeokchon' : '11380625', 'jingwan' : '11380690', 'gil' : '11740685'}
+        district_code = {'hwagok1': '11500540', 'yeokchon': '11380625',
+                         'jingwan': '11380690', 'gil': '11740685'}
         one_week_ago = self.get_one_week_ago_date()
         print(one_week_ago)
-        
+
         url = f"{self.base_url}/{one_week_ago}"
         print(url)
 
@@ -482,18 +490,19 @@ class district_info: #해당 지역 정보
         
         fetched_data = fetched_data['SPOP_LOCAL_RESD_DONG']['row']
         data = []
-    
+
         for data_row in fetched_data:
             temp = {
-                'STDR_DE_ID'        : data_row['STDR_DE_ID'],   #기준일 ID
-                'TMZON_PD_SE'       : data_row['TMZON_PD_SE'],  #시간대 구분
-                'ADSTRD_CODE_SE'    : data_row['ADSTRD_CODE_SE'],   #행정동코드
-                'TOT_LVPOP_CO'      : data_row['TOT_LVPOP_CO']  #총생활인구수
-                    }
+                'STDR_DE_ID': data_row['STDR_DE_ID'],  # 기준일 ID
+                'TMZON_PD_SE': data_row['TMZON_PD_SE'],  # 시간대 구분
+                'ADSTRD_CODE_SE': data_row['ADSTRD_CODE_SE'],  # 행정동코드
+                'TOT_LVPOP_CO': data_row['TOT_LVPOP_CO']  # 총생활인구수
+            }
             print(temp)
             data.append(temp['TOT_LVPOP_CO'])
 
         return np.reshape(data,(1,-1)) #(1,24)
+
 
 class Population_AI_model():
 
@@ -504,13 +513,13 @@ class Population_AI_model():
         self.holi_key = '4cwiloFmPQxO3hXwmJy3jruoPPh6m8PQZqxBkWecSAgIIeRjq6UIdo0r7ZnmT4Rm4kVErRaD9jd1XU5CS7Chwg=='
 
     def predict_pop(self, district_name):
-        #modeling 단계와 동일하게 변수설정
-        n_steps = 24 # 하루치 데이터
-        n_features = 1 #변수 개수
-        n_output = 24 # 출력 길이
-        
+        # modeling 단계와 동일하게 변수설정
+        n_steps = 24  # 하루치 데이터
+        n_features = 1  # 변수 개수
+        n_output = 24  # 출력 길이
+
         target_district = district_info(district_name)
-        
+
         ai_model = target_district.ai_model
         resource_data = np.reshape(target_district.batch_data,(-1,1))
         
@@ -524,28 +533,33 @@ class Population_AI_model():
 
         # 예측할 범위 지정 (len_week 데이터 길이만큼 예측) -> 24의 크기를 가진 batch가 7개 필요
         for i in range(n_output):
-            current_pred = ai_model.predict(current_batch)  # 한 배치를 통해 예측된 결과값 1개
-        
+            current_pred = ai_model.predict(
+                current_batch)  # 한 배치를 통해 예측된 결과값 1개
+
             # 예측값을 저장
             predictions.append(current_pred)  # 예측한 결과를 하나씩 추가
             # batch의 시작 포인트를 하나씩 뒤로 밀고, 새로운 예측값을 마지막에 저장하여 batch 업데이트
-            current_batch = np.append(current_batch[:, 1:], current_pred, axis=1)
-        
-        #list 형식의 결과값을 numpy 형태로 변환
-        predictions = np.array(predictions).reshape(n_output,1) # (24,1)
-        predictions = scaler.inverse_transform(predictions) #예측값 역정규화
+            current_batch = np.append(
+                current_batch[:, 1:], current_pred, axis=1)
 
-        return list(predictions.reshape(1,24)) # 길이가 24인 list 형식으로 반환
-    
+        # list 형식의 결과값을 numpy 형태로 변환
+        predictions = np.array(predictions).reshape(n_output, 1)  # (24,1)
+        predictions = scaler.inverse_transform(predictions)  # 예측값 역정규화
+
+        return list(predictions.reshape(1, 24))  # 길이가 24인 list 형식으로 반환
+
     def return_predict_value(self):
-        predict_dict = {} #예측값을 저장할 딕셔너리
-        
+        predict_dict = {}  # 예측값을 저장할 딕셔너리
+
         p_hwagok1 = self.predict_pop('hwagok1')
         p_yeokchon = self.predict_pop('yeokchon')
         p_jingwan = self.predict_pop('jingwan')
         p_gil = self.predict_pop('gil')
 
-        predict_dict = {'11500540' : p_hwagok1, '11380625' : p_yeokchon, '11380690' : p_jingwan, '11740685' : p_gil}        
+        predict_dict = {'11500540': p_hwagok1,
+                        '11380625': p_yeokchon,
+                        '11380690': p_jingwan,
+                        '11740685': p_gil}
 
         return predict_dict
 
@@ -571,7 +585,7 @@ class DemoScraper:
     def check_file(self):  # 파일명에서 한글 없애기(파일경로 수정 요망)
         file_path = "C:/Users/user/Downloads/"
         new_filename = self.date + 'data.hwp'
-        new_file_path = file_path+new_filename
+        new_file_path = self.download_path+new_filename
         print(new_file_path)
         return os.path.exists(new_file_path)
 
@@ -621,7 +635,7 @@ class DemoScraper:
     def process_hwp_file(self):
 
         # 파일명에서 한글 없애기(파일경로 수정 요망)
-        file_path = "C:/Users/user/Downloads/" + self.date + \
+        file_path = self.download_path + self.date + \
             "(" + self.day + ")" + " " + "인터넷집회.hwp"
         new_filename = self.date + 'data.hwp'
         new_file_path = os.path.join(os.path.dirname(file_path), new_filename)
