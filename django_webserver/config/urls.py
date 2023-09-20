@@ -20,7 +20,7 @@ from probono_app import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('', views.index, name='index'),
+    path('api/', views.index, name='index'),
     path('api/my_page/<str:id>', views.my_page, name='my_page'),
     path('api/transfer_info/', views.transfer_info, name='transfer_info'),
     path('api/weather_info/', views.weather_info, name='weather_info'),
