@@ -256,6 +256,7 @@ def update_custom(request):
         return JsonResponse({'success': False})
 
 
+@csrf_exempt
 @require_POST
 def get_subway_elvtr(request):
     collection_elvtr = get_collection(db_handle, 'subway_elevator')
