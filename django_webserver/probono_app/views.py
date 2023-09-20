@@ -306,11 +306,6 @@ def get_bus_route(request, bus_num):
     return JsonResponse({'station': ret})
 
 
-def get_safety_guard_house(request):
-
-    return
-
-
 def get_demo_today(request):
     collection = get_collection(db_handle, 'demo')
     ret = list(collection.find({}))
