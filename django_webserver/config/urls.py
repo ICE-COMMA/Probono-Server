@@ -21,7 +21,7 @@ from probono_app import views
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('api/', views.index, name='index'),
-    path('api/my_page/<str:id>', views.my_page, name='my_page'),
+    path('api/my_page/<str:id>/', views.my_page, name='my_page'),
     path('api/dense_popul_info/real/', views.real_dense_popul_info, name='real_popul_info'),
     path('api/dense_popul_info/predict/', views.predict_dense_popul_info, name='predict_popul_info'),
     path('api/safety_info/data/', views.safety_info_data, name='safety_info_data'),
@@ -33,9 +33,8 @@ urlpatterns = [
     path('api/get_subway_elvtr/', views.get_subway_elvtr, name='get_subway_elvtr'),
     path('api/get_bus_no_to_route/', views.get_bus_no_to_route,
          name='get_bus_no_to_route'),
-    path('api/get_bus_route/<str:bus_num>',
-         views.get_bus_route, name='get_bus_route'),
+    path('api/get_bus_route/<str:bus_num>/', views.get_bus_route, name='get_bus_route'),
+    path('api/get_bus_pos/<str:route_id>/', views.get_bus_pos, name='get_bus_pos'),
     path('api/get_demo_today/', views.get_demo_today, name='get_demo_today'),
     path('api/popul_test/', views.test_AI, name='test_AI'),
-    path('api/bus_test/', views.test_bus, name='test_bus'),
 ]
