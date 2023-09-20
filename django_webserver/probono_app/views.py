@@ -79,7 +79,6 @@ def my_page(request, id):
             collection = get_collection(db_handle, 'User')
             data = loads(request.body)
             print(data)
-
             new_data = {
                 'PW': data['next_pw'],
                 'impaired': data['user_handicap']
@@ -96,7 +95,7 @@ def my_page(request, id):
         return JsonResponse({'valid': False, 'error': 'Database error'})
 
 
-def dense_popul_info(request):
+def real_dense_popul_info(request):
     if request.method == 'GET':
         prt = Population_real_time()
         collection = get_collection(db_handle, 'popul_real_time_reg')
