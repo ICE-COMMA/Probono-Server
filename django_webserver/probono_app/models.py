@@ -198,6 +198,7 @@ class SpecialWeather():
         to_insert = []
         for target in self.target_reg:
             content_str = self.init_fetch_data(target, self.key)
+            print(content_str)
             all_data = self.parse_data(content_str, target)
             all_data.sort(key=lambda x: (x['WRN'], x['TM_EF']))
             grouped_data = {key: list(group) for key, group in groupby(
