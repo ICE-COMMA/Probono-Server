@@ -106,11 +106,6 @@ def dense_popul_info(request):
         return JsonResponse({'ret': ret})
 
 
-def get_hot_place(request):
-    # if
-    return render(request, 'index.html')
-
-
 @require_GET
 def safety_info_data(request):
     collection = get_collection(db_handle, 'safety_guard_house')
@@ -302,10 +297,6 @@ def get_bus_route(request, bus_num):
 def get_demo_today(request):
     collection = get_collection(db_handle, 'demo')
     ret = list(collection.find({}))
-    # print(ret)
-    # return render(request, 'demo.html', {'demo': ret})
-
-    # react에 맞게 api 엔드포인트 생성
     ret = []
     for item in ret:
         item_data = {
@@ -315,5 +306,4 @@ def get_demo_today(request):
             "amount": str(item["amount"])
         }
         ret.append(item_data)
-
     return JsonResponse({'demo': ret})
