@@ -52,7 +52,6 @@ def index(request):
         # MongoDB의 _id는 JSON serializable하지 않기 때문에 문자열로 변환
         for item in ret:
             item['_id'] = str(item['_id'])
-        # return render(request, 'index.html', {'user': sess_ret, 'spw': ret})
         return JsonResponse({'user': sess_ret, 'spw': ret})
 
     elif request.method == 'POST':
