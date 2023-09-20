@@ -18,8 +18,10 @@ from .forms import SignUpForm
 # Transfer info
 from .models import Bus_info
 
-# Population_real_time
+# Population_real_time, predict
 from .models import Population_real_time
+from .models import Population_AI_model
+
 
 db_handle = utils.db_handle
 get_collection = utils.get_collection_handle
@@ -95,13 +97,20 @@ def my_page(request, id):
         return JsonResponse({'valid': False, 'error': 'Database error'})
 
 
+@require_GET
 def real_dense_popul_info(request):
-    if request.method == 'GET':
-        prt = Population_real_time()
-        collection = get_collection(db_handle, 'popul_real_time_reg')
-        region_info = list(collection.find({}))
-        ret = prt.get_real_time_popul(region_info)
-        return JsonResponse({'ret': ret})
+    prt = Population_real_time()
+    collection = get_collection(db_handle, 'popul_real_time_reg')
+    region_info = list(collection.find({}))
+    ret = prt.get_real_time_popul(region_info)
+    return JsonResponse({'real_time': ret})
+
+
+@require_GET
+def predict_dense_popul_info(request):
+    popul_ai = Population_AI_model()
+    ret = popul_ai.return_predict_value()
+    return JsonResponse({'predict': ret})
 
 
 @require_GET
