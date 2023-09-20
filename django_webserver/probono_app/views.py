@@ -34,13 +34,6 @@ def test_AI(request):
 
     return JsonResponse({'popul_ai': ret}, safe=False)
 
-def test_bus(request):
-
-    temp = Bus_info()
-    ret = temp.get_bus_pos('100100410')
-
-    return JsonResponse({'bus_pos': ret})
-
 
 def index(request):
     if request.method == 'GET':
@@ -275,7 +268,6 @@ def get_bus_no_to_route(request):
 
 @require_GET
 def get_bus_route(request, bus_num):
-
     collection_bus = get_collection(db_handle, 'bus')
     bus_info = collection_bus.find_one({'bus_no': bus_num})
     url = 'http://ws.bus.go.kr/api/rest/busRouteInfo/getStaionByRoute'
@@ -290,6 +282,7 @@ def get_bus_route(request, bus_num):
 
     ret = []
     for target in item_list:
+        route_id = target['busRouteId']
         data = {
             'station_id': target['station'],
             'name': target['stationNm'],
@@ -299,7 +292,13 @@ def get_bus_route(request, bus_num):
         }
         print(data)
         ret.append(data)
-    return JsonResponse({'station': ret})
+    return JsonResponse({'route_id': route_id, 'station': ret})
+
+@require_GET
+def get_bus_pos(request, route_num):
+    bus_info = Bus_info()
+    ret = bus_info.get_bus_pos(route_num)
+    return JsonResponse({'bus_pos': ret})
 
 
 @require_GET
