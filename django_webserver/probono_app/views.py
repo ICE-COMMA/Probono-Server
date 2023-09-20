@@ -127,7 +127,6 @@ def safety_info_data(request):
 @csrf_exempt
 @require_POST
 def login_view(request):
-    print(request.body)
     data = json.loads(request.body.decode('utf-8'))
     users = get_collection(db_handle, 'User')
     user_id = data.get('id')  # WARN : front's parameter name
