@@ -423,7 +423,6 @@ class Population_real_time():
         ret = sorted(ret, key=lambda x: x['area_popul_avg'], reverse=True)
         return ret
     
-## update_batch 부분 수정
 class district_info: #해당 지역 정보
     def __init__(self, district_name):
         self.base_url = 'http://openapi.seoul.go.kr:8088/4b4c477a766c696d39314965686a66/json/SPOP_LOCAL_RESD_DONG/1/24'
@@ -560,9 +559,10 @@ class Population_AI_model():
                         '11380625': p_yeokchon,
                         '11380690': p_jingwan,
                         '11740685': p_gil}
-
+        
+        print(predict_dict)
         return predict_dict
-
+    '''
     def get_holiday(self):
 
         ret = []
@@ -573,6 +573,7 @@ class Population_AI_model():
         print(response.content)
 
         return ret
+    '''
 
 
 class DemoScraper:
