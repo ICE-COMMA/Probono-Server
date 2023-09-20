@@ -120,10 +120,6 @@ def get_hot_place(request):
     return render(request, 'index.html')
 
 
-def safety_info(request):
-    return render(request, 'safety_info.html')
-
-
 def safety_info_data(request):
     collection = get_collection(db_handle, 'safety_guard_house')
     ret = collection.find()
