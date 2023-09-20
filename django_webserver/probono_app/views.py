@@ -228,7 +228,7 @@ def id_check(request):
 
 def logout_view(request):
     request.session.flush()
-    return redirect('index')
+    return
 
 
 @csrf_exempt
