@@ -19,6 +19,12 @@ from itertools import groupby
 import os
 import openpyxl
 
+# Population AI
+from keras.models import load_model
+from sklearn.preprocessing import MinMaxScaler
+import pandas as pd
+import numpy as np
+
 # Population_real_time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -28,7 +34,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-import os
 import olefile
 import re
 import zlib
@@ -551,8 +556,10 @@ class Population_AI_model():
         p_jingwan = self.predict_pop('jingwan')
         p_gil = self.predict_pop('gil')
 
-        predict_dict = {'11500540': p_hwagok1, '11380625': p_yeokchon,
-                        '11380690': p_jingwan, '11740685': p_gil}
+        predict_dict = {'11500540': p_hwagok1,
+                        '11380625': p_yeokchon,
+                        '11380690': p_jingwan,
+                        '11740685': p_gil}
 
         return predict_dict
 
@@ -572,13 +579,13 @@ class DemoScraper:
 
     def __init__(self):
         self.chrome_options = webdriver.ChromeOptions()
-        self.download_path = '/Users/choijeongheum/Downloads/'
+        self.download_path = '/Users/limhs/Downloads/'
         self.site_url = "https://www.smpa.go.kr/user/nd54882.do"
 
     def check_file(self):  # 파일명에서 한글 없애기(파일경로 수정 요망)
         file_path = "/Users/choijeongheum/Downloads/"
         new_filename = self.date + 'data.hwp'
-        new_file_path = file_path+new_filename
+        new_file_path = self.download_path+new_filename
         print(new_file_path)
         return os.path.exists(new_file_path)
 
@@ -629,7 +636,7 @@ class DemoScraper:
     def process_hwp_file(self):
 
         # 파일명에서 한글 없애기(파일경로 수정 요망)
-        file_path = "/Users/choijeongheum/Downloads/" + self.date + \
+        file_path = self.download_path + self.date + \
             "(" + self.day + ")" + " " + "인터넷집회.hwp"
         new_filename = self.date + 'data.hwp'
         new_file_path = os.path.join(os.path.dirname(file_path), new_filename)

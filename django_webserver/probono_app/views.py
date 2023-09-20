@@ -30,10 +30,7 @@ def test_AI(request):
 
     from .models import Population_AI_model
     popul_ai = Population_AI_model()
-    ret = popul_ai.update_population_AI()
-    popul_ai.get_holiday()
-    # popul_ai = dumps(popul_ai)
-    # print(popul_ai)
+    ret = popul_ai.return_predict_value()
 
     return JsonResponse({'popul_ai': ret}, safe=False)
 
@@ -50,11 +47,11 @@ def index(request):
     if request.method == 'GET':
         collection = get_collection(db_handle, 'special_weather')
         ret = list(collection.find({}))
+        sess_ret = request.session.get('ID', False)
         # MongoDB의 _id는 JSON serializable하지 않기 때문에 문자열로 변환
         for item in ret:
             item['_id'] = str(item['_id'])
-        return render(request, 'index.html', {'user': request.session['ID'], 'spw': ret})
-        # return JsonResponse({'user': request.session['ID'], 'spw': ret})
+        return JsonResponse({'user': sess_ret, 'spw': ret})
 
     elif request.method == 'POST':
         collection = get_collection(db_handle, 'report')
