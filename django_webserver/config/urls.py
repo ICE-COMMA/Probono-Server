@@ -25,7 +25,6 @@ urlpatterns = [
     path('api/transfer_info/', views.transfer_info, name='transfer_info'),
     path('api/weather_info/', views.weather_info, name='weather_info'),
     path('api/dense_popul_info/', views.dense_popul_info, name='dense_popul_info'),
-    path('api/safety_info', views.safety_info, name='safety_info'),
     path('api/safety_info/data', views.safety_info_data, name='safety_info_data'),
     path('api/login/', views.login_view, name='login'),
     path('api/sign_up/', views.sign_up, name='sign_up'),
