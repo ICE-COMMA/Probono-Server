@@ -96,10 +96,6 @@ def my_page(request, id):
         return JsonResponse({'valid': False, 'error': 'Database error'})
 
 
-def transfer_info(request):
-    return render(request, 'transfer_info.html')
-
-
 def dense_popul_info(request):
 
     if request.method == 'GET':
