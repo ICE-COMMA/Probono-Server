@@ -25,18 +25,14 @@ from .models import Population_real_time
 db_handle = utils.db_handle
 get_collection = utils.get_collection_handle
 
-
 def test_AI(request):
-
+    
     from .models import Population_AI_model
     popul_ai = Population_AI_model()
-    ret = popul_ai.update_population_AI()
-    popul_ai.get_holiday()
-    # popul_ai = dumps(popul_ai)
-    # print(popul_ai)
+    ret = popul_ai.return_predict_value()
+
 
     return JsonResponse({'popul_ai': ret}, safe=False)
-
 
 def test_bus(request):
 
