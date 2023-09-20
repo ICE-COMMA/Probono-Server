@@ -1,3 +1,7 @@
+from keras.models import load_model
+import numpy as np
+import pandas as pd
+from sklearn.preprocessing import MinMaxScaler
 import logging
 from django.db import models
 import requests
@@ -197,8 +201,11 @@ class SpecialWeather():
         special_weathers.delete_many({})
         to_insert = []
         for target in self.target_reg:
-            content_str = self.init_fetch_data(target, self.key)
-            print(content_str)
+            ret_fetch_data = self.init_fetch_data(target, self.key)
+            if not ret_fetch_data[1]:
+                return
+            content_str = ret_fetch_data[0]
+            # print(content_str)
             all_data = self.parse_data(content_str, target)
             all_data.sort(key=lambda x: (x['WRN'], x['TM_EF']))
             grouped_data = {key: list(group) for key, group in groupby(
@@ -232,8 +239,21 @@ class SpecialWeather():
         params = {
             'wrn': 'A', 'reg': target[0], 'tmfc1': SpecialWeather.tmfc1_value, 'disp': '0', 'authKey': key}
         SpecialWeather.tmfc1_value = datetime.now().strftime('%Y%m%d%H%M')
-        response = requests.get(url, params=params)
-        return response.content.decode('utf-8')
+        try:
+            response = requests.get(url, params=params)
+            response.raise_for_status()
+            return response.content.decode('utf-8'), True
+        except requests.exceptions.HTTPError as http_err:
+            if response.status_code == 500:
+                print("Internal Server Error : Special weather API server.")
+            else:
+                print(f"HTTP Error : {http_err}")
+        except requests.exceptions.RequestException as req_err:
+            print(f"Request Error : {req_err}")
+        except Exception as e:
+            print(f"Error : {e}")
+            print(response)
+        return response.content.decode('utf-8'), False
 
     def update_fetch_data(self, target, key):
         url = 'https://apihub.kma.go.kr/api/typ01/url/wrn_met_data.php'
@@ -395,67 +415,42 @@ class Population_real_time():
         return ret
 
 
-class Population_AI_model():
+# update_batch 부분 수정
 
-    def __init__(self):
+class district_info:  # 해당 지역 정보
+    def __init__(self, district_name):
         self.base_url = 'http://openapi.seoul.go.kr:8088/4b4c477a766c696d39314965686a66/json/SPOP_LOCAL_RESD_DONG/1/24'
-        self.region_code = ['11500540', '11380625', '11380690', '11740685']
-        self.holi_url = 'https://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo'
-        self.holi_key = '4cwiloFmPQxO3hXwmJy3jruoPPh6m8PQZqxBkWecSAgIIeRjq6UIdo0r7ZnmT4Rm4kVErRaD9jd1XU5CS7Chwg=='
+        # Hwagok1(화곡동), Yeokchon(역촌동), Jingwan(진관동), Gil(길동)
+        self.district_code = ['11500540', '11380625', '11380690', '11740685']
 
-    def init_population_AI(self):
-        return
+        self.ai_model = load_model(self.file_loc(
+            f'{district_name}_model.h5'))  # 해당 지역에 맞는 ai모델 호출
+        self.datasets = self.read_csv(
+            f'{district_name}_pop_data.csv')  # 해당 지역에 맞는 datasets 호출
+        self.batch_data = self.update_batch(district_name)
 
-    def update_population_AI(self):
-        one_week_ago = self.get_one_week_ago_date()
-        print(one_week_ago)
-        url = f"{self.base_url}/{one_week_ago}"
-        print(url)
-        ret = []
-        for target in self.region_code:
-            real = f"{url}/ /{target}"
-            print(real)
-            fetched_data = self.fetch_data(real)
-            fetched_data = fetched_data['SPOP_LOCAL_RESD_DONG']['row']
-            data = []
-            for data_row in fetched_data:
-                temp = {
-                    'STDR_DE_ID': data_row['STDR_DE_ID'],
-                    'TMZON_PD_SE': data_row['TMZON_PD_SE'],
-                    'ADSTRD_CODE_SE': data_row['ADSTRD_CODE_SE'],
-                    'TOT_LVPOP_CO': data_row['TOT_LVPOP_CO']
-                }
-                data.append(temp)
-                print(temp)
-            ret.append(data)
-        print(ret)
-        return ret
+        self.scaler = MinMaxScaler()  # data scaler 모듈 호출
+        self.scaler.fit(self.datasets)  # 해당 지역의 전체 data에 대해 scaling
+
+    # file 위치 반환해주는 함수
+    def file_loc(self, file_name):
+        file_path = os.path.join(os.path.dirname(__file__), 'files', file_name)
+
+        return file_path
+
+    # datasets(csv파일)을 호출하는 함수
+    def read_csv(self, file_name):
+        datasets = pd.read_csv(self.file_loc(file_name),
+                               index_col=0, parse_dates=True)
+        datasets.index.freq = 'H'  # index를 1시간 단위로 설정
+
+        return datasets
 
     def fetch_data(self, url):
         response = requests.get(url)
         return response.json()
 
-    # Jian
-    def predict_popul(self):
-        data = self.update_population_AI()
-
-        for target in data:
-            print(target)
-
-        return
-
-    def get_holiday(self):
-
-        ret = []
-        params = {'serviceKey': self.holi_key,
-                  'solYear': '2023', 'solMonth': '09'}
-        response = requests.get(self.base_url, params=params)
-        print(response)
-        print(response.content)
-
-        return ret
-
-    def get_one_week_ago_date(self):
+    def get_one_week_ago_date(self):  # 일주일전 날짜를 반환해주는 함수
 
         current_date = datetime.now().strftime('%Y-%m-%d')
         date = datetime.strptime(current_date, '%Y-%m-%d')
@@ -474,16 +469,114 @@ class Population_AI_model():
         result_date = one_week_ago_datetime.strftime('%Y%m%d')
         return result_date
 
+    def update_batch(self, district_name):
+        district_code = {'hwagok1': '11500540', 'yeokchon': '11380625',
+                         'jingwan': '11380690', 'gil': '11740685'}
+        one_week_ago = self.get_one_week_ago_date()
+        print(one_week_ago)
+
+        url = f"{self.base_url}/{one_week_ago}"
+        print(url)
+
+        target = district_code[district_name]  # 해당 지역에 대한 정보만 업데이트
+        real = f"{self.base_url}/{one_week_ago}/{target}"
+        print(real)
+
+        fetched_data = self.fetch_data(real)
+        fetched_data = fetched_data['SPOP_LOCAL_RESD_DONG']['row']
+        data = []
+
+        for data_row in fetched_data:
+            temp = {
+                'STDR_DE_ID': data_row['STDR_DE_ID'],  # 기준일 ID
+                'TMZON_PD_SE': data_row['TMZON_PD_SE'],  # 시간대 구분
+                'ADSTRD_CODE_SE': data_row['ADSTRD_CODE_SE'],  # 행정동코드
+                'TOT_LVPOP_CO': data_row['TOT_LVPOP_CO']  # 총생활인구수
+            }
+            print(temp)
+            data.append(temp['TOT_LVPOP_CO'])
+
+        return data
+
+
+class Population_AI_model():
+
+    def __init__(self):
+        self.base_url = 'http://openapi.seoul.go.kr:8088/4b4c477a766c696d39314965686a66/json/SPOP_LOCAL_RESD_DONG/1/24'
+        self.region_code = ['11500540', '11380625', '11380690', '11740685']
+        self.holi_url = 'https://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo'
+        self.holi_key = '4cwiloFmPQxO3hXwmJy3jruoPPh6m8PQZqxBkWecSAgIIeRjq6UIdo0r7ZnmT4Rm4kVErRaD9jd1XU5CS7Chwg=='
+
+    def predict_pop(self, district_name):
+        # modeling 단계와 동일하게 변수설정
+        n_steps = 24  # 하루치 데이터
+        n_features = 1  # 변수 개수
+        n_output = 24  # 출력 길이
+
+        target_district = district_info(district_name)
+
+        ai_model = target_district.ai_model
+        resource_data = target_district.batch_data
+        scaler = target_district.scaler
+        # 최근 24개 data를 scaling해서 예측 과정에 입력
+        scaled_data = scaler.transform(resource_data)
+
+        predictions = []  # 예측 결과를 저장하기 위한 빈 배열
+
+        # RNN에 맞춰 timeseriesgenerator 출력 형식으로 형 변환 (batch 사이즈: 24) -> (n, 24)
+        current_batch = scaled_data.reshape(n_features, n_steps)  # (1, 24)
+
+        # 예측할 범위 지정 (len_week 데이터 길이만큼 예측) -> 24의 크기를 가진 batch가 7개 필요
+        for i in range(n_output):
+            current_pred = ai_model.predict(
+                current_batch)  # 한 배치를 통해 예측된 결과값 1개
+
+            # 예측값을 저장
+            predictions.append(current_pred)  # 예측한 결과를 하나씩 추가
+            # batch의 시작 포인트를 하나씩 뒤로 밀고, 새로운 예측값을 마지막에 저장하여 batch 업데이트
+            current_batch = np.append(
+                current_batch[:, 1:], current_pred, axis=1)
+
+        # list 형식의 결과값을 numpy 형태로 변환
+        predictions = np.array(predictions).reshape(n_output, 1)  # (24,1)
+        predictions = scaler.inverse_transform(predictions)  # 예측값 역정규화
+
+        return list(predictions.reshape(1, 24))  # 길이가 24인 list 형식으로 반환
+
+    def return_predict_value(self):
+        predict_dict = {}  # 예측값을 저장할 딕셔너리
+
+        p_hwagok1 = self.predict_pop('hwagok1')
+        p_yeokchon = self.predict_pop('yeokchon')
+        p_jingwan = self.predict_pop('jingwan')
+        p_gil = self.predict_pop('gil')
+
+        predict_dict = {'11500540': p_hwagok1, '11380625': p_yeokchon,
+                        '11380690': p_jingwan, '11740685': p_gil}
+
+        return predict_dict
+
+    def get_holiday(self):
+
+        ret = []
+        params = {'serviceKey': self.holi_key,
+                  'solYear': '2023', 'solMonth': '09'}
+        response = requests.get(self.base_url, params=params)
+        print(response)
+        print(response.content)
+
+        return ret
+
 
 class DemoScraper:
 
     def __init__(self):
         self.chrome_options = webdriver.ChromeOptions()
-        self.download_path = '/Users/limhs/Downloads/'
+        self.download_path = '/Users/choijeongheum/Downloads/'
         self.site_url = "https://www.smpa.go.kr/user/nd54882.do"
 
     def check_file(self):  # 파일명에서 한글 없애기(파일경로 수정 요망)
-        file_path = "/Users/limhs/Downloads/"
+        file_path = "/Users/choijeongheum/Downloads/"
         new_filename = self.date + 'data.hwp'
         new_file_path = file_path+new_filename
         print(new_file_path)
@@ -536,7 +629,7 @@ class DemoScraper:
     def process_hwp_file(self):
 
         # 파일명에서 한글 없애기(파일경로 수정 요망)
-        file_path = "/Users/limhs/Downloads/" + self.date + \
+        file_path = "/Users/choijeongheum/Downloads/" + self.date + \
             "(" + self.day + ")" + " " + "인터넷집회.hwp"
         new_filename = self.date + 'data.hwp'
         new_file_path = os.path.join(os.path.dirname(file_path), new_filename)
