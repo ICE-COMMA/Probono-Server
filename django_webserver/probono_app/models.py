@@ -422,23 +422,28 @@ class Population_real_time():
 
         ret = sorted(ret, key=lambda x: x['area_popul_avg'], reverse=True)
         return ret
-    
-class district_info: #해당 지역 정보
+
+
+class district_info:  # 해당 지역 정보
     def __init__(self, district_name):
         self.base_url = 'http://openapi.seoul.go.kr:8088/4b4c477a766c696d39314965686a66/json/SPOP_LOCAL_RESD_DONG/1/24'
-        self.district_code = ['11500540', '11380625', '11380690', '11740685'] # Hwagok1(화곡동), Yeokchon(역촌동), Jingwan(진관동), Gil(길동)
-        
-        self.ai_model = tf.keras.models.load_model(self.file_loc(f'{district_name}_model.h5')) #해당 지역에 맞는 ai모델 호출
-        self.datasets = self.read_csv(f'{district_name}_pop_data.csv') #해당 지역에 맞는 datasets 호출
+        # Hwagok1(화곡동), Yeokchon(역촌동), Jingwan(진관동), Gil(길동)
+        self.district_code = ['11500540', '11380625', '11380690', '11740685']
+
+        self.ai_model = tf.keras.models.load_model(self.file_loc(
+            f'{district_name}_model.h5'))  # 해당 지역에 맞는 ai모델 호출
+        self.datasets = self.read_csv(
+            f'{district_name}_pop_data.csv')  # 해당 지역에 맞는 datasets 호출
         self.batch_data = self.update_batch(district_name)
-                
-        self.scaler = MinMaxScaler() # data scaler 모듈 호출
-        self.fitted_scaler = self.scaler.fit(self.datasets) # 해당 지역의 전체 data에 대해 scaling
-    
-    #file 위치 반환해주는 함수  
+
+        self.scaler = MinMaxScaler()  # data scaler 모듈 호출
+        self.fitted_scaler = self.scaler.fit(
+            self.datasets)  # 해당 지역의 전체 data에 대해 scaling
+
+    # file 위치 반환해주는 함수
     def file_loc(self, file_name):
         file_path = os.path.join(os.path.dirname(__file__), 'files', file_name)
-        
+
         print(file_path)
         return file_path
 
@@ -482,11 +487,11 @@ class district_info: #해당 지역 정보
         url = f"{self.base_url}/{one_week_ago}"
         print(url)
 
-        target = district_code[district_name] #해당 지역에 대한 정보만 업데이트
+        target = district_code[district_name]  # 해당 지역에 대한 정보만 업데이트
         real = f"{self.base_url}/{one_week_ago}/ /{target}"
         print(real)
         fetched_data = self.fetch_data(real)
-        
+
         fetched_data = fetched_data['SPOP_LOCAL_RESD_DONG']['row']
         data = []
 
@@ -500,7 +505,7 @@ class district_info: #해당 지역 정보
             print(temp)
             data.append(temp['TOT_LVPOP_CO'])
 
-        return np.reshape(data,(1,-1)) #(1,24)
+        return np.reshape(data, (1, -1))  # (1,24)
 
 
 class Population_AI_model():
@@ -520,11 +525,12 @@ class Population_AI_model():
         target_district = district_info(district_name)
 
         ai_model = target_district.ai_model
-        resource_data = np.reshape(target_district.batch_data,(-1,1))
-        
+        resource_data = np.reshape(target_district.batch_data, (-1, 1))
+
         scaler = target_district.fitted_scaler
-        scaled_data = scaler.transform(resource_data) # 최근 24개 data를 scaling해서 예측 과정에 입력
-        
+        # 최근 24개 data를 scaling해서 예측 과정에 입력
+        scaled_data = scaler.transform(resource_data)
+
         predictions = []  # 예측 결과를 저장하기 위한 빈 배열
 
         # RNN에 맞춰 timeseriesgenerator 출력 형식으로 형 변환 (batch 사이즈: 24) -> (n, 24)
@@ -561,7 +567,7 @@ class Population_AI_model():
             '11380690': p_jingwan[0],
             '11740685': p_gil[0]
         }
-        
+
         print(predict_dict)
         return predict_dict
     '''
@@ -582,7 +588,7 @@ class DemoScraper:
 
     def __init__(self):
         self.chrome_options = webdriver.ChromeOptions()
-        self.download_path = '/Users/choijeongheum/Downloads/'
+        self.download_path = '/Users/limhs/Downloads/'
         self.site_url = "https://www.smpa.go.kr/user/nd54882.do"
 
     def check_file(self):  # 파일명에서 한글 없애기(파일경로 수정 요망)
@@ -593,7 +599,8 @@ class DemoScraper:
 
     def start_driver(self):
         # self.chrome_options.add_argument("--headless")
-        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=self.chrome_options)
+        self.driver = webdriver.Chrome(service=Service(
+            ChromeDriverManager().install()), options=self.chrome_options)
         self.wait = WebDriverWait(self.driver, 10)
 
     def navigate_to_site(self):
