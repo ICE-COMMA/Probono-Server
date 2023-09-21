@@ -26,8 +26,9 @@ from .models import Population_AI_model
 db_handle = utils.db_handle
 get_collection = utils.get_collection_handle
 
+
 def test_AI(request):
-    
+
     from .models import Population_AI_model
     popul_ai = Population_AI_model()
     ret = popul_ai.return_predict_value()
@@ -127,10 +128,13 @@ def login_view(request):
         username = user_info['name']
         if password == user_info['PW']:
             request.session['ID'] = user_id  # session에 로그인한 user의 id저장
+            custom_info = user_info.get('custom', {})
+            # print(custom_info)
             # print(request.session.items())
             data = {
                 "success": True,
-                "username": username
+                "username": username,
+                "custom": custom_info
             }
             print(user_id)
             status_code = 200
@@ -251,9 +255,9 @@ def get_subway_elvtr(request):
     ret = []
     for temp in result:
         data = {
-            'sw_nm' : temp['sw_nm'],
-            'x'     : temp['x'],
-            'y'     : temp['y']
+            'sw_nm': temp['sw_nm'],
+            'x': temp['x'],
+            'y': temp['y']
         }
         ret.append(data)
     if not result:
@@ -293,6 +297,7 @@ def get_bus_route(request, bus_num):
         print(data)
         ret.append(data)
     return JsonResponse({'route_id': route_id, 'station': ret})
+
 
 @require_GET
 def get_bus_pos(request, route_num):
