@@ -551,7 +551,7 @@ class Population_AI_model():
         predictions = np.array(predictions).reshape(n_output, 1)  # (24,1)
         predictions = scaler.inverse_transform(predictions)  # 예측값 역정규화
 
-        return list(predictions.reshape(1, 24))  # 길이가 24인 list 형식으로 반환
+        return predictions.reshape(1, 24).tolist()  # 길이가 24인 list 형식으로 반환
 
     def return_predict_value(self):
         predict_dict = {}  # 예측값을 저장할 딕셔너리
@@ -561,10 +561,12 @@ class Population_AI_model():
         p_jingwan = self.predict_pop('jingwan')
         p_gil = self.predict_pop('gil')
 
-        predict_dict = {'11500540': p_hwagok1,
-                        '11380625': p_yeokchon,
-                        '11380690': p_jingwan,
-                        '11740685': p_gil}
+        predict_dict = {
+            '11500540': p_hwagok1[0],
+            '11380625': p_yeokchon[0],
+            '11380690': p_jingwan[0],
+            '11740685': p_gil[0]
+        }
 
         print(predict_dict)
         return predict_dict

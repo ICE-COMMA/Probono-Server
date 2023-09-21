@@ -32,7 +32,7 @@ def test_AI(request):
     popul_ai = Population_AI_model()
     ret = popul_ai.return_predict_value()
 
-    return JsonResponse({'popul_ai': ret}, safe=False)
+    return JsonResponse({'popul_ai': ret})
 
 
 def index(request):
@@ -304,9 +304,9 @@ def get_bus_pos(request, route_num):
 @require_GET
 def get_demo_today(request):
     collection = get_collection(db_handle, 'demo')
-    ret = list(collection.find({}))
+    data_demo = list(collection.find({}))
     ret = []
-    for item in ret:
+    for item in data_demo:
         item_data = {
             "location": str(item["location"]),
             "date": str(item["date"]),
