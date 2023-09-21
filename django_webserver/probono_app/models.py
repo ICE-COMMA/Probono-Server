@@ -556,7 +556,7 @@ class Population_AI_model():
         predictions = np.array(predictions).reshape(n_output, 1)  # (24,1)
         predictions = scaler.inverse_transform(predictions)  # 예측값 역정규화
         
-        print(f'Predict finished.. {district_name}')
+        print(f'Predict region : {district_name}')
         return predictions.reshape(1, 24).tolist()  # 길이가 24인 list 형식으로 반환
 
     def return_predict_value(self):

@@ -43,13 +43,12 @@ def index(request):
         weather_collection = get_collection(db_handle, 'special_weather')
         special_weather_info = list(weather_collection.find({}))
         sess_ret = request.session.get('ID', False)
-        print(sess_ret)
+        print('User ID :', sess_ret)
         custom_info = False
         if sess_ret:
             user_collection = get_collection(db_handle, 'User')
             temp = Custom_info()
             custom_info = temp.get_custom_info(sess_ret, user_collection)
-            print(custom_info)
 
         for item in special_weather_info:
             item['_id'] = str(item['_id'])
