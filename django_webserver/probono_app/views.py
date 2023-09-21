@@ -32,7 +32,7 @@ def test_AI(request):
     popul_ai = Population_AI_model()
     ret = popul_ai.return_predict_value()
 
-    return JsonResponse({'popul_ai': ret}, safe=False)
+    return JsonResponse({'popul_ai': ret})
 
 
 def index(request):
