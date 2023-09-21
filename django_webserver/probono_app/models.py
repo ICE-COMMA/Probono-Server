@@ -804,7 +804,7 @@ class Custom_info():
         # print(custom)
         for target in self.custom_list:
             if custom[target]:
-                ret.append(self.get_target_matching_info(target))
+                ret.append({target: self.get_target_matching_info(target)})
         return ret
 
     def get_id_info_to_custom(self, id, collection):
