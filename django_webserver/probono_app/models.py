@@ -560,20 +560,36 @@ class Population_AI_model():
         return predictions.reshape(1, 24).tolist()  # 길이가 24인 list 형식으로 반환
 
     def return_predict_value(self):
-        p_hwagok1 = self.predict_pop('hwagok1')
-        p_yeokchon = self.predict_pop('yeokchon')
-        p_jingwan = self.predict_pop('jingwan')
-        p_gil = self.predict_pop('gil')
+        with ThreadPoolExecutor(max_workers=4) as executor:
+            futures = {
+                '11500540': executor.submit(self.predict_pop, 'hwagok1'),
+                '11380625': executor.submit(self.predict_pop, 'yeokchon'),
+                '11380690': executor.submit(self.predict_pop, 'jingwan'),
+                '11740685': executor.submit(self.predict_pop, 'gil')
+            }
 
-        predict_dict = {
-            '11500540': p_hwagok1[0],
-            '11380625': p_yeokchon[0],
-            '11380690': p_jingwan[0],
-            '11740685': p_gil[0]
-        }
+            predict_dict = {}
+            for key, future in futures.items():
+                predict_dict[key] = future.result()[0]
 
         print('Predict finished')
         return predict_dict
+
+    # def return_predict_value(self):
+    #     p_hwagok1 = self.predict_pop('hwagok1')
+    #     p_yeokchon = self.predict_pop('yeokchon')
+    #     p_jingwan = self.predict_pop('jingwan')
+    #     p_gil = self.predict_pop('gil')
+
+    #     predict_dict = {
+    #         '11500540': p_hwagok1[0],
+    #         '11380625': p_yeokchon[0],
+    #         '11380690': p_jingwan[0],
+    #         '11740685': p_gil[0]
+    #     }
+
+    #     print('Predict finished')
+    #     return predict_dict
     '''
     def get_holiday(self):
 
