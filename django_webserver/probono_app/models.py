@@ -320,7 +320,6 @@ class SpecialWeather():
             year -= 1
         else:
             month -= 2
-        print(now)
         two_months_ago_time = datetime(year, month, 1, now.hour, now.minute)
         return two_months_ago_time.strftime('%Y%m%d%H%M')
 
@@ -364,9 +363,11 @@ class Population_real_time():
         self.base_url = 'http://openapi.seoul.go.kr:8088/68666f624d6c696d373249736e7649/json/citydata_ppltn'
 
     def init_population_info(self, region_info):
+        print('Initializing population region info.. ', end='')
         region_info.delete_many({})
         to_insert = self.get_xl_file_info()
         region_info.insert_many(to_insert)
+        print('OK')
 
     def get_xl_file_info(self):
         file_path = os.path.join(os.path.dirname(
@@ -760,7 +761,7 @@ class DemoScraper:
         self.driver.quit()
 
     def get_demo(self, collection):
-        print('Demo crawling.. ', end='')
+        print('Initializing demo crawling.. ', end='')
         self.get_date_info()
         if self.check_file():
             print('OK')
