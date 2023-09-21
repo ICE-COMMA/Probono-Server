@@ -203,12 +203,14 @@ class SpecialWeather():
 
     # main method
     def init_special_weather(self, special_weathers):
+
+        print('Initializing Special Weather.. ', end='')
         special_weathers.delete_many({})
         to_insert = []
         for target in self.target_reg:
             ret_fetch_data = self.init_fetch_data(target, self.key)
             if not ret_fetch_data[1]:
-                print('Special Weather Error!')
+                print('Error!')
                 return
             content_str = ret_fetch_data[0]
             # print(content_str)
@@ -217,12 +219,13 @@ class SpecialWeather():
             grouped_data = {key: list(group) for key, group in groupby(
                 all_data, key=lambda x: x['WRN'])}
             to_insert.extend(self.process_grouped_data(grouped_data, target))
-        print(to_insert)
         if to_insert:
             special_weathers.insert_many(to_insert)
+        print('OK')
 
     # main method
     def update_special_weather(self, special_weathers):
+        print('Updating Special Weather.. ', end='')
         new_data = []
         for target in self.target_reg:
             content_str = self.update_fetch_data(target, self.key)
@@ -238,6 +241,7 @@ class SpecialWeather():
                 special_weathers.delete_one(target_db)
                 if target['CMD'] != '3':
                     special_weathers.insert_one(target)
+        print('OK')
 
     def init_fetch_data(self, target, key):
         SpecialWeather.tmfc1_value = self.two_months_ago()
@@ -482,14 +486,14 @@ class district_info:  # 해당 지역 정보
         district_code = {'hwagok1': '11500540', 'yeokchon': '11380625',
                          'jingwan': '11380690', 'gil': '11740685'}
         one_week_ago = self.get_one_week_ago_date()
-        print(one_week_ago)
+        # print(one_week_ago)
 
         url = f"{self.base_url}/{one_week_ago}"
-        print(url)
+        # print(url)
 
         target = district_code[district_name]  # 해당 지역에 대한 정보만 업데이트
         real = f"{self.base_url}/{one_week_ago}/ /{target}"
-        print(real)
+        # print(real)
         fetched_data = self.fetch_data(real)
 
         fetched_data = fetched_data['SPOP_LOCAL_RESD_DONG']['row']
@@ -502,7 +506,7 @@ class district_info:  # 해당 지역 정보
                 'ADSTRD_CODE_SE': data_row['ADSTRD_CODE_SE'],  # 행정동코드
                 'TOT_LVPOP_CO': data_row['TOT_LVPOP_CO']  # 총생활인구수
             }
-            print(temp)
+            # print(temp)
             data.append(temp['TOT_LVPOP_CO'])
 
         return np.reshape(data, (1, -1))  # (1,24)
@@ -550,12 +554,11 @@ class Population_AI_model():
         # list 형식의 결과값을 numpy 형태로 변환
         predictions = np.array(predictions).reshape(n_output, 1)  # (24,1)
         predictions = scaler.inverse_transform(predictions)  # 예측값 역정규화
-
+        
+        print(f'Predict finished.. {district_name}')
         return predictions.reshape(1, 24).tolist()  # 길이가 24인 list 형식으로 반환
 
     def return_predict_value(self):
-        predict_dict = {}  # 예측값을 저장할 딕셔너리
-
         p_hwagok1 = self.predict_pop('hwagok1')
         p_yeokchon = self.predict_pop('yeokchon')
         p_jingwan = self.predict_pop('jingwan')
@@ -568,7 +571,7 @@ class Population_AI_model():
             '11740685': p_gil[0]
         }
 
-        print(predict_dict)
+        print('Predict finished')
         return predict_dict
     '''
     def get_holiday(self):
@@ -595,7 +598,7 @@ class DemoScraper:
     def check_file(self):  # 파일명에서 한글 없애기(파일경로 수정 요망)
         new_filename = self.date + 'data.hwp'
         new_file_path = self.download_path+new_filename
-        print(new_file_path)
+        # print(new_file_path)
         return os.path.exists(new_file_path)
 
     def start_driver(self):
@@ -750,15 +753,17 @@ class DemoScraper:
         for idx, target in enumerate(new_data):
             new_data[idx]['date'] = target['date'].group()
 
-        print(new_data)
+        # print(new_data)
         collection.insert_many(new_data)
 
     def close_driver(self):
         self.driver.quit()
 
     def get_demo(self, collection):
+        print('Demo crawling.. ', end='')
         self.get_date_info()
         if self.check_file():
+            print('OK')
             return
         self.start_driver()
         self.navigate_to_site()
@@ -766,6 +771,7 @@ class DemoScraper:
         self.download_hwp()
         self.update_demo(collection)
         self.close_driver()
+        print('OK')
         return
 
 class Custom_info():
