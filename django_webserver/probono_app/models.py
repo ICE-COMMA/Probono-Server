@@ -555,7 +555,7 @@ class Population_AI_model():
         # list 형식의 결과값을 numpy 형태로 변환
         predictions = np.array(predictions).reshape(n_output, 1)  # (24,1)
         predictions = scaler.inverse_transform(predictions)  # 예측값 역정규화
-        
+
         print(f'Predict region : {district_name}')
         return predictions.reshape(1, 24).tolist()  # 길이가 24인 list 형식으로 반환
 
@@ -608,8 +608,8 @@ class DemoScraper:
 
     def __init__(self):
         self.chrome_options = webdriver.ChromeOptions()
-        # self.download_path = '/Users/limhs/Downloads/'
-        self.download_path = '/Users/choijeongheum/Downloads/'
+        self.download_path = '/Users/limhs/Downloads/'
+        # self.download_path = '/Users/choijeongheum/Downloads/'
         self.site_url = "https://www.smpa.go.kr/user/nd54882.do"
 
     def check_file(self):  # 파일명에서 한글 없애기(파일경로 수정 요망)
@@ -791,13 +791,14 @@ class DemoScraper:
         print('OK')
         return
 
+
 class Custom_info():
 
     def __init__(self):
         self.custom_list = ['custom-demo', 'custom-elevator', 'custom-population',
                             'custom-predict', 'custom-safety', 'custom-safey-loc',
                             'custom-low-bus', 'custom-festival']
-    
+
     def get_custom_info(self, id, collection):
         ret = []
         custom = self.get_id_info_to_custom(id, collection)
@@ -820,7 +821,7 @@ class Custom_info():
 
         db_handle = utils.db_handle
         get_collection = utils.get_collection_handle
-        
+
         if target == self.custom_list[0]:
             collection = get_collection(db_handle, 'demo')
             data_demo = list(collection.find({}))
@@ -834,9 +835,9 @@ class Custom_info():
                 }
                 ret.append(item_data)
             return ret
-        elif target == self.custom_list[1]: # subway elevator
+        elif target == self.custom_list[1]:  # subway elevator
             return ret
-        elif target == self.custom_list[2]: # We have to select region
+        elif target == self.custom_list[2]:  # We have to select region
             prt = Population_real_time()
             collection = get_collection(db_handle, 'popul_real_time_reg')
             region_info = list(collection.find({}))
@@ -854,13 +855,11 @@ class Custom_info():
             ret_list = [{'name': item['name'], 'x': item['y'], 'y': item['x']}
                         for item in ret]
             return ret_list
-        elif target == self.custom_list[6]: # What we have to show?
-            
-            
+        elif target == self.custom_list[6]:  # What we have to show?
+
             return ret
         elif target == self.custom_list[7]:
-            
-            
+
             return ret
         else:
             raise ValueError(f"Invalid custom element : {target}")

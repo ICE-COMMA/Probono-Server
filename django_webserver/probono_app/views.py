@@ -308,9 +308,9 @@ def get_bus_route(request, bus_num):
 
 
 @require_GET
-def get_bus_pos(request, route_num):
+def get_bus_pos(request, route_id):
     bus_info = Bus_info()
-    ret = bus_info.get_bus_pos(route_num)
+    ret = bus_info.get_bus_pos(route_id)
     return JsonResponse({'bus_pos': ret})
 
 
