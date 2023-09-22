@@ -608,8 +608,8 @@ class DemoScraper:
 
     def __init__(self):
         self.chrome_options = webdriver.ChromeOptions()
-        self.download_path = '/Users/limhs/Downloads/'
-        # self.download_path = '/Users/choijeongheum/Downloads/'
+        # self.download_path = '/Users/limhs/Downloads/'
+        self.download_path = '/Users/choijeongheum/Downloads/'
         self.site_url = "https://www.smpa.go.kr/user/nd54882.do"
 
     def check_file(self):  # 파일명에서 한글 없애기(파일경로 수정 요망)
