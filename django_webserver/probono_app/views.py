@@ -22,6 +22,8 @@ from .models import Bus_info
 from .models import Population_real_time
 from .models import Population_AI_model
 
+from .models import Custom_info
+
 
 db_handle = utils.db_handle
 get_collection = utils.get_collection_handle
@@ -38,23 +40,25 @@ def test_AI(request):
 
 def index(request):
     if request.method == 'GET':
-        collection = get_collection(db_handle, 'special_weather')
-        ret = list(collection.find({}))
+        weather_collection = get_collection(db_handle, 'special_weather')
+        special_weather_info = list(weather_collection.find({}))
         sess_ret = request.session.get('ID', False)
-        user_collection = get_collection(db_handle, 'User')
-        user_info = user_collection.find_one({'ID': id})
-        custom_info = user_info.get('custom', {})
-        print(custom_info)
-        # MongoDB의 _id는 JSON serializable하지 않기 때문에 문자열로 변환
-        for item in ret:
-            item['_id'] = str(item['_id'])
-        return JsonResponse({'user': sess_ret, 'custom': custom_info, 'spw': ret})
+        print('User ID :', sess_ret)
+        custom_info = False
+        if sess_ret:
+            user_collection = get_collection(db_handle, 'User')
+            temp = Custom_info()
+            custom_info = temp.get_custom_info(sess_ret, user_collection)
 
-    elif request.method == 'POST':
-        collection = get_collection(db_handle, 'report')
-        data = loads(request.body)
-        print('TEST : ', data, '\n', 'TYPE : ', type(data))
-        # collection.insert_one()
+        for item in special_weather_info:
+            item['_id'] = str(item['_id'])
+        return JsonResponse({'user': sess_ret, 'spw': special_weather_info, 'custom': custom_info})
+
+    # elif request.method == 'POST':
+    #     collection = get_collection(db_handle, 'report')
+    #     data = loads(request.body)
+    #     print('TEST : ', data, '\n', 'TYPE : ', type(data))
+    #     # collection.insert_one()
 
 
 def my_page(request, id):

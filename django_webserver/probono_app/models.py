@@ -203,12 +203,14 @@ class SpecialWeather():
 
     # main method
     def init_special_weather(self, special_weathers):
+
+        print('Initializing Special Weather.. ', end='')
         special_weathers.delete_many({})
         to_insert = []
         for target in self.target_reg:
             ret_fetch_data = self.init_fetch_data(target, self.key)
             if not ret_fetch_data[1]:
-                print('Special Weather Error!')
+                print('Error!')
                 return
             content_str = ret_fetch_data[0]
             # print(content_str)
@@ -217,12 +219,13 @@ class SpecialWeather():
             grouped_data = {key: list(group) for key, group in groupby(
                 all_data, key=lambda x: x['WRN'])}
             to_insert.extend(self.process_grouped_data(grouped_data, target))
-        print(to_insert)
         if to_insert:
             special_weathers.insert_many(to_insert)
+        print('OK')
 
     # main method
     def update_special_weather(self, special_weathers):
+        print('Updating Special Weather.. ', end='')
         new_data = []
         for target in self.target_reg:
             content_str = self.update_fetch_data(target, self.key)
@@ -238,6 +241,7 @@ class SpecialWeather():
                 special_weathers.delete_one(target_db)
                 if target['CMD'] != '3':
                     special_weathers.insert_one(target)
+        print('OK')
 
     def init_fetch_data(self, target, key):
         SpecialWeather.tmfc1_value = self.two_months_ago()
@@ -316,7 +320,6 @@ class SpecialWeather():
             year -= 1
         else:
             month -= 2
-        print(now)
         two_months_ago_time = datetime(year, month, 1, now.hour, now.minute)
         return two_months_ago_time.strftime('%Y%m%d%H%M')
 
@@ -360,9 +363,11 @@ class Population_real_time():
         self.base_url = 'http://openapi.seoul.go.kr:8088/68666f624d6c696d373249736e7649/json/citydata_ppltn'
 
     def init_population_info(self, region_info):
+        print('Initializing population region info.. ', end='')
         region_info.delete_many({})
         to_insert = self.get_xl_file_info()
         region_info.insert_many(to_insert)
+        print('OK')
 
     def get_xl_file_info(self):
         file_path = os.path.join(os.path.dirname(
@@ -482,14 +487,14 @@ class district_info:  # 해당 지역 정보
         district_code = {'hwagok1': '11500540', 'yeokchon': '11380625',
                          'jingwan': '11380690', 'gil': '11740685'}
         one_week_ago = self.get_one_week_ago_date()
-        print(one_week_ago)
+        # print(one_week_ago)
 
         url = f"{self.base_url}/{one_week_ago}"
-        print(url)
+        # print(url)
 
         target = district_code[district_name]  # 해당 지역에 대한 정보만 업데이트
         real = f"{self.base_url}/{one_week_ago}/ /{target}"
-        print(real)
+        # print(real)
         fetched_data = self.fetch_data(real)
 
         fetched_data = fetched_data['SPOP_LOCAL_RESD_DONG']['row']
@@ -502,7 +507,7 @@ class district_info:  # 해당 지역 정보
                 'ADSTRD_CODE_SE': data_row['ADSTRD_CODE_SE'],  # 행정동코드
                 'TOT_LVPOP_CO': data_row['TOT_LVPOP_CO']  # 총생활인구수
             }
-            print(temp)
+            # print(temp)
             data.append(temp['TOT_LVPOP_CO'])
 
         return np.reshape(data, (1, -1))  # (1,24)
@@ -550,26 +555,41 @@ class Population_AI_model():
         # list 형식의 결과값을 numpy 형태로 변환
         predictions = np.array(predictions).reshape(n_output, 1)  # (24,1)
         predictions = scaler.inverse_transform(predictions)  # 예측값 역정규화
-
+        
+        print(f'Predict region : {district_name}')
         return predictions.reshape(1, 24).tolist()  # 길이가 24인 list 형식으로 반환
 
     def return_predict_value(self):
-        predict_dict = {}  # 예측값을 저장할 딕셔너리
+        with ThreadPoolExecutor(max_workers=4) as executor:
+            futures = {
+                '11500540': executor.submit(self.predict_pop, 'hwagok1'),
+                '11380625': executor.submit(self.predict_pop, 'yeokchon'),
+                '11380690': executor.submit(self.predict_pop, 'jingwan'),
+                '11740685': executor.submit(self.predict_pop, 'gil')
+            }
 
-        p_hwagok1 = self.predict_pop('hwagok1')
-        p_yeokchon = self.predict_pop('yeokchon')
-        p_jingwan = self.predict_pop('jingwan')
-        p_gil = self.predict_pop('gil')
+            predict_dict = {}
+            for key, future in futures.items():
+                predict_dict[key] = future.result()[0]
 
-        predict_dict = {
-            '11500540': p_hwagok1[0],
-            '11380625': p_yeokchon[0],
-            '11380690': p_jingwan[0],
-            '11740685': p_gil[0]
-        }
-
-        print(predict_dict)
+        print('Predict finished')
         return predict_dict
+
+    # def return_predict_value(self):
+    #     p_hwagok1 = self.predict_pop('hwagok1')
+    #     p_yeokchon = self.predict_pop('yeokchon')
+    #     p_jingwan = self.predict_pop('jingwan')
+    #     p_gil = self.predict_pop('gil')
+
+    #     predict_dict = {
+    #         '11500540': p_hwagok1[0],
+    #         '11380625': p_yeokchon[0],
+    #         '11380690': p_jingwan[0],
+    #         '11740685': p_gil[0]
+    #     }
+
+    #     print('Predict finished')
+    #     return predict_dict
     '''
     def get_holiday(self):
 
@@ -588,13 +608,14 @@ class DemoScraper:
 
     def __init__(self):
         self.chrome_options = webdriver.ChromeOptions()
-        self.download_path = '/Users/limhs/Downloads/'
+        # self.download_path = '/Users/limhs/Downloads/'
+        self.download_path = '/Users/choijeongheum/Downloads/'
         self.site_url = "https://www.smpa.go.kr/user/nd54882.do"
 
     def check_file(self):  # 파일명에서 한글 없애기(파일경로 수정 요망)
         new_filename = self.date + 'data.hwp'
         new_file_path = self.download_path+new_filename
-        print(new_file_path)
+        # print(new_file_path)
         return os.path.exists(new_file_path)
 
     def start_driver(self):
@@ -749,15 +770,17 @@ class DemoScraper:
         for idx, target in enumerate(new_data):
             new_data[idx]['date'] = target['date'].group()
 
-        print(new_data)
+        # print(new_data)
         collection.insert_many(new_data)
 
     def close_driver(self):
         self.driver.quit()
 
     def get_demo(self, collection):
+        print('Initializing demo crawling.. ', end='')
         self.get_date_info()
         if self.check_file():
+            print('OK')
             return
         self.start_driver()
         self.navigate_to_site()
@@ -765,4 +788,79 @@ class DemoScraper:
         self.download_hwp()
         self.update_demo(collection)
         self.close_driver()
+        print('OK')
         return
+
+class Custom_info():
+
+    def __init__(self):
+        self.custom_list = ['custom-demo', 'custom-elevator', 'custom-population',
+                            'custom-predict', 'custom-safety', 'custom-safey-loc',
+                            'custom-low-bus', 'custom-festival']
+    
+    def get_custom_info(self, id, collection):
+        ret = []
+        custom = self.get_id_info_to_custom(id, collection)
+        # print(custom)
+        for target in self.custom_list:
+            if custom[target]:
+                ret.append({target: self.get_target_matching_info(target)})
+        return ret
+
+    def get_id_info_to_custom(self, id, collection):
+        user_info = collection.find_one({'ID': id})
+        if user_info == None:
+            raise ValueError(f"Not exist user: {id}")
+        return user_info['custom']
+
+    def get_target_matching_info(self, target):
+
+        from config import utils
+        from pymongo.errors import PyMongoError
+
+        db_handle = utils.db_handle
+        get_collection = utils.get_collection_handle
+        
+        if target == self.custom_list[0]:
+            collection = get_collection(db_handle, 'demo')
+            data_demo = list(collection.find({}))
+            ret = []
+            for item in data_demo:
+                item_data = {
+                    "location": str(item["location"]),
+                    "date": str(item["date"]),
+                    "time": str(item["time"]),
+                    "amount": str(item["amount"])
+                }
+                ret.append(item_data)
+            return ret
+        elif target == self.custom_list[1]: # subway elevator
+            return ret
+        elif target == self.custom_list[2]: # We have to select region
+            prt = Population_real_time()
+            collection = get_collection(db_handle, 'popul_real_time_reg')
+            region_info = list(collection.find({}))
+            ret = prt.get_real_time_popul(region_info)
+            return ret
+        elif target == self.custom_list[3]:
+            popul_ai = Population_AI_model()
+            ret = popul_ai.return_predict_value()
+            return ret
+        elif target == self.custom_list[4]:
+            return ret
+        elif target == self.custom_list[5]:
+            collection = get_collection(db_handle, 'safety_guard_house')
+            ret = collection.find()
+            ret_list = [{'name': item['name'], 'x': item['y'], 'y': item['x']}
+                        for item in ret]
+            return ret_list
+        elif target == self.custom_list[6]: # What we have to show?
+            
+            
+            return ret
+        elif target == self.custom_list[7]:
+            
+            
+            return ret
+        else:
+            raise ValueError(f"Invalid custom element : {target}")
