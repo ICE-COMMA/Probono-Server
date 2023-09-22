@@ -158,6 +158,7 @@ def login_view(request):
     return JsonResponse(data, status=status_code)
 
 
+@csrf_exempt
 @require_POST
 def sign_up(request):
     data = json.loads(request.body.decode('utf-8'))
