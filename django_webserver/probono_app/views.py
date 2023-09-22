@@ -212,6 +212,7 @@ def sign_up(request):
     # return JsonResponse(ret)
 
 
+@csrf_exempt
 @require_POST
 def id_check(request):
     users = get_collection(db_handle, 'User')
