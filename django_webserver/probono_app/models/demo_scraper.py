@@ -27,7 +27,7 @@ class DemoScraper():
         self.site_url = "https://www.smpa.go.kr/user/nd54882.do"
         self.db_name = 'demo'
 
-    def get_demo(self):
+    def crawling_demo(self):
         print('Initializing demo crawling.. ', end='')
         self.get_date_info()
         if self.check_file():

@@ -19,7 +19,7 @@ class ProbonoAppConfig(AppConfig):
             spw_ins.init_special_weather()
 
             demo = DemoScraper()
-            demo.get_demo()
+            demo.crawling_demo()
 
             prt = Population_real_time()
             prt.init_population_info()

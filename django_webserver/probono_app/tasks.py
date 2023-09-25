@@ -130,6 +130,5 @@ def update_special_weather_task():
 @shared_task
 def update_demo_task():
     demo = DemoScraper()
-    collection = get_collection(db_handle, 'demo')
-    demo.get_demo(collection)
+    demo.crawling_demo()
     return
