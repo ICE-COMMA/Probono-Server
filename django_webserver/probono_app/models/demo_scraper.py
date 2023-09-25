@@ -18,14 +18,28 @@ from config import utils
 db_handle = utils.db_handle
 get_collection = utils.get_collection_handle
 
-class DemoScraper():
+class DemoInfo():
     
     def __init__(self):
         self.chrome_options = webdriver.ChromeOptions()
         # self.download_path = '/Users/limhs/Downloads/'
-        self.download_path = '/Users/choijeongheum/Downloads/'
-        self.site_url = "https://www.smpa.go.kr/user/nd54882.do"
-        self.db_name = 'demo'
+        self.download_path  = '/Users/choijeongheum/Downloads/'
+        self.site_url       = "https://www.smpa.go.kr/user/nd54882.do"
+        self.db_name        = 'demo'
+
+    def get_demo_info(self):
+        collection = get_collection(db_handle, self.db_name)
+        data_demo = list(collection.find({}))
+        ret = []
+        for item in data_demo:
+            item_data = {
+                "location"  : str(item["location"]),
+                "date"      : str(item["date"]),
+                "time"      : str(item["time"]),
+                "amount"    : str(item["amount"])
+            }
+            ret.append(item_data)
+        return ret
 
     def crawling_demo(self):
         print('Initializing demo crawling.. ', end='')
