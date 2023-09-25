@@ -15,6 +15,7 @@ class Bus_info():
 
         self.route_base_url = 'http://ws.bus.go.kr/api/rest/busRouteInfo/getStaionByRoute'
         self.route_key = '4cwiloFmPQxO3hXwmJy3jruoPPh6m8PQZqxBkWecSAgIIeRjq6UIdo0r7ZnmT4Rm4kVErRaD9jd1XU5CS7Chwg=='
+        self.route_db_name = 'bus'
 
     def get_bus_pos(self, route_id):
         params = {
@@ -40,7 +41,7 @@ class Bus_info():
         return ret
 
     def get_bus_route(self, bus_num):
-        collection_bus = get_collection(db_handle, 'bus')
+        collection_bus = get_collection(db_handle, self.route_db_name)
         bus_info = collection_bus.find_one({'bus_no': bus_num})
         
         params = {
