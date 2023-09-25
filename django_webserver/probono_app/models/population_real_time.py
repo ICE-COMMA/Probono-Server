@@ -17,35 +17,6 @@ class Population_real_time():
         region_info.insert_many(to_insert)
         print('OK')
 
-    def get_xl_file_info(self):
-        # file_path = os.path.join(os.path.dirname(__file__), 'files', 'population_region_info.xlsx')
-        current_dir = Path(__file__).parent
-        base_dir = current_dir.parent
-        file_path = base_dir / 'files' / 'population_region_info.xlsx'
-        xl_file = openpyxl.load_workbook(file_path)
-        xl_sheet = xl_file.active
-
-        data_list = []
-        for row_idx, row in enumerate(xl_sheet.iter_rows(values_only=True), start=1):
-            if row_idx == 1:
-                continue
-            category = row[0]
-            no = row[1]
-            area_cd = row[2]
-            area_nm = row[3]
-            data_list.append({
-                'CATEGORY': category,
-                'NO': no,
-                'AREA_CD': area_cd,
-                'AREA_NM': area_nm,
-            })
-        xl_file.close()
-        return data_list
-
-    def fetch_data(self, url):
-        response = requests.get(url)
-        return response.json()
-
     def get_real_time_popul(self, region_info):
         start_index = 1
         end_index = 5
@@ -76,5 +47,33 @@ class Population_real_time():
                     print(f'{target["AREA_CD"]} generated an exception: {exc}')
 
         ret = sorted(ret, key=lambda x: x['area_popul_avg'], reverse=True)
-        return ret
+        return ret   
 
+    def get_xl_file_info(self):
+        # file_path = os.path.join(os.path.dirname(__file__), 'files', 'population_region_info.xlsx')
+        current_dir = Path(__file__).parent
+        base_dir = current_dir.parent
+        file_path = base_dir / 'files' / 'population_region_info.xlsx'
+        xl_file = openpyxl.load_workbook(file_path)
+        xl_sheet = xl_file.active
+
+        data_list = []
+        for row_idx, row in enumerate(xl_sheet.iter_rows(values_only=True), start=1):
+            if row_idx == 1:
+                continue
+            category = row[0]
+            no = row[1]
+            area_cd = row[2]
+            area_nm = row[3]
+            data_list.append({
+                'CATEGORY': category,
+                'NO': no,
+                'AREA_CD': area_cd,
+                'AREA_NM': area_nm,
+            })
+        xl_file.close()
+        return data_list
+
+    def fetch_data(self, url):
+        response = requests.get(url)
+        return response.json()
