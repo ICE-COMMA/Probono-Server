@@ -290,6 +290,16 @@ def get_bus_route(request, bus_num):
         ret.append(data)
     return JsonResponse({'route_id': route_id, 'station': ret})
 
+@require_GET
+def get_bus_route_test(request, bus_num):
+    bus_route = Bus_info()
+    data_ret = bus_route.get_bus_route(bus_num)
+
+    route_id = data_ret[0]
+    station_info = data_ret[1]
+
+    return JsonResponse({'route_id' : route_id, 'station' : station_info})
+
 
 @require_GET
 def get_bus_pos(request, route_id):
