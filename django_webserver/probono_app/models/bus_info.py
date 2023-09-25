@@ -5,7 +5,7 @@ from config import utils
 db_handle = utils.db_handle
 get_collection = utils.get_collection_handle
 
-class Bus_info():
+class BusInfo():
     
     def __init__(self):
         self.pos_base_url   = 'http://ws.bus.go.kr/api/rest/buspos/getBusPosByRtid'
@@ -30,7 +30,7 @@ class Bus_info():
                     'busRouteId'    : route_id,
                     'resultType'    : 'json'
         }
-        data = self.fetch_data(params)
+        data = self.fetch_data(self.pos_base_url, params)
         data = data['msgBody']['itemList']
         ret = []
         for temp_data in data:
