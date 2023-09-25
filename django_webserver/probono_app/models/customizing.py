@@ -24,7 +24,7 @@ class CustomInfo():
         return user_info['custom']
 
     def get_target_matching_info(self, target):
-
+    
         from config import utils
         from pymongo.errors import PyMongoError
 
@@ -37,10 +37,10 @@ class CustomInfo():
             ret = []
             for item in data_demo:
                 item_data = {
-                    "location": str(item["location"]),
-                    "date": str(item["date"]),
-                    "time": str(item["time"]),
-                    "amount": str(item["amount"])
+                    "location"  : str(item["location"]),
+                    "date"      : str(item["date"]),
+                    "time"      : str(item["time"]),
+                    "amount"    : str(item["amount"])
                 }
                 ret.append(item_data)
             return ret
@@ -48,9 +48,7 @@ class CustomInfo():
             return ret
         elif target == self.custom_list[2]:  # We have to select region
             prt = PopulationRealTime()
-            collection = get_collection(db_handle, 'popul_real_time_reg')
-            region_info = list(collection.find({}))
-            ret = prt.get_real_time_popul(region_info)
+            ret = prt.get_real_time_popul()
             return ret
         elif target == self.custom_list[3]:
             popul_ai = PopulationAiModel()
