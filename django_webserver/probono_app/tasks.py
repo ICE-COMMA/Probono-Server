@@ -1,7 +1,7 @@
 import requests
 from celery import shared_task
 from config import settings, utils
-from .models import SpecialWeather, DemoScraper
+from .models import SpecialWeather, DemoInfo
 
 '''
 서버 구동 후, 반드시 터미널 창 두개 열어서 실행해야 함.
@@ -129,6 +129,6 @@ def update_special_weather_task():
 
 @shared_task
 def update_demo_task():
-    demo = DemoScraper()
+    demo = DemoInfo()
     demo.crawling_demo()
     return

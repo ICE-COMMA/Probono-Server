@@ -24,6 +24,8 @@ from .models import Custom_info
 
 from .models import Subway_info
 
+from .models import DemoInfo
+
 
 
 db_handle = utils.db_handle
@@ -34,7 +36,7 @@ def test_AI(request):
 
     from .models import Population_AI_model
     popul_ai = Population_AI_model()
-    ret = popul_ai.return_predict_value()
+    ret = popul_ai.get_predict_value()
 
     return JsonResponse({'popul_ai': ret})
 
@@ -110,7 +112,7 @@ def real_dense_popul_info(request):
 @require_GET
 def predict_dense_popul_info(request):
     popul_ai = Population_AI_model()
-    ret = popul_ai.return_predict_value()
+    ret = popul_ai.get_predict_value()
     return JsonResponse({'predict': ret})
 
 
@@ -262,15 +264,17 @@ def get_bus_pos(request, route_id):
 
 @require_GET
 def get_demo_today(request):
-    collection = get_collection(db_handle, 'demo')
-    data_demo = list(collection.find({}))
-    ret = []
-    for item in data_demo:
-        item_data = {
-            "location": str(item["location"]),
-            "date": str(item["date"]),
-            "time": str(item["time"]),
-            "amount": str(item["amount"])
-        }
-        ret.append(item_data)
+    # collection = get_collection(db_handle, 'demo')
+    # data_demo = list(collection.find({}))
+    # ret = []
+    # for item in data_demo:
+    #     item_data = {
+    #         "location": str(item["location"]),
+    #         "date": str(item["date"]),
+    #         "time": str(item["time"]),
+    #         "amount": str(item["amount"])
+    #     }
+    #     ret.append(item_data)
+    demo_info = DemoInfo()
+    ret = demo_info.get_demo_info()
     return JsonResponse({'demo': ret})
