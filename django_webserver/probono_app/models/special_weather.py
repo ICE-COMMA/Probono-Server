@@ -41,6 +41,11 @@ class SpecialWeather():
             '3' :   '경보'
         }
 
+    def get_special_weather(self):
+        collection = get_collection(db_handle, self.db_name)
+        ret = list(collection.find({}))
+        return ret
+
     def init_special_weather(self):
         print('Initializing Special Weather.. ', end='')
         collection = get_collection(db_handle, self.db_name)

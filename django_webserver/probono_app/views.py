@@ -13,6 +13,9 @@ from pymongo.errors import PyMongoError
 # User
 from .forms import SignUpForm
 
+# Special Weather
+from .models import SpecialWeather
+
 # Transfer info
 from .models import BusInfo
 
@@ -39,8 +42,8 @@ def test_AI(request):
 
 def index(request):
     if request.method == 'GET':
-        weather_collection = get_collection(db_handle, 'special_weather')
-        special_weather_info = list(weather_collection.find({}))
+        special_weather = SpecialWeather()
+        spw = special_weather.get_special_weather()
         sess_ret = request.session.get('ID', False)
         print('User ID :', sess_ret)
         custom_info = False
@@ -49,9 +52,9 @@ def index(request):
             temp = CustomInfo()
             custom_info = temp.get_custom_info(sess_ret, user_collection)
 
-        for item in special_weather_info:
+        for item in spw:
             item['_id'] = str(item['_id'])
-        return JsonResponse({'user': sess_ret, 'spw': special_weather_info, 'custom': custom_info})
+        return JsonResponse({'user': sess_ret, 'spw': spw, 'custom': custom_info})
 
     # elif request.method == 'POST':
     #     collection = get_collection(db_handle, 'report')
