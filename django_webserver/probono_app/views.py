@@ -257,11 +257,6 @@ def get_subway_elvtr(request):
     return JsonResponse({'elvtr': ret})
 
 
-def get_bus_no_to_route(request):
-
-    return
-
-
 @require_GET
 def get_bus_route(request, bus_num):
     bus_route = Bus_info()
