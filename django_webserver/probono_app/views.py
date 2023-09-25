@@ -14,15 +14,15 @@ from pymongo.errors import PyMongoError
 from .forms import SignUpForm
 
 # Transfer info
-from .models import Bus_info
+from .models import BusInfo
 
 # Population_real_time, predict
 from .models import PopulationRealTime
 from .models import PopulationAiModel
 
-from .models import Custom_info
+from .models import CustomInfo
 
-from .models import Subway_info
+from .models import SubwayInfo
 
 from .models import DemoInfo
 
@@ -46,7 +46,7 @@ def index(request):
         custom_info = False
         if sess_ret:
             user_collection = get_collection(db_handle, 'User')
-            temp = Custom_info()
+            temp = CustomInfo()
             custom_info = temp.get_custom_info(sess_ret, user_collection)
 
         for item in special_weather_info:
@@ -225,13 +225,13 @@ def update_custom(request):
 
 @require_GET
 def get_subway_elvtr(request, subway_station):
-    subway_info = Subway_info()
+    subway_info = SubwayInfo()
     elevator_data = subway_info.get_subway_elvtr(subway_station)
     return JsonResponse(elevator_data)
 
 @require_GET
 def get_bus_route(request, bus_num):
-    bus_route = Bus_info()
+    bus_route = BusInfo()
     data_ret = bus_route.get_bus_route(bus_num)
 
     route_id = data_ret[0]
@@ -240,7 +240,7 @@ def get_bus_route(request, bus_num):
 
 @require_GET
 def get_bus_pos(request, route_id):
-    bus_info = Bus_info()
+    bus_info = BusInfo()
     ret = bus_info.get_bus_pos(route_id)
     return JsonResponse({'bus_pos': ret})
 

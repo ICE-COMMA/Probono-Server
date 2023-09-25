@@ -1,7 +1,7 @@
-from .population_real_time import Population_real_time
-from .population_ai_model import Population_AI_model
+from .population_real_time import PopulationRealTime
+from .population_ai_model import PopulationAiModel
 
-class Custom_info():
+class CustomInfo():
     
     def __init__(self):
         self.custom_list = ['custom-demo', 'custom-elevator', 'custom-population',
@@ -47,14 +47,14 @@ class Custom_info():
         elif target == self.custom_list[1]:  # subway elevator
             return ret
         elif target == self.custom_list[2]:  # We have to select region
-            prt = Population_real_time()
+            prt = PopulationRealTime()
             collection = get_collection(db_handle, 'popul_real_time_reg')
             region_info = list(collection.find({}))
             ret = prt.get_real_time_popul(region_info)
             return ret
         elif target == self.custom_list[3]:
-            popul_ai = Population_AI_model()
-            ret = popul_ai.return_predict_value()
+            popul_ai = PopulationAiModel()
+            ret = popul_ai.get_predict_value()
             return ret
         elif target == self.custom_list[4]:
             return ret

@@ -3,7 +3,7 @@ from config import utils
 db_handle = utils.db_handle
 get_collection = utils.get_collection_handle
 
-class Subway_info():
+class SubwayInfo():
 
     def __init__(self):
         self.db_name = 'subway_elevator'
