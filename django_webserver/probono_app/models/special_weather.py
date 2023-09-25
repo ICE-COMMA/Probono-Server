@@ -12,11 +12,11 @@ class SpecialWeather():
     tmfc1_value = None
 
     def __init__(self):
+        self.base_url = 'https://apihub.kma.go.kr/api/typ01/url/wrn_met_data.php'
+        self.key = 'm4y76-4OTnaMu-vuDg525w'
         self.target_reg = [
-            ['L1100100', '서울동남권'],
-            ['L1100200', '서울동북권'],
-            ['L1100300', '서울서남권'],
-            ['L1100400', '서울서북권']
+            ['L1100100', '서울동남권'], ['L1100200', '서울동북권'],
+            ['L1100300', '서울서남권'], ['L1100400', '서울서북권']
         ]
         self.wrn = {
             'W': '강풍', 'R': '호우', 'C': '한파',
@@ -25,16 +25,14 @@ class SpecialWeather():
             'Y': '황사', 'H': '폭염'
         }
         self.lvl = {'1': '예비', '2': '주의보', '3': '경보'}
-        self.key = 'm4y76-4OTnaMu-vuDg525w'
 
     # main method
     def init_special_weather(self, special_weathers):
-
         print('Initializing Special Weather.. ', end='')
         special_weathers.delete_many({})
         to_insert = []
         for target in self.target_reg:
-            ret_fetch_data = self.init_fetch_data(target, self.key)
+            ret_fetch_data = self.init_fetch_data(target)
             if not ret_fetch_data[1]:
                 print('Error!')
                 return
@@ -54,7 +52,7 @@ class SpecialWeather():
         print('Updating Special Weather.. ', end='')
         new_data = []
         for target in self.target_reg:
-            content_str = self.update_fetch_data(target, self.key)
+            content_str = self.update_fetch_data(target)
             all_data = self.parse_data(content_str, target)
             all_data.sort(key=lambda x: (x['WRN'], x['TM_EF']))
             grouped_data = {key: list(group) for key, group in groupby(
@@ -69,14 +67,16 @@ class SpecialWeather():
                     special_weathers.insert_one(target)
         print('OK')
 
-    def init_fetch_data(self, target, key):
+    def init_fetch_data(self, target):
         SpecialWeather.tmfc1_value = self.two_months_ago()
-        url = 'https://apihub.kma.go.kr/api/typ01/url/wrn_met_data.php'
         params = {
-            'wrn': 'A', 'reg': target[0], 'tmfc1': SpecialWeather.tmfc1_value, 'disp': '0', 'authKey': key}
+            'wrn': 'A', 'reg': target[0],
+            'tmfc1': SpecialWeather.tmfc1_value,
+            'disp': '0', 'authKey': self.key
+        }
         SpecialWeather.tmfc1_value = datetime.now().strftime('%Y%m%d%H%M')
         try:
-            response = requests.get(url, params=params)
+            response = requests.get(self.base_url, params=params)
             response.raise_for_status()
             return response.content.decode('utf-8'), True
         except requests.exceptions.HTTPError as http_err:
@@ -91,13 +91,28 @@ class SpecialWeather():
             print(response)
         return response.content.decode('utf-8'), False
 
-    def update_fetch_data(self, target, key):
-        url = 'https://apihub.kma.go.kr/api/typ01/url/wrn_met_data.php'
+    def update_fetch_data(self, target):
         params = {
-            'wrn': 'A', 'reg': target[0], 'tmfc1': SpecialWeather.tmfc1_value, 'disp': '0', 'authKey': key}
+            'wrn': 'A', 'reg': target[0],
+            'tmfc1': SpecialWeather.tmfc1_value,
+            'disp': '0', 'authKey': self.key
+        }
         SpecialWeather.tmfc1_value = datetime.now().strftime('%Y%m%d%H%M')
-        response = requests.get(url, params=params)
-        return response.content.decode('utf-8')
+        try:
+            response = requests.get(self.base_url, params=params)
+            response.raise_for_status()
+            return response.content.decode('utf-8'), True
+        except requests.exceptions.HTTPError as http_err:
+            if response.status_code == 500:
+                print("Internal Server Error : Special weather API server.")
+            else:
+                print(f"HTTP Error : {http_err}")
+        except requests.exceptions.RequestException as req_err:
+            print(f"Request Error : {req_err}")
+        except Exception as e:
+            print(f"Error : {e}")
+            print(response)
+        return response.content.decode('utf-8'), False
 
     def parse_data(self, content_str, target):
         content_str = content_str.replace(
