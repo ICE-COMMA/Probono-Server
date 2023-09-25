@@ -20,8 +20,7 @@ class ProbonoAppConfig(AppConfig):
             spw_ins.init_special_weather(collection)
 
             demo = DemoScraper()
-            collection = get_collection(db_handle, 'demo')
-            demo.get_demo(collection)
+            demo.get_demo()
 
             prt = Population_real_time()
             collection = get_collection(db_handle, 'popul_real_time_reg')
