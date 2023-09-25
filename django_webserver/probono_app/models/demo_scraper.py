@@ -13,7 +13,6 @@ import re
 import zlib
 import struct
 
-
 from config import utils
 
 db_handle = utils.db_handle
@@ -201,7 +200,6 @@ class DemoScraper():
         new_data.extend(self.process_hwp_file())
         for idx, target in enumerate(new_data):
             new_data[idx]['date'] = target['date'].group()
-
         # print(new_data)
         collection.insert_many(new_data)
 
