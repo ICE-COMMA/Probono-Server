@@ -1,5 +1,3 @@
-from django.shortcuts import render, redirect
-from django.urls import reverse
 from django.views.decorators.http import require_POST, require_GET
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseForbidden, JsonResponse
@@ -23,6 +21,7 @@ from .models import Population_real_time
 from .models import Population_AI_model
 
 from .models import Custom_info
+
 
 
 db_handle = utils.db_handle
@@ -194,22 +193,6 @@ def sign_up(request):
 
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)})
-    # print(request.POST)
-    # form = SignUpForm(request.POST)
-    # if form.is_valid():
-    #     print('GOOD')
-    #     user_data = form.cleaned_data
-    #     date_obj = form.cleaned_data['date']
-    #     datetime_obj = datetime(date_obj.year, date_obj.month, date_obj.day)
-    #     form.cleaned_data['date'] = datetime_obj
-    #     user_data['custom'] = ''
-    #     print(user_data)
-    #     users = get_collection(db_handle, 'User')
-    #     users.insert_one(form.cleaned_data)
-    #     return redirect('index')
-    # print(form.errors)
-    # ret = {'message': 'error'}
-    # return JsonResponse(ret)
 
 
 @csrf_exempt
