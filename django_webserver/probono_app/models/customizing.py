@@ -1,5 +1,5 @@
-from population_real_time import Population_real_time
-from population_ai_model import Population_AI_model
+from .population_real_time import Population_real_time
+from .population_ai_model import Population_AI_model
 
 class Custom_info():
     
