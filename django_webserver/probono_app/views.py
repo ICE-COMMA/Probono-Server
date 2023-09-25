@@ -26,11 +26,8 @@ from .models import Subway_info
 
 from .models import DemoInfo
 
-
-
 db_handle = utils.db_handle
 get_collection = utils.get_collection_handle
-
 
 def test_AI(request):
 
@@ -39,7 +36,6 @@ def test_AI(request):
     ret = popul_ai.get_predict_value()
 
     return JsonResponse({'popul_ai': ret})
-
 
 def index(request):
     if request.method == 'GET':
@@ -62,7 +58,6 @@ def index(request):
     #     data = loads(request.body)
     #     print('TEST : ', data, '\n', 'TYPE : ', type(data))
     #     # collection.insert_one()
-
 
 def my_page(request, id):
     try:
@@ -99,22 +94,17 @@ def my_page(request, id):
     except PyMongoError:
         return JsonResponse({'valid': False, 'error': 'Database error'})
 
-
 @require_GET
 def real_dense_popul_info(request):
     prt = Population_real_time()
-    collection = get_collection(db_handle, 'popul_real_time_reg')
-    region_info = list(collection.find({}))
-    ret = prt.get_real_time_popul(region_info)
+    ret = prt.get_real_time_popul()
     return JsonResponse({'real_time': ret})
-
 
 @require_GET
 def predict_dense_popul_info(request):
     popul_ai = Population_AI_model()
     ret = popul_ai.get_predict_value()
     return JsonResponse({'predict': ret})
-
 
 @require_GET
 def safety_info_data(request):
@@ -123,7 +113,6 @@ def safety_info_data(request):
     ret_list = [{'name': item['name'], 'x': item['y'], 'y': item['x']}
                 for item in ret]
     return JsonResponse({'ret': ret_list})
-
 
 @csrf_exempt
 @require_POST
@@ -143,9 +132,9 @@ def login_view(request):
             # print(custom_info)
             # print(request.session.items())
             data = {
-                "success": True,
-                "username": username,
-                "custom": custom_info
+                "success"   : True,
+                "username"  : username,
+                "custom"    : custom_info
             }
             print(user_id)
             status_code = 200
@@ -160,7 +149,6 @@ def login_view(request):
 
     return JsonResponse(data, status=status_code)
 
-
 @require_POST
 def sign_up(request):
     data = json.loads(request.body.decode('utf-8'))
@@ -170,24 +158,24 @@ def sign_up(request):
     # datetime_obj = datetime(date_obj.year, date_obj.month, date_obj.day)
 
     default_custom_settings = {
-        "custom-demo": False,
-        "custom-elevator": False,
-        "custom-population": False,
-        "custom-predict": False,
-        "custom-safety": False,
-        "custom-safey-loc": False,
-        "custom-low-bus": False,
-        "custom-festival": False
+        "custom-demo"       : False,
+        "custom-elevator"   : False,
+        "custom-population" : False,
+        "custom-predict"    : False,
+        "custom-safety"     : False,
+        "custom-safey-loc"  : False,
+        "custom-low-bus"    : False,
+        "custom-festival"   : False
     }
 
     user_data = {
-        "ID": data.get('userId'),
-        "name": data.get('userName'),
-        "PW": data.get('password'),
-        "gender": data.get('gender'),
-        "date": data.get('birth'),
-        "impaired": data.get('impaired'),
-        "custom": default_custom_settings  # custom 필드는 빈 문자열로 초기화
+        "ID"        : data.get('userId'),
+        "name"      : data.get('userName'),
+        "PW"        : data.get('password'),
+        "gender"    : data.get('gender'),
+        "date"      : data.get('birth'),
+        "impaired"  : data.get('impaired'),
+        "custom"    : default_custom_settings  # custom 필드는 빈 문자열로 초기화
     }
     try:
         users = get_collection(db_handle, 'User')
@@ -197,7 +185,6 @@ def sign_up(request):
 
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)})
-
 
 @csrf_exempt
 @require_POST
@@ -217,11 +204,9 @@ def id_check(request):
         data = {'valid': False}  # REMIND : front have to know its response.
     return JsonResponse(data, status=status_code)
 
-
 def logout_view(request):
     request.session.flush()
     return
-
 
 @csrf_exempt
 @require_POST
@@ -238,7 +223,6 @@ def update_custom(request):
     except Exception as e:
         return JsonResponse({'success': False})
 
-
 @require_GET
 def get_subway_elvtr(request, subway_station):
     subway_info = Subway_info()
@@ -254,27 +238,14 @@ def get_bus_route(request, bus_num):
     station_info = data_ret[1]
     return JsonResponse({'route_id' : route_id, 'station' : station_info})
 
-
 @require_GET
 def get_bus_pos(request, route_id):
     bus_info = Bus_info()
     ret = bus_info.get_bus_pos(route_id)
     return JsonResponse({'bus_pos': ret})
 
-
 @require_GET
 def get_demo_today(request):
-    # collection = get_collection(db_handle, 'demo')
-    # data_demo = list(collection.find({}))
-    # ret = []
-    # for item in data_demo:
-    #     item_data = {
-    #         "location": str(item["location"]),
-    #         "date": str(item["date"]),
-    #         "time": str(item["time"]),
-    #         "amount": str(item["amount"])
-    #     }
-    #     ret.append(item_data)
     demo_info = DemoInfo()
     ret = demo_info.get_demo_info()
     return JsonResponse({'demo': ret})

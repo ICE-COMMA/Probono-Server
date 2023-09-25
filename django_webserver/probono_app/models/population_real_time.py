@@ -13,8 +13,8 @@ get_collection = utils.get_collection_handle
 class Population_real_time():
     
     def __init__(self):
-        self.base_url = 'http://openapi.seoul.go.kr:8088/68666f624d6c696d373249736e7649/json/citydata_ppltn'
-        self.db_name = 'popul_real_time_reg'
+        self.base_url   = 'http://openapi.seoul.go.kr:8088/68666f624d6c696d373249736e7649/json/citydata_ppltn'
+        self.db_name    = 'popul_real_time_reg'
 
     def init_population_info(self):
         print('Initializing population region info.. ', end='')
@@ -24,9 +24,13 @@ class Population_real_time():
         collection.insert_many(to_insert)
         print('OK')
 
-    def get_real_time_popul(self, region_info):
+    def get_real_time_popul(self):
+        
+        collection = get_collection(db_handle, self.db_name)
+        region_info = list(collection.find({}))
+
         start_index = 1
-        end_index = 5
+        end_index   = 5
 
         ret = []
         # Multithreading for optimization
@@ -40,14 +44,14 @@ class Population_real_time():
                     area_popul_average = round(
                         (int(temp['AREA_PPLTN_MIN']) + int(temp['AREA_PPLTN_MAX'])) / 2)
                     data = {
-                        'area_name': temp['AREA_NM'],
-                        'area_code': temp['AREA_CD'],
-                        'area_congest': temp['AREA_CONGEST_LVL'],
-                        'message': temp['AREA_CONGEST_MSG'],
-                        'area_popul_min': temp['AREA_PPLTN_MIN'],
-                        'area_popul_max': temp['AREA_PPLTN_MAX'],
-                        'area_popul_avg': area_popul_average,
-                        'area_update_time': temp['PPLTN_TIME']
+                        'area_name'         : temp['AREA_NM'],
+                        'area_code'         : temp['AREA_CD'],
+                        'area_congest'      : temp['AREA_CONGEST_LVL'],
+                        'message'           : temp['AREA_CONGEST_MSG'],
+                        'area_popul_min'    : temp['AREA_PPLTN_MIN'],
+                        'area_popul_max'    : temp['AREA_PPLTN_MAX'],
+                        'area_popul_avg'    : area_popul_average,
+                        'area_update_time'  : temp['PPLTN_TIME']
                     }
                     ret.append(data)
                 except Exception as exc:
@@ -57,7 +61,6 @@ class Population_real_time():
         return ret   
 
     def get_xl_file_info(self):
-        # file_path = os.path.join(os.path.dirname(__file__), 'files', 'population_region_info.xlsx')
         current_dir = Path(__file__).parent
         base_dir = current_dir.parent
         file_path = base_dir / 'files' / 'population_region_info.xlsx'
@@ -68,15 +71,15 @@ class Population_real_time():
         for row_idx, row in enumerate(xl_sheet.iter_rows(values_only=True), start=1):
             if row_idx == 1:
                 continue
-            category = row[0]
-            no = row[1]
-            area_cd = row[2]
-            area_nm = row[3]
+            category    = row[0]
+            no          = row[1]
+            area_cd     = row[2]
+            area_nm     = row[3]
             data_list.append({
-                'CATEGORY': category,
-                'NO': no,
-                'AREA_CD': area_cd,
-                'AREA_NM': area_nm,
+                'CATEGORY'  : category,
+                'NO'        : no,
+                'AREA_CD'   : area_cd,
+                'AREA_NM'   : area_nm,
             })
         xl_file.close()
         return data_list
