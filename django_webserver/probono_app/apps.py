@@ -23,5 +23,4 @@ class ProbonoAppConfig(AppConfig):
             demo.get_demo()
 
             prt = Population_real_time()
-            collection = get_collection(db_handle, 'popul_real_time_reg')
-            prt.init_population_info(collection)
+            prt.init_population_info()
