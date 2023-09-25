@@ -264,40 +264,11 @@ def get_bus_no_to_route(request):
 
 @require_GET
 def get_bus_route(request, bus_num):
-    collection_bus = get_collection(db_handle, 'bus')
-    bus_info = collection_bus.find_one({'bus_no': bus_num})
-    url = 'http://ws.bus.go.kr/api/rest/busRouteInfo/getStaionByRoute'
-    key = '4cwiloFmPQxO3hXwmJy3jruoPPh6m8PQZqxBkWecSAgIIeRjq6UIdo0r7ZnmT4Rm4kVErRaD9jd1XU5CS7Chwg=='
-    params = {'ServiceKey': key,
-              'busRouteId': bus_info['route'], 'resultType': 'json'}
-
-    response = requests.get(url, params=params)
-    print(response)
-    data = response.json()
-    item_list = data['msgBody']['itemList']
-
-    ret = []
-    for target in item_list:
-        route_id = target['busRouteId']
-        data = {
-            'station_id': target['station'],
-            'name': target['stationNm'],
-            'seq': target['seq'],
-            'x': target['gpsX'],
-            'y': target['gpsY']
-        }
-        print(data)
-        ret.append(data)
-    return JsonResponse({'route_id': route_id, 'station': ret})
-
-@require_GET
-def get_bus_route_test(request, bus_num):
     bus_route = Bus_info()
     data_ret = bus_route.get_bus_route(bus_num)
 
     route_id = data_ret[0]
     station_info = data_ret[1]
-
     return JsonResponse({'route_id' : route_id, 'station' : station_info})
 
 
