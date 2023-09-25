@@ -122,8 +122,7 @@ def get_safety_guard_house():
 @shared_task
 def update_special_weather_task():
     special_weather = SpecialWeather()
-    collection = get_collection(db_handle, 'special_weather')
-    special_weather.update_special_weather(collection)
+    special_weather.update_special_weather()
     return
 
 
