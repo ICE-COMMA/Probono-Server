@@ -13,18 +13,16 @@ import numpy as np
 class Population_AI_model():
     
     def __init__(self):
-        self.base_url = 'http://openapi.seoul.go.kr:8088/4b4c477a766c696d39314965686a66/json/SPOP_LOCAL_RESD_DONG/1/24'
-        self.region_code = ['11500540', '11380625', '11380690', '11740685']
-        self.holi_url = 'https://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo'
-        self.holi_key = '4cwiloFmPQxO3hXwmJy3jruoPPh6m8PQZqxBkWecSAgIIeRjq6UIdo0r7ZnmT4Rm4kVErRaD9jd1XU5CS7Chwg=='
+        self.holi_url       = 'https://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo'
+        self.holi_key       = '4cwiloFmPQxO3hXwmJy3jruoPPh6m8PQZqxBkWecSAgIIeRjq6UIdo0r7ZnmT4Rm4kVErRaD9jd1XU5CS7Chwg=='
 
     def get_predict_value(self):
         with ThreadPoolExecutor(max_workers=4) as executor:
             futures = {
-                '11500540': executor.submit(self.predict_pop, 'hwagok1'),
-                '11380625': executor.submit(self.predict_pop, 'yeokchon'),
-                '11380690': executor.submit(self.predict_pop, 'jingwan'),
-                '11740685': executor.submit(self.predict_pop, 'gil')
+                '11500540'  : executor.submit(self.predict_pop, 'hwagok1'),
+                '11380625'  : executor.submit(self.predict_pop, 'yeokchon'),
+                '11380690'  : executor.submit(self.predict_pop, 'jingwan'),
+                '11740685'  : executor.submit(self.predict_pop, 'gil')
             }
 
             predict_dict = {}
@@ -103,8 +101,12 @@ class district_info:  # 해당 지역 정보
             self.datasets)  # 해당 지역의 전체 data에 대해 scaling
 
     def update_batch(self, district_name):
-        district_code = {'hwagok1': '11500540', 'yeokchon': '11380625',
-                        'jingwan': '11380690', 'gil': '11740685'}
+        district_code = {
+            'hwagok1'   : '11500540',
+            'yeokchon'  : '11380625',
+            'jingwan'   : '11380690',
+            'gil'       : '11740685'
+        }
         one_week_ago = self.get_one_week_ago_date()
 
         target = district_code[district_name]  # 해당 지역에 대한 정보만 업데이트
@@ -116,10 +118,10 @@ class district_info:  # 해당 지역 정보
 
         for data_row in fetched_data:
             temp = {
-                'STDR_DE_ID': data_row['STDR_DE_ID'],  # 기준일 ID
-                'TMZON_PD_SE': data_row['TMZON_PD_SE'],  # 시간대 구분
-                'ADSTRD_CODE_SE': data_row['ADSTRD_CODE_SE'],  # 행정동코드
-                'TOT_LVPOP_CO': data_row['TOT_LVPOP_CO']  # 총생활인구수
+                'STDR_DE_ID'        : data_row['STDR_DE_ID'],  # 기준일 ID
+                'TMZON_PD_SE'       : data_row['TMZON_PD_SE'],  # 시간대 구분
+                'ADSTRD_CODE_SE'    : data_row['ADSTRD_CODE_SE'],  # 행정동코드
+                'TOT_LVPOP_CO'      : data_row['TOT_LVPOP_CO']  # 총생활인구수
             }
             # print(temp)
             data.append(temp['TOT_LVPOP_CO'])
