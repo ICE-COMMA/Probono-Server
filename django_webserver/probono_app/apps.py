@@ -16,8 +16,7 @@ class ProbonoAppConfig(AppConfig):
         
         if os.environ.get('RUN_MAIN') == 'true':
             spw_ins = SpecialWeather()
-            collection = get_collection(db_handle, 'special_weather')
-            spw_ins.init_special_weather(collection)
+            spw_ins.init_special_weather()
 
             demo = DemoScraper()
             demo.get_demo()
