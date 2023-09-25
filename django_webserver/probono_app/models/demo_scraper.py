@@ -14,6 +14,11 @@ import zlib
 import struct
 
 
+from config import utils
+
+db_handle = utils.db_handle
+get_collection = utils.get_collection_handle
+
 class DemoScraper():
     
     def __init__(self):
@@ -21,6 +26,22 @@ class DemoScraper():
         # self.download_path = '/Users/limhs/Downloads/'
         self.download_path = '/Users/choijeongheum/Downloads/'
         self.site_url = "https://www.smpa.go.kr/user/nd54882.do"
+        self.db_name = 'demo'
+
+    def get_demo(self):
+        print('Initializing demo crawling.. ', end='')
+        self.get_date_info()
+        if self.check_file():
+            print('OK')
+            return
+        self.start_driver()
+        self.navigate_to_site()
+        self.click_on_today_demo()
+        self.download_hwp()
+        self.update_demo()
+        self.close_driver()
+        print('OK')
+        return
 
     def check_file(self):  # 파일명에서 한글 없애기(파일경로 수정 요망)
         new_filename = self.date + 'data.hwp'
@@ -173,7 +194,8 @@ class DemoScraper():
         return to_insert
 
     # MODIFY LATER
-    def update_demo(self, collection):
+    def update_demo(self):
+        collection = get_collection(db_handle, self.db_name)
         collection.delete_many({})
         new_data = []
         new_data.extend(self.process_hwp_file())
@@ -185,19 +207,3 @@ class DemoScraper():
 
     def close_driver(self):
         self.driver.quit()
-
-    def get_demo(self, collection):
-        print('Initializing demo crawling.. ', end='')
-        self.get_date_info()
-        if self.check_file():
-            print('OK')
-            return
-        self.start_driver()
-        self.navigate_to_site()
-        self.click_on_today_demo()
-        self.download_hwp()
-        self.update_demo(collection)
-        self.close_driver()
-        print('OK')
-        return
-
