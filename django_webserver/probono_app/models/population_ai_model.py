@@ -10,7 +10,7 @@ from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
 import numpy as np
 
-class Population_AI_model():
+class PopulationAiModel():
     
     def __init__(self):
         self.holi_url       = 'https://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo'
