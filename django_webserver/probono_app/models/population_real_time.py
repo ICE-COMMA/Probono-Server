@@ -10,7 +10,7 @@ from config import utils
 db_handle = utils.db_handle
 get_collection = utils.get_collection_handle
 
-class Population_real_time():
+class PopulationRealTime():
     
     def __init__(self):
         self.base_url   = 'http://openapi.seoul.go.kr:8088/68666f624d6c696d373249736e7649/json/citydata_ppltn'
