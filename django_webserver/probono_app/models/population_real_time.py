@@ -1,5 +1,7 @@
 import os
 import requests
+from pathlib import Path
+
 import openpyxl
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -16,8 +18,10 @@ class Population_real_time():
         print('OK')
 
     def get_xl_file_info(self):
-        file_path = os.path.join(os.path.dirname(
-            __file__), 'files', 'population_region_info.xlsx')
+        # file_path = os.path.join(os.path.dirname(__file__), 'files', 'population_region_info.xlsx')
+        current_dir = Path(__file__).parent
+        base_dir = current_dir.parent
+        file_path = base_dir / 'files' / 'population_region_info.xlsx'
         xl_file = openpyxl.load_workbook(file_path)
         xl_sheet = xl_file.active
 

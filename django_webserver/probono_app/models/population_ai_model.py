@@ -3,6 +3,8 @@ import requests
 from datetime import datetime, timedelta
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+from pathlib import Path
+
 # AI modules
 import tensorflow as tf
 from sklearn.preprocessing import MinMaxScaler
@@ -27,7 +29,10 @@ class district_info:  # 해당 지역 정보
 
     # file 위치 반환해주는 함수
     def file_loc(self, file_name):
-        file_path = os.path.join(os.path.dirname(__file__), 'files', file_name)
+        # file_path = os.path.join(os.path.dirname(__file__), 'files', file_name)
+        current_dir = Path(__file__).parent
+        base_dir = current_dir.parent
+        file_path = base_dir / 'files' / file_name
 
         print(file_path)
         return file_path
