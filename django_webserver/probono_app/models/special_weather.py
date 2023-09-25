@@ -111,7 +111,6 @@ class SpecialWeather():
             print(response)
         return response.content.decode('utf-8'), False
 
-
     def parse_data(self, content_str, target):
         content_str = content_str.replace(
             "#START7777", "").replace("#7777END", "").strip()
