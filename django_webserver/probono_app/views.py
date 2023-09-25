@@ -22,6 +22,8 @@ from .models import Population_AI_model
 
 from .models import Custom_info
 
+from .models import Subway_info
+
 
 
 db_handle = utils.db_handle
@@ -222,7 +224,6 @@ def logout_view(request):
 @csrf_exempt
 @require_POST
 def update_custom(request):
-
     try:
         data = loads(request.body)  # select 정보 가져오기
         user_id = request.session.get('ID')  # 세션을 통해 uesr_id가져오기
@@ -236,26 +237,11 @@ def update_custom(request):
         return JsonResponse({'success': False})
 
 
-@csrf_exempt
-@require_POST
-def get_subway_elvtr(request):
-    collection_elvtr = get_collection(db_handle, 'subway_elevator')
-    search = request.POST.get('name')
-    result = collection_elvtr.find({'sw_nm': search})
-    result = list(result)
-
-    ret = []
-    for temp in result:
-        data = {
-            'sw_nm': temp['sw_nm'],
-            'x': temp['x'],
-            'y': temp['y']
-        }
-        ret.append(data)
-    if not result:
-        return JsonResponse({'message': 'No results'})
-    return JsonResponse({'elvtr': ret})
-
+@require_GET
+def get_subway_elvtr(request, subway_station):
+    subway_info = Subway_info()
+    elevator_data = subway_info.get_subway_elvtr(subway_station)
+    return JsonResponse(elevator_data)
 
 @require_GET
 def get_bus_route(request, bus_num):
