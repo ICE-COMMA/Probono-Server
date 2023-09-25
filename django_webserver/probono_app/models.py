@@ -575,21 +575,6 @@ class Population_AI_model():
         print('Predict finished')
         return predict_dict
 
-    # def return_predict_value(self):
-    #     p_hwagok1 = self.predict_pop('hwagok1')
-    #     p_yeokchon = self.predict_pop('yeokchon')
-    #     p_jingwan = self.predict_pop('jingwan')
-    #     p_gil = self.predict_pop('gil')
-
-    #     predict_dict = {
-    #         '11500540': p_hwagok1[0],
-    #         '11380625': p_yeokchon[0],
-    #         '11380690': p_jingwan[0],
-    #         '11740685': p_gil[0]
-    #     }
-
-    #     print('Predict finished')
-    #     return predict_dict
     '''
     def get_holiday(self):
 
