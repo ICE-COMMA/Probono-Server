@@ -5,16 +5,23 @@ from pathlib import Path
 import openpyxl
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+from config import utils
+
+db_handle = utils.db_handle
+get_collection = utils.get_collection_handle
+
 class Population_real_time():
     
     def __init__(self):
         self.base_url = 'http://openapi.seoul.go.kr:8088/68666f624d6c696d373249736e7649/json/citydata_ppltn'
+        self.db_name = 'popul_real_time_reg'
 
-    def init_population_info(self, region_info):
+    def init_population_info(self):
         print('Initializing population region info.. ', end='')
-        region_info.delete_many({})
+        collection = get_collection(db_handle, self.db_name)
+        collection.delete_many({})
         to_insert = self.get_xl_file_info()
-        region_info.insert_many(to_insert)
+        collection.insert_many(to_insert)
         print('OK')
 
     def get_real_time_popul(self, region_info):
