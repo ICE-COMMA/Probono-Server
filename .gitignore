@@ -5,3 +5,7 @@ django_webserver/probono_app/crawling.py
 env/
 
 django_front
+
+django_webserver/probono_app/__pycache__
+
+django_webserver/probono_app/models/__pycache__

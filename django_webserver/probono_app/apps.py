@@ -7,7 +7,7 @@ class ProbonoAppConfig(AppConfig):
 
     def ready(self):
         from config import utils
-        from .models import SpecialWeather, DemoScraper, Population_real_time
+        from .models import SpecialWeather, DemoInfo, PopulationRealTime
 
         db_handle = utils.db_handle
         get_collection = utils.get_collection_handle
@@ -16,13 +16,10 @@ class ProbonoAppConfig(AppConfig):
         
         if os.environ.get('RUN_MAIN') == 'true':
             spw_ins = SpecialWeather()
-            collection = get_collection(db_handle, 'special_weather')
-            spw_ins.init_special_weather(collection)
+            spw_ins.init_special_weather()
 
-            demo = DemoScraper()
-            collection = get_collection(db_handle, 'demo')
-            demo.get_demo(collection)
+            demo = DemoInfo()
+            demo.crawling_demo()
 
-            prt = Population_real_time()
-            collection = get_collection(db_handle, 'popul_real_time_reg')
-            prt.init_population_info(collection)
+            prt = PopulationRealTime()
+            prt.init_population_info()

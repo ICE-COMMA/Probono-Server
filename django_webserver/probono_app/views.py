@@ -1,5 +1,3 @@
-from django.shortcuts import render, redirect
-from django.urls import reverse
 from django.views.decorators.http import require_POST, require_GET
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseForbidden, JsonResponse
@@ -15,15 +13,21 @@ from pymongo.errors import PyMongoError
 # User
 from .forms import SignUpForm
 
+# Special Weather
+from .models import SpecialWeather
+
 # Transfer info
-from .models import Bus_info
+from .models import BusInfo
 
 # Population_real_time, predict
-from .models import Population_real_time
-from .models import Population_AI_model
+from .models import PopulationRealTime
+from .models import PopulationAiModel
 
-from .models import Custom_info
+from .models import CustomInfo
 
+from .models import SubwayInfo
+
+from .models import DemoInfo
 
 db_handle = utils.db_handle
 get_collection = utils.get_collection_handle
@@ -31,28 +35,28 @@ get_collection = utils.get_collection_handle
 
 def test_AI(request):
 
-    from .models import Population_AI_model
-    popul_ai = Population_AI_model()
-    ret = popul_ai.return_predict_value()
+    from .models import PopulationAiModel
+    popul_ai = PopulationAiModel()
+    ret = popul_ai.get_predict_value()
 
     return JsonResponse({'popul_ai': ret})
 
 
 def index(request):
     if request.method == 'GET':
-        weather_collection = get_collection(db_handle, 'special_weather')
-        special_weather_info = list(weather_collection.find({}))
+        special_weather = SpecialWeather()
+        spw = special_weather.get_special_weather()
         sess_ret = request.session.get('ID', False)
         print('User ID :', sess_ret)
         custom_info = False
         if sess_ret:
             user_collection = get_collection(db_handle, 'User')
-            temp = Custom_info()
+            temp = CustomInfo()
             custom_info = temp.get_custom_info(sess_ret, user_collection)
 
-        for item in special_weather_info:
+        for item in spw:
             item['_id'] = str(item['_id'])
-        return JsonResponse({'user': sess_ret, 'spw': special_weather_info, 'custom': custom_info})
+        return JsonResponse({'user': sess_ret, 'spw': spw, 'custom': custom_info})
 
     # elif request.method == 'POST':
     #     collection = get_collection(db_handle, 'report')
@@ -99,17 +103,15 @@ def my_page(request, id):
 
 @require_GET
 def real_dense_popul_info(request):
-    prt = Population_real_time()
-    collection = get_collection(db_handle, 'popul_real_time_reg')
-    region_info = list(collection.find({}))
-    ret = prt.get_real_time_popul(region_info)
+    prt = PopulationRealTime()
+    ret = prt.get_real_time_popul()
     return JsonResponse({'real_time': ret})
 
 
 @require_GET
 def predict_dense_popul_info(request):
-    popul_ai = Population_AI_model()
-    ret = popul_ai.return_predict_value()
+    popul_ai = PopulationAiModel()
+    ret = popul_ai.get_predict_value()
     return JsonResponse({'predict': ret})
 
 
@@ -158,7 +160,6 @@ def login_view(request):
     return JsonResponse(data, status=status_code)
 
 
-@csrf_exempt
 @require_POST
 def sign_up(request):
     data = json.loads(request.body.decode('utf-8'))
@@ -195,22 +196,6 @@ def sign_up(request):
 
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)})
-    # print(request.POST)
-    # form = SignUpForm(request.POST)
-    # if form.is_valid():
-    #     print('GOOD')
-    #     user_data = form.cleaned_data
-    #     date_obj = form.cleaned_data['date']
-    #     datetime_obj = datetime(date_obj.year, date_obj.month, date_obj.day)
-    #     form.cleaned_data['date'] = datetime_obj
-    #     user_data['custom'] = ''
-    #     print(user_data)
-    #     users = get_collection(db_handle, 'User')
-    #     users.insert_one(form.cleaned_data)
-    #     return redirect('index')
-    # print(form.errors)
-    # ret = {'message': 'error'}
-    # return JsonResponse(ret)
 
 
 @csrf_exempt
@@ -240,7 +225,6 @@ def logout_view(request):
 @csrf_exempt
 @require_POST
 def update_custom(request):
-
     try:
         data = loads(request.body)  # select 정보 가져오기
         user_id = request.session.get('ID')  # 세션을 통해 uesr_id가져오기
@@ -254,79 +238,32 @@ def update_custom(request):
         return JsonResponse({'success': False})
 
 
-@csrf_exempt
-@require_POST
-def get_subway_elvtr(request):
-    collection_elvtr = get_collection(db_handle, 'subway_elevator')
-    search = request.POST.get('name')
-    result = collection_elvtr.find({'sw_nm': search})
-    result = list(result)
-
-    ret = []
-    for temp in result:
-        data = {
-            'sw_nm': temp['sw_nm'],
-            'x': temp['x'],
-            'y': temp['y']
-        }
-        ret.append(data)
-    if not result:
-        return JsonResponse({'message': 'No results'})
-    return JsonResponse({'elvtr': ret})
-
-
-def get_bus_no_to_route(request):
-
-    return
+@require_GET
+def get_subway_elvtr(request, subway_station):
+    subway_info = SubwayInfo()
+    elevator_data = subway_info.get_subway_elvtr(subway_station)
+    return JsonResponse(elevator_data)
 
 
 @require_GET
 def get_bus_route(request, bus_num):
-    collection_bus = get_collection(db_handle, 'bus')
-    bus_info = collection_bus.find_one({'bus_no': bus_num})
-    url = 'http://ws.bus.go.kr/api/rest/busRouteInfo/getStaionByRoute'
-    key = '4cwiloFmPQxO3hXwmJy3jruoPPh6m8PQZqxBkWecSAgIIeRjq6UIdo0r7ZnmT4Rm4kVErRaD9jd1XU5CS7Chwg=='
-    params = {'ServiceKey': key,
-              'busRouteId': bus_info['route'], 'resultType': 'json'}
+    bus_route = BusInfo()
+    data_ret = bus_route.get_bus_route(bus_num)
 
-    response = requests.get(url, params=params)
-    print(response)
-    data = response.json()
-    item_list = data['msgBody']['itemList']
-
-    ret = []
-    for target in item_list:
-        route_id = target['busRouteId']
-        data = {
-            'station_id': target['station'],
-            'name': target['stationNm'],
-            'seq': target['seq'],
-            'x': target['gpsX'],
-            'y': target['gpsY']
-        }
-        print(data)
-        ret.append(data)
-    return JsonResponse({'route_id': route_id, 'station': ret})
+    route_id = data_ret[0]
+    station_info = data_ret[1]
+    return JsonResponse({'route_id': route_id, 'station': station_info})
 
 
 @require_GET
 def get_bus_pos(request, route_id):
-    bus_info = Bus_info()
+    bus_info = BusInfo()
     ret = bus_info.get_bus_pos(route_id)
     return JsonResponse({'bus_pos': ret})
 
 
 @require_GET
 def get_demo_today(request):
-    collection = get_collection(db_handle, 'demo')
-    data_demo = list(collection.find({}))
-    ret = []
-    for item in data_demo:
-        item_data = {
-            "location": str(item["location"]),
-            "date": str(item["date"]),
-            "time": str(item["time"]),
-            "amount": str(item["amount"])
-        }
-        ret.append(item_data)
+    demo_info = DemoInfo()
+    ret = demo_info.get_demo_info()
     return JsonResponse({'demo': ret})
