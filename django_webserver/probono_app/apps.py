@@ -9,9 +9,6 @@ class ProbonoAppConfig(AppConfig):
         from config import utils
         from .models import SpecialWeather, DemoInfo, PopulationRealTime
 
-        db_handle = utils.db_handle
-        get_collection = utils.get_collection_handle
-
         import os
         
         if os.environ.get('RUN_MAIN') == 'true':
