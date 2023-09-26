@@ -129,5 +129,5 @@ def update_special_weather_task():
 @shared_task
 def update_demo_task():
     demo = DemoInfo()
-    demo.crawling_demo()
+    demo._crawling_demo()
     return

@@ -22,13 +22,13 @@ class DemoInfo():
     
     def __init__(self):
         self.chrome_options = webdriver.ChromeOptions()
-        # self.download_path = '/Users/limhs/Downloads/'
-        self.download_path  = '/Users/choijeongheum/Downloads/'
-        self.site_url       = "https://www.smpa.go.kr/user/nd54882.do"
-        self.db_name        = 'demo'
+        # self.__download_path = '/Users/limhs/Downloads/'
+        self.__download_path  = '/Users/choijeongheum/Downloads/'
+        self.__site_url       = "https://www.smpa.go.kr/user/nd54882.do"
+        self.__db_name        = 'demo'
 
     def get_demo_info(self):
-        collection = get_collection(db_handle, self.db_name)
+        collection = get_collection(db_handle, self.__db_name)
         data_demo = list(collection.find({}))
         ret = []
         for item in data_demo:
@@ -41,37 +41,37 @@ class DemoInfo():
             ret.append(item_data)
         return ret
 
-    def crawling_demo(self):
+    def _crawling_demo(self):
         print('Initializing demo crawling.. ', end='')
-        self.get_date_info()
-        if self.check_file():
+        self.__get_date_info()
+        if self.__check_file():
             print('OK')
             return
-        self.start_driver()
-        self.navigate_to_site()
-        self.click_on_today_demo()
-        self.download_hwp()
-        self.update_demo()
-        self.close_driver()
+        self.__start_driver()
+        self.__navigate_to_site()
+        self.__click_on_today_demo()
+        self.__download_hwp()
+        self.__update_demo()
+        self.__close_driver()
         print('OK')
         return
 
-    def check_file(self):  # 파일명에서 한글 없애기(파일경로 수정 요망)
+    def __check_file(self):  # 파일명에서 한글 없애기(파일경로 수정 요망)
         new_filename = self.date + 'data.hwp'
-        new_file_path = self.download_path+new_filename
+        new_file_path = self.__download_path+new_filename
         # print(new_file_path)
         return os.path.exists(new_file_path)
 
-    def start_driver(self):
+    def __start_driver(self):
         # self.chrome_options.add_argument("--headless")
         self.driver = webdriver.Chrome(service=Service(
             ChromeDriverManager().install()), options=self.chrome_options)
         self.wait = WebDriverWait(self.driver, 10)
 
-    def navigate_to_site(self):
-        self.driver.get(self.site_url)
+    def __navigate_to_site(self):
+        self.driver.get(self.__site_url)
 
-    def get_date_info(self):
+    def __get_date_info(self):
         current_date = datetime.now(timezone('Asia/Seoul'))
         year = current_date.strftime("%y")
         today = current_date.weekday()
@@ -80,7 +80,7 @@ class DemoInfo():
         self.date = year + current_date.strftime("%m%d")
         self.day = day
 
-    def click_on_today_demo(self):
+    def __click_on_today_demo(self):
         link_text = "오늘의 집회"
         blank = " "
         xpath_expression = f"//a[contains(text(),'{link_text}{blank}{self.date}{blank}{self.day}')]"
@@ -88,7 +88,7 @@ class DemoInfo():
         self.driver.execute_script("arguments[0].scrollIntoView();", element)
         element.click()
 
-    def download_hwp(self):
+    def __download_hwp(self):
         file_name_text = "인터넷집회"
         target_filename = self.date + \
             "(" + self.day + ")" + " " + file_name_text + ".hwp"
@@ -104,12 +104,12 @@ class DemoInfo():
                 "arguments[0].scrollIntoView();", download_link)
             download_link.click()
             self.wait.until(
-                lambda driver: target_filename in os.listdir(self.download_path))
+                lambda driver: target_filename in os.listdir(self.__download_path))
 
-    def process_hwp_file(self):
+    def __process_hwp_file(self):
 
         # 파일명에서 한글 없애기(파일경로 수정 요망)
-        file_path = self.download_path + self.date + \
+        file_path = self.__download_path + self.date + \
             "(" + self.day + ")" + " " + "인터넷집회.hwp"
         new_filename = self.date + 'data.hwp'
         new_file_path = os.path.join(os.path.dirname(file_path), new_filename)
@@ -207,15 +207,15 @@ class DemoInfo():
         return to_insert
 
     # MODIFY LATER
-    def update_demo(self):
-        collection = get_collection(db_handle, self.db_name)
+    def __update_demo(self):
+        collection = get_collection(db_handle, self.__db_name)
         collection.delete_many({})
         new_data = []
-        new_data.extend(self.process_hwp_file())
+        new_data.extend(self.__process_hwp_file())
         for idx, target in enumerate(new_data):
             new_data[idx]['date'] = target['date'].group()
         # print(new_data)
         collection.insert_many(new_data)
 
-    def close_driver(self):
+    def __close_driver(self):
         self.driver.quit()

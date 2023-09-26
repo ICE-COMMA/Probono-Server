@@ -13,20 +13,20 @@ get_collection = utils.get_collection_handle
 class PopulationRealTime():
     
     def __init__(self):
-        self.base_url   = 'http://openapi.seoul.go.kr:8088/68666f624d6c696d373249736e7649/json/citydata_ppltn'
-        self.db_name    = 'popul_real_time_reg'
+        self.__base_url   = 'http://openapi.seoul.go.kr:8088/68666f624d6c696d373249736e7649/json/citydata_ppltn'
+        self.__db_name    = 'popul_real_time_reg'
 
     def init_population_info(self):
         print('Initializing population region info.. ', end='')
-        collection = get_collection(db_handle, self.db_name)
+        collection = get_collection(db_handle, self.__db_name)
         collection.delete_many({})
-        to_insert = self.get_xl_file_info()
+        to_insert = self.__get_xl_file_info()
         collection.insert_many(to_insert)
         print('OK')
 
     def get_real_time_popul(self):
         
-        collection = get_collection(db_handle, self.db_name)
+        collection = get_collection(db_handle, self.__db_name)
         region_info = list(collection.find({}))
 
         start_index = 1
@@ -36,7 +36,7 @@ class PopulationRealTime():
         # Multithreading for optimization
         with ThreadPoolExecutor() as executor:
             future_to_url = {executor.submit(
-                self.fetch_data, f"{self.base_url}/{start_index}/{end_index}/{target['AREA_CD']}"): target for target in region_info}
+                self.__fetch_data, f"{self.__base_url}/{start_index}/{end_index}/{target['AREA_CD']}"): target for target in region_info}
             for future in as_completed(future_to_url):
                 target = future_to_url[future]
                 try:
@@ -60,7 +60,7 @@ class PopulationRealTime():
         ret = sorted(ret, key=lambda x: x['area_popul_avg'], reverse=True)
         return ret   
 
-    def get_xl_file_info(self):
+    def __get_xl_file_info(self):
         current_dir = Path(__file__).parent
         base_dir = current_dir.parent
         file_path = base_dir / 'files' / 'population_region_info.xlsx'
@@ -84,6 +84,6 @@ class PopulationRealTime():
         xl_file.close()
         return data_list
 
-    def fetch_data(self, url):
+    def __fetch_data(self, url):
         response = requests.get(url)
         return response.json()

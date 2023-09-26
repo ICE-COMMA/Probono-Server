@@ -13,16 +13,16 @@ import numpy as np
 class PopulationAiModel():
     
     def __init__(self):
-        self.holi_url       = 'https://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo'
-        self.holi_key       = '4cwiloFmPQxO3hXwmJy3jruoPPh6m8PQZqxBkWecSAgIIeRjq6UIdo0r7ZnmT4Rm4kVErRaD9jd1XU5CS7Chwg=='
+        self.__holi_base_url       = 'https://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo'
+        self.__holi_key       = '4cwiloFmPQxO3hXwmJy3jruoPPh6m8PQZqxBkWecSAgIIeRjq6UIdo0r7ZnmT4Rm4kVErRaD9jd1XU5CS7Chwg=='
 
     def get_predict_value(self):
         with ThreadPoolExecutor(max_workers=4) as executor:
             futures = {
-                '11500540'  : executor.submit(self.predict_pop, 'hwagok1'),
-                '11380625'  : executor.submit(self.predict_pop, 'yeokchon'),
-                '11380690'  : executor.submit(self.predict_pop, 'jingwan'),
-                '11740685'  : executor.submit(self.predict_pop, 'gil')
+                '11500540'  : executor.submit(self.__predict_pop, 'hwagok1'),
+                '11380625'  : executor.submit(self.__predict_pop, 'yeokchon'),
+                '11380690'  : executor.submit(self.__predict_pop, 'jingwan'),
+                '11740685'  : executor.submit(self.__predict_pop, 'gil')
             }
 
             predict_dict = {}
@@ -32,13 +32,13 @@ class PopulationAiModel():
         print('Predict finished')
         return predict_dict
 
-    def predict_pop(self, district_name):
+    def __predict_pop(self, district_name):
         # modeling 단계와 동일하게 변수설정
         n_steps = 24  # 하루치 데이터
         n_features = 1  # 변수 개수
         n_output = 24  # 출력 길이
 
-        target_district = district_info(district_name)
+        target_district = districtInfo(district_name)
 
         ai_model = target_district.ai_model
         resource_data = np.reshape(target_district.batch_data, (-1, 1))
@@ -74,9 +74,9 @@ class PopulationAiModel():
     def get_holiday(self):
 
         ret = []
-        params = {'serviceKey': self.holi_key,
+        params = {'serviceKey': self.__holi_key,
                   'solYear': '2023', 'solMonth': '09'}
-        response = requests.get(self.base_url, params=params)
+        response = requests.get(self.__holi_base_url, params=params)
         print(response)
         print(response.content)
 
@@ -84,34 +84,34 @@ class PopulationAiModel():
     '''
 
 
-class district_info:  # 해당 지역 정보
+class districtInfo:  # 해당 지역 정보
     def __init__(self, district_name):
         self.base_url = 'http://openapi.seoul.go.kr:8088/4b4c477a766c696d39314965686a66/json/SPOP_LOCAL_RESD_DONG/1/24'
         # Hwagok1(화곡동), Yeokchon(역촌동), Jingwan(진관동), Gil(길동)
-        self.district_code = ['11500540', '11380625', '11380690', '11740685']
+        self.__district_code = ['11500540', '11380625', '11380690', '11740685']
 
-        self.ai_model = tf.keras.models.load_model(self.file_loc(
+        self.ai_model = tf.keras.models.load_model(self.__file_loc(
             f'{district_name}_model.h5'))  # 해당 지역에 맞는 ai모델 호출
-        self.datasets = self.read_csv(
+        self.__datasets = self.__read_csv(
             f'{district_name}_pop_data.csv')  # 해당 지역에 맞는 datasets 호출
-        self.batch_data = self.update_batch(district_name)
+        self.batch_data = self.__update_batch(district_name)
 
-        self.scaler = MinMaxScaler()  # data scaler 모듈 호출
-        self.fitted_scaler = self.scaler.fit(
-            self.datasets)  # 해당 지역의 전체 data에 대해 scaling
+        self.__scaler = MinMaxScaler()  # data scaler 모듈 호출
+        self.fitted_scaler = self.__scaler.fit(
+            self.__datasets)  # 해당 지역의 전체 data에 대해 scaling
 
-    def update_batch(self, district_name):
+    def __update_batch(self, district_name):
         district_code = {
             'hwagok1'   : '11500540',
             'yeokchon'  : '11380625',
             'jingwan'   : '11380690',
             'gil'       : '11740685'
         }
-        one_week_ago = self.get_one_week_ago_date()
+        one_week_ago = self.__get_one_week_ago_date()
 
         target = district_code[district_name]  # 해당 지역에 대한 정보만 업데이트
         real = f"{self.base_url}/{one_week_ago}/ /{target}"
-        fetched_data = self.fetch_data(real)
+        fetched_data = self.__fetch_data(real)
 
         fetched_data = fetched_data['SPOP_LOCAL_RESD_DONG']['row']
         data = []
@@ -129,7 +129,7 @@ class district_info:  # 해당 지역 정보
         return np.reshape(data, (1, -1))  # (1,24)
 
     # file 위치 반환해주는 함수
-    def file_loc(self, file_name):
+    def __file_loc(self, file_name):
         # file_path = os.path.join(os.path.dirname(__file__), 'files', file_name)
         current_dir = Path(__file__).parent
         base_dir = current_dir.parent
@@ -139,18 +139,18 @@ class district_info:  # 해당 지역 정보
         return file_path
 
     # datasets(csv파일)을 호출하는 함수
-    def read_csv(self, file_name):
-        datasets = pd.read_csv(self.file_loc(file_name),
+    def __read_csv(self, file_name):
+        datasets = pd.read_csv(self.__file_loc(file_name),
                                index_col=0, parse_dates=True)
         datasets.index.freq = 'H'  # index를 1시간 단위로 설정
 
         return datasets
 
-    def fetch_data(self, url):
+    def __fetch_data(self, url):
         response = requests.get(url)
         return response.json()
 
-    def get_one_week_ago_date(self):  # 일주일전 날짜를 반환해주는 함수
+    def __get_one_week_ago_date(self):  # 일주일전 날짜를 반환해주는 함수
 
         current_date = datetime.now().strftime('%Y-%m-%d')
         date = datetime.strptime(current_date, '%Y-%m-%d')
