@@ -104,20 +104,18 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.dummy',
-        'NAME': 'Prototype',
+        'ENGINE': 'djongo',
+        'ENFORCE_SCHEMA': False,
+        'CLIENT': {
+            'name': 'Prototype',
+            'host': 'mongodb+srv://andyc707:tzlZgVWMs1wFvzDH@prototypeversion.sxa69i7.mongodb.net/?retryWrites=true&w=majority',
+            'port': 27017,
+            'username': 'andyc707',
+            'password': 'tzlZgVWMs1wFvzDH',
+            'authMechanism': 'SCRAM-SHA-1',
+        }
     }
 }
-
-MONGO_DB = {
-    'host': 'localhost',
-    'port': 27017,
-    'username': 'andyc707',
-    'password': 'tzlZgVWMs1wFvzDH',
-}
-
-SESSION_ENGINE = 'config.utils'
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
