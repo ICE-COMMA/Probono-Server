@@ -7,30 +7,51 @@ from bson.json_util import loads, dumps
 from datetime import datetime
 
 # Mongo DB
-from config import utils
+# from config import utils
 from pymongo.errors import PyMongoError
 
 # User
-from .forms import SignUpForm
+# from .forms import SignUpForm
 
 # Special Weather
 from .models import SpecialWeather
 
 # Transfer info
-from .models import BusInfo
+from .models import Bus
 
 # Population_real_time, predict
-from .models import PopulationRealTime
-from .models import PopulationAiModel
+from .models import PopulRegion
+from .models import User
+from .models import SubwayElevator
+from .models import Demo
+from .models import SafetyGuardHouse
 
-from .models import CustomInfo
+# db_handle = utils.db_handle
+# get_collection = utils.get_collection_handle
 
-from .models import SubwayInfo
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
+from rest_framework.decorators import api_view
 
-from .models import DemoInfo
+from rest_framework import generics
+from .serializers import SafetyGuardHouseSerializer
+from .serializers import DemoSerializer
+from .serializers import SubwayElevatorSerializer
 
-db_handle = utils.db_handle
-get_collection = utils.get_collection_handle
+
+class SafetyGuardHouseListView(generics.ListAPIView):
+    queryset = SafetyGuardHouse.objects.all()
+    serializer_class = SafetyGuardHouseSerializer
+
+class DemoListView(generics.ListAPIView):
+    queryset = Demo.objects.all()
+    serializer_class = DemoSerializer
+
+@api_view(['GET'])
+def get_subway_elevator(request, subway_station):
+    elevator = get_object_or_404(SubwayElevator, sw_nm=subway_station)
+    serializer = SubwayElevatorSerializer(elevator)
+    return Response(serializer.data)
 
 def test_AI(request):
 
@@ -44,17 +65,18 @@ def index(request):
     if request.method == 'GET':
         special_weather = SpecialWeather()
         spw = special_weather.get_special_weather()
-        sess_ret = request.session.get('ID', False)
-        print('User ID :', sess_ret)
-        custom_info = False
-        if sess_ret:
-            user_collection = get_collection(db_handle, 'User')
-            temp = CustomInfo()
-            custom_info = temp.get_custom_info(sess_ret, user_collection)
+        # sess_ret = request.session.get('ID', False)
+        # print('User ID :', sess_ret)
+        # custom_info = False
+        # if sess_ret:
+            # user_collection = get_collection(db_handle, 'User')
+            # temp = CustomInfo()
+            # custom_info = temp.get_custom_info(sess_ret, user_collection)
 
         for item in spw:
             item['_id'] = str(item['_id'])
-        return JsonResponse({'user': sess_ret, 'spw': spw, 'custom': custom_info})
+        # return JsonResponse({'user': sess_ret, 'spw': spw, 'custom': custom_info})
+        return JsonResponse({'spw': spw})
 
     # elif request.method == 'POST':
     #     collection = get_collection(db_handle, 'report')
