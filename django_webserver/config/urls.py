@@ -20,6 +20,12 @@ from probono_app import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path('api/auth/sign_up/', views.SignUpView.as_view(), name='sign_up'),
+    path('api/auth/login/', views.LoginView.as_view(), name='login'),
+    path('api/auth/logout/', views.LogoutView.as_view(), name='logout'),
+    path('api/auth/user/', views.UserView.as_view(), name='user'),
+
+
     # path('api/', views.index, name='index'),
     # path('api/my_page/<str:id>/', views.my_page, name='my_page'),
     # path('api/dense_popul_info/real/', views.real_dense_popul_info, name='real_popul_info'),
