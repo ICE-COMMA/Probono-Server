@@ -44,7 +44,7 @@ class Migration(migrations.Migration):
                 ('location', models.CharField(max_length=255)),
                 ('date', models.DateField()),
                 ('time', models.CharField(max_length=255)),
-                ('amount', models.PositiveIntegerField()),
+                ('amount', models.CharField(max_length=8)),
             ],
             options={
                 'db_table': 'demo',
