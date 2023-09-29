@@ -1,14 +1,30 @@
 from rest_framework import serializers
-from .models import Safety_Guard_House, Police_Station
 
 
-class Safety_Guard_House_Serializers(serializers.ModelSerializer):
+from .models import SpecialWeather
+from .models import Bus
+from .models import PopulRegion
+from .models import User
+from .models import SubwayElevator
+from .models import Demo
+from .models import SafetyGuardHouse
+
+class SpecialWeatherSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Safety_Guard_House
+        model = SpecialWeather
+        fields = '__all__'
+
+class DemoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Demo
+        fields = ['location', 'date', 'time', 'amount']
+
+class SafetyGuardHouseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SafetyGuardHouse
         fields = ['name', 'x', 'y']
 
-
-class Police_Station_Serializers(serializers.ModelSerializer):
+class SubwayElevatorSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Police_Station
-        fields = ['stat_name', 'x', 'y']
+        model = SubwayElevator
+        fields = ['sw_nm', 'x', 'y']
