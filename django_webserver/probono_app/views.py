@@ -6,12 +6,8 @@ import json
 from bson.json_util import loads, dumps
 from datetime import datetime
 
-# Mongo DB
-# from config import utils
 from pymongo.errors import PyMongoError
 
-# User
-# from .forms import SignUpForm
 
 # Special Weather
 from .models import SpecialWeather
@@ -21,7 +17,7 @@ from .models import Bus
 
 # Population_real_time, predict
 from .models import PopulRegion
-from .models import User
+from .models import ProbonoUser
 from .models import SubwayElevator
 from .models import Demo
 from .models import SafetyGuardHouse
@@ -30,14 +26,18 @@ from .models import SafetyGuardHouse
 # get_collection = utils.get_collection_handle
 
 from rest_framework.response import Response
+from rest_framework import generics, status
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
 
-from rest_framework import generics
 from .serializers import SafetyGuardHouseSerializer
 from .serializers import DemoSerializer
 from .serializers import SubwayElevatorSerializer
 
+# User
+from .serializers import CreateUserSerializer, LoginUserSerializer, UserSerializer
+from django.contrib.auth import authenticate, login, logout
+from rest_framework import viewsets, permissions
 
 class SafetyGuardHouseListView(generics.ListAPIView):
     queryset = SafetyGuardHouse.objects.all()
@@ -54,6 +54,48 @@ def get_subway_elevator(request, subway_station):
         return Response(status=404)
     serializer = SubwayElevatorSerializer(elevators, many=True)
     return Response(serializer.data)
+
+class SignUpView(generics.GenericAPIView):
+    serializer_class = CreateUserSerializer
+
+    def post(self, request, *args, **kwargs):
+        # if len(request.data["ID"]) < 6 or len(request.data["password"]) < 4:
+            # body = {"message": "short field"}
+            # return Response(body, status=status.HTTP_400_BAD_REQUEST)
+        data = json.loads(request.body.decode('utf-8'))
+        print(data)
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        return Response(UserSerializer(user).data)
+
+class LoginView(generics.GenericAPIView):
+    serializer_class = LoginUserSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data
+        login(request, user)  # Use Django's login method
+        return Response(UserSerializer(user).data)
+
+class LogoutView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        logout(request)
+        return Response(status=status.HTTP_200_OK)
+
+class UserView(generics.RetrieveAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = UserSerializer
+
+    def get_object(self):
+        return self.request.user
+
+
+
+
 
 def test_AI(request):
 
@@ -190,7 +232,7 @@ def sign_up(request):
         "custom-population" : False,
         "custom-predict"    : False,
         "custom-safety"     : False,
-        "custom-safey-loc"  : False,
+        "custom-safety-loc"  : False,
         "custom-low-bus"    : False,
         "custom-festival"   : False
     }
