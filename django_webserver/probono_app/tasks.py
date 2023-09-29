@@ -39,8 +39,8 @@ def get_subway_elvtr_task():
         sw_nm = data.get('SW_NM', '')
         node_wkt = data.get('NODE_WKT', '')
         coordinates = node_wkt.replace("POINT(", "").replace(")", "").split()
-        x = coordinates[0]
-        y = coordinates[1]
+        x = float(coordinates[0])
+        y = float(coordinates[1])
         subway_elevator = {
             'sw_nm': sw_nm,
             'x': x,
@@ -103,12 +103,12 @@ def get_safety_guard_house():
             for target in items:
                 if target['ctprvnNm'] == '서울특별시':
                     name = target.get('storNm', '')
-                    x = target.get('latitude', '')
-                    y = target.get('longitude', '')
+                    x = target.get('longitude', '')
+                    y = target.get('latitude', '')
                     safety_guard_house = {
                         'name': name,
-                        'x': x,
-                        'y': y
+                        'x': float(x),
+                        'y': float(y)
                     }
                     collection_guard.insert_one(safety_guard_house)
             if len(items) < 100:
