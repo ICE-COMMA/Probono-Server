@@ -7,12 +7,15 @@ class ProbonoAppConfig(AppConfig):
 
     def ready(self):
         from config import utils
-        from .models import SpecialWeather, DemoInfo, PopulationRealTime
+        # from .models import SpecialWeather, DemoInfo, PopulationRealTime
+        from .services import SpecialWeatherService
+        from .services import DemoInfo
+        from .services import PopulationRealTime
 
         import os
         
         if os.environ.get('RUN_MAIN') == 'true':
-            spw_ins = SpecialWeather()
+            spw_ins = SpecialWeatherService()
             spw_ins.init_special_weather()
 
             demo = DemoInfo()
