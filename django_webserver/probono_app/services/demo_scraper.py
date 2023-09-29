@@ -241,7 +241,6 @@ class DemoInfo():
         new_data.extend(self.__process_hwp_file())
         for idx, target in enumerate(new_data):
             formatted_date = datetime.strptime(target['date'].group(), "%Y. %m. %d").date()
-            print(formatted_date)
             new_data[idx]['date'] = formatted_date
         
         # 새로운 데이터를 Demo 모델에 추가
