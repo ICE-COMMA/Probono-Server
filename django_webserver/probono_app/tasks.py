@@ -1,7 +1,7 @@
 import requests
 from celery import shared_task
 from config import settings, utils
-from .models import SpecialWeather, DemoInfo
+from .models import SafetyGuardHouse, SubwayElevator, Bus
 
 '''
 서버 구동 후, 반드시 터미널 창 두개 열어서 실행해야 함.
@@ -10,8 +10,8 @@ celery -A your_project worker -l info
 celery -A your_project beat -l info
 '''
 
-db_handle = utils.db_handle
-get_collection = utils.get_collection_handle
+# db_handle = utils.db_handle
+# get_collection = utils.get_collection_handle
 
 
 @shared_task
@@ -33,20 +33,17 @@ def get_subway_elvtr_task():
             break
 
     # save to Mongo DB
-    collection_elevtr = get_collection(db_handle, 'subway_elevator')
-    collection_elevtr.delete_many({})
+    SubwayElevator.objects.all().delete()
+    to_insert= []
     for data in all_data:
         sw_nm = data.get('SW_NM', '')
         node_wkt = data.get('NODE_WKT', '')
         coordinates = node_wkt.replace("POINT(", "").replace(")", "").split()
-        x = float(coordinates[0])
-        y = float(coordinates[1])
-        subway_elevator = {
-            'sw_nm': sw_nm,
-            'x': x,
-            'y': y
-        }
-        collection_elevtr.insert_one(subway_elevator)
+        x = coordinates[0]
+        y = coordinates[1]
+        subway_elevator = SubwayElevator(sw_nm=sw_nm, x=float(x), y=float(y))
+        to_insert.append(subway_elevator)
+    SubwayElevator.objects.bulk_create(to_insert)
     return
 
 
@@ -69,18 +66,16 @@ def get_bus_no_to_route():
             break
 
     # save to Mongo DB
-    collection_bus = get_collection(db_handle, 'bus')
-    collection_bus.delete_many({})
+    Bus.objects.all().delete()
+    to_insert = []
     for data in all_data:
         bus_no = data.get('ROUTE', '')
         route = data.get('ROUTE_ID', '')
-        no_to_route = {
-            'bus_no': bus_no,
-            'route': route
-        }
-        collection_bus.insert_one(no_to_route)
-    return
+        no_to_route = Bus(bus_no=bus_no, route=route)
+        to_insert.append(no_to_route)
+    Bus.objects.bulk_create(to_insert)
 
+    return
 
 @shared_task
 def get_safety_guard_house():
@@ -88,8 +83,9 @@ def get_safety_guard_house():
     start_index = 1
     end_index = 100
 
-    collection_guard = get_collection(db_handle, 'safety_guard_house')
-    collection_guard.delete_many({})
+    SafetyGuardHouse.objects.all().delete()
+
+    to_insert = []
     while True:
         params = {'serviceKey': 'z3tbVitFT7XffZ43RQ9sMyE0ALiv+EtqOysMUKPdg9E5zTIL3lNVHqGCOS9vPqq73zYw6OhwHiskVZj4MYCJ0w==',
                   'pageNo': start_index,
@@ -105,17 +101,17 @@ def get_safety_guard_house():
                     name = target.get('storNm', '')
                     x = target.get('longitude', '')
                     y = target.get('latitude', '')
-                    safety_guard_house = {
-                        'name': name,
-                        'x': float(x),
-                        'y': float(y)
-                    }
-                    collection_guard.insert_one(safety_guard_house)
+                    safety_guard_house = SafetyGuardHouse(name=name, x=float(x), y=float(y))
+                    to_insert.append(safety_guard_house)
             if len(items) < 100:
                 break
         else:
             break
         start_index += 1
+    # print(to_insert)
+    # print(len(to_insert))
+    SafetyGuardHouse.objects.bulk_create(to_insert)
+
     return
 
 
