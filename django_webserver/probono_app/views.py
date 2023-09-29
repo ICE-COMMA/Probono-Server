@@ -49,9 +49,6 @@ class DemoListView(generics.ListAPIView):
 
 @api_view(['GET'])
 def get_subway_elevator(request, subway_station):
-    # elevator = get_object_or_404(SubwayElevator, sw_nm=subway_station)
-    # serializer = SubwayElevatorSerializer(elevator)
-    # return Response(serializer.data)
     elevators = SubwayElevator.objects.filter(sw_nm=subway_station)
     if not elevators.exists():
         return Response(status=404)
@@ -60,7 +57,7 @@ def get_subway_elevator(request, subway_station):
 
 def test_AI(request):
 
-    from .models import PopulationAiModel
+    from .services import PopulationAiModel
     popul_ai = PopulationAiModel()
     ret = popul_ai.get_predict_value()
 
