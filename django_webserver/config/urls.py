@@ -30,9 +30,9 @@ urlpatterns = [
     # path('api/logout/', views.logout_view, name='logout'),
     # path('api/id_check/', views.id_check, name='id_check'),
     # path('api/custom/', views.update_custom, name='update_custom'),
-    # path('api/get_subway_elvtr/<str:subway_station>/', views.get_subway_elvtr, name='get_subway_elvtr'),
+    path('api/get_subway_elevator/<str:subway_station>/', views.get_subway_elevator, name='get_subway_elevator'),
     # path('api/get_bus_route/<str:bus_num>/', views.get_bus_route, name='get_bus_route'),
     # path('api/get_bus_pos/<str:route_id>/', views.get_bus_pos, name='get_bus_pos'),
-    # path('api/get_demo_today/', views.get_demo_today, name='get_demo_today'),
+    path('api/get_demo_today/', views.DemoListView.as_view(), name='get_demo_today'),
     # path('api/popul_test/', views.test_AI, name='test_AI'),
 ]
