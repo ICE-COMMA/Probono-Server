@@ -61,6 +61,7 @@ INSTALLED_APPS = [
 #     'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
 # }
 
+AUTH_USER_MODEL = 'probono_app.ProbonoUser'
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
