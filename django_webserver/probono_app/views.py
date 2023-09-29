@@ -73,7 +73,8 @@ class LoginView(generics.GenericAPIView):
     serializer_class = LoginUserSerializer
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        data = json.loads(request.body.decode('utf-8'))
+        serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
         login(request, user)  # Use Django's login method
@@ -83,6 +84,7 @@ class LogoutView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
+        print(request)
         logout(request)
         return Response(status=status.HTTP_200_OK)
 
