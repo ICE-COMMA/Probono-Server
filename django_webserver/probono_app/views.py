@@ -19,7 +19,7 @@ from .models import Demo
 from .models import SafetyGuardHouse
 
 # Services
-from services import BusInfo
+from .services import BusInfo
 
 
 from rest_framework.response import Response
@@ -289,13 +289,7 @@ def update_custom(request):
     except Exception as e:
         return JsonResponse({'success': False})
 
-@require_GET
-def get_subway_elvtr(request, subway_station):
-    subway_info = SubwayInfo()
-    elevator_data = subway_info.get_subway_elvtr(subway_station)
-    return JsonResponse(elevator_data)
-
-@require_GET
+@api_view(['GET'])
 def get_bus_route(request, bus_num):
     bus_route = BusInfo()
     data_ret = bus_route.get_bus_route(bus_num)
@@ -304,7 +298,7 @@ def get_bus_route(request, bus_num):
     station_info = data_ret[1]
     return JsonResponse({'route_id' : route_id, 'station' : station_info})
 
-@require_GET
+@api_view(['GET'])
 def get_bus_pos(request, route_id):
     bus_info = BusInfo()
     ret = bus_info.get_bus_pos(route_id)
