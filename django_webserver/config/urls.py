@@ -24,6 +24,7 @@ urlpatterns = [
     path('api/auth/login/', views.LoginView.as_view(), name='login'),
     path('api/auth/logout/', views.LogoutView.as_view(), name='logout'),
     path('api/auth/user/', views.UserView.as_view(), name='user'),
+    path('api/id_check/', views.id_check, name='id_check'),
 
 
     # path('api/', views.index, name='index'),
@@ -31,10 +32,6 @@ urlpatterns = [
     # path('api/dense_popul_info/real/', views.real_dense_popul_info, name='real_popul_info'),
     # path('api/dense_popul_info/predict/', views.predict_dense_popul_info, name='predict_popul_info'),
     path('api/safety_info/data/', views.SafetyGuardHouseListView.as_view(), name='safety_info_data'),
-    # path('api/login/', views.login_view, name='login'),
-    # path('api/sign_up/', views.sign_up, name='sign_up'),
-    # path('api/logout/', views.logout_view, name='logout'),
-    # path('api/id_check/', views.id_check, name='id_check'),
     # path('api/custom/', views.update_custom, name='update_custom'),
     path('api/get_subway_elevator/<str:subway_station>/', views.get_subway_elevator, name='get_subway_elevator'),
     path('api/get_bus_route/<str:bus_num>/', views.get_bus_route, name='get_bus_route'),
