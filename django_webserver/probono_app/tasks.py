@@ -2,6 +2,7 @@ import requests
 from celery import shared_task
 from config import settings, utils
 from .models import SafetyGuardHouse, SubwayElevator, Bus
+from .services import SpecialWeatherService, DemoInfo
 
 '''
 서버 구동 후, 반드시 터미널 창 두개 열어서 실행해야 함.
@@ -117,7 +118,7 @@ def get_safety_guard_house():
 
 @shared_task
 def update_special_weather_task():
-    special_weather = SpecialWeather()
+    special_weather = SpecialWeatherService()
     special_weather.update_special_weather()
     return
 
