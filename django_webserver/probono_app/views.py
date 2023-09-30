@@ -7,6 +7,7 @@ from bson.json_util import loads, dumps
 from datetime import datetime
 
 from pymongo.errors import PyMongoError
+from django.core.exceptions import ObjectDoesNotExist
 
 
 # Models
@@ -105,6 +106,19 @@ class UserView(generics.RetrieveAPIView):
     def get_object(self):
         return self.request.user
 
+@api_view(['POST'])
+def id_check(request):
+    print('ID_check : ', end='')
+    data = json.loads(request.body.decode('utf-8'))
+    target_id = data.get('userId')
+    try:
+        ProbonoUser.objects.get(ID=target_id)
+        print(target_id, 'is already exist')
+        data = { 'valid' : False }
+    except ObjectDoesNotExist:
+        print('Success')
+        data = { 'valid' : True }
+    return JsonResponse(data, status=200)
 
 
 
@@ -187,14 +201,6 @@ def predict_dense_popul_info(request):
     ret = popul_ai.get_predict_value()
     return JsonResponse({'predict': ret})
 
-@require_GET
-def safety_info_data(request):
-    collection = get_collection(db_handle, 'safety_guard_house')
-    ret = collection.find()
-    ret_list = [{'name': item['name'], 'x': item['y'], 'y': item['x']}
-                for item in ret]
-    return JsonResponse({'ret': ret_list})
-
 @csrf_exempt
 @require_POST
 def login_view(request):
@@ -266,24 +272,6 @@ def sign_up(request):
 
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)})
-
-@csrf_exempt
-@require_POST
-def id_check(request):
-    users = get_collection(db_handle, 'User')
-    data = json.loads(request.body)
-    temp_id = data['userId']
-    print('ID_check : ', end='')
-    temp = users.find_one({'ID': temp_id})
-    if not temp:
-        print('Success')
-        data = {'valid': True}  # REMIND : front have to know its response.
-        status_code = 200
-    else:
-        print(temp_id, 'is already exist')
-        status_code = 200
-        data = {'valid': False}  # REMIND : front have to know its response.
-    return JsonResponse(data, status=status_code)
 
 def logout_view(request):
     request.session.flush()
