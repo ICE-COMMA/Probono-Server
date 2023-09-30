@@ -9,21 +9,18 @@ from datetime import datetime
 from pymongo.errors import PyMongoError
 
 
-# Special Weather
+# Models
 from .models import SpecialWeather
-
-# Transfer info
 from .models import Bus
-
-# Population_real_time, predict
 from .models import PopulRegion
 from .models import ProbonoUser
 from .models import SubwayElevator
 from .models import Demo
 from .models import SafetyGuardHouse
 
-# db_handle = utils.db_handle
-# get_collection = utils.get_collection_handle
+# Services
+from services import BusInfo
+
 
 from rest_framework.response import Response
 from rest_framework import generics, status
@@ -59,9 +56,6 @@ class SignUpView(generics.GenericAPIView):
     serializer_class = CreateUserSerializer
 
     def post(self, request, *args, **kwargs):
-        # if len(request.data["ID"]) < 6 or len(request.data["password"]) < 4:
-            # body = {"message": "short field"}
-            # return Response(body, status=status.HTTP_400_BAD_REQUEST)
         data = json.loads(request.body.decode('utf-8'))
         print(data)
         serializer = self.get_serializer(data=data)
@@ -76,9 +70,10 @@ class LoginView(generics.GenericAPIView):
         data = json.loads(request.body.decode('utf-8'))
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data
-        login(request, user)  # Use Django's login method
-        return Response(UserSerializer(user).data)
+        user_id = serializer.validated_data
+        login(request, user_id)
+        # print(user_id)
+        return Response(UserSerializer(user_id).data)
 
 class LogoutView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -314,9 +309,3 @@ def get_bus_pos(request, route_id):
     bus_info = BusInfo()
     ret = bus_info.get_bus_pos(route_id)
     return JsonResponse({'bus_pos': ret})
-
-@require_GET
-def get_demo_today(request):
-    demo_info = DemoInfo()
-    ret = demo_info.get_demo_info()
-    return JsonResponse({'demo': ret})
