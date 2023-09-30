@@ -21,7 +21,8 @@ from .models import SafetyGuardHouse
 
 # Services
 from .services import BusInfo
-
+from .services import PopulationRealTime
+from .services import PopulationAiModel
 
 from rest_framework.response import Response
 from rest_framework import generics, status
@@ -46,19 +47,31 @@ class DemoListView(generics.ListAPIView):
     serializer_class = DemoSerializer
 
 @api_view(['GET'])
+def real_dense_popul_info(request):
+    prt = PopulationRealTime()
+    ret = prt.get_real_time_popul()
+    return Response(ret)
+
+@api_view(['GET'])
+def predict_dense_popul_info(request):
+    popul_ai = PopulationAiModel()
+    ret = popul_ai.get_predict_value()
+    return Response(ret)
+
+@api_view(['GET'])
 def get_bus_route(request, bus_num):
     bus_route = BusInfo()
     data_ret = bus_route.get_bus_route(bus_num)
 
     route_id = data_ret[0]
     station_info = data_ret[1]
-    return JsonResponse({'route_id' : route_id, 'station' : station_info})
+    return Response({'route_id' : route_id, 'station' : station_info})
 
 @api_view(['GET'])
 def get_bus_pos(request, route_id):
     bus_info = BusInfo()
     ret = bus_info.get_bus_pos(route_id)
-    return JsonResponse({'bus_pos': ret})
+    return Response(ret)
 
 @api_view(['GET'])
 def get_subway_elevator(request, subway_station):
@@ -106,6 +119,7 @@ class UserView(generics.RetrieveAPIView):
     def get_object(self):
         return self.request.user
 
+# @api_view(['GET'])
 @api_view(['POST'])
 def id_check(request):
     print('ID_check : ', end='')
@@ -118,7 +132,7 @@ def id_check(request):
     except ObjectDoesNotExist:
         print('Success')
         data = { 'valid' : True }
-    return JsonResponse(data, status=200)
+    return Response(data)
 
 
 
@@ -189,17 +203,7 @@ def my_page(request, id):
     except PyMongoError:
         return JsonResponse({'valid': False, 'error': 'Database error'})
 
-@require_GET
-def real_dense_popul_info(request):
-    prt = PopulationRealTime()
-    ret = prt.get_real_time_popul()
-    return JsonResponse({'real_time': ret})
 
-@require_GET
-def predict_dense_popul_info(request):
-    popul_ai = PopulationAiModel()
-    ret = popul_ai.get_predict_value()
-    return JsonResponse({'predict': ret})
 
 @csrf_exempt
 @require_POST
