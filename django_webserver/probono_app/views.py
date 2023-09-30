@@ -45,6 +45,21 @@ class DemoListView(generics.ListAPIView):
     serializer_class = DemoSerializer
 
 @api_view(['GET'])
+def get_bus_route(request, bus_num):
+    bus_route = BusInfo()
+    data_ret = bus_route.get_bus_route(bus_num)
+
+    route_id = data_ret[0]
+    station_info = data_ret[1]
+    return JsonResponse({'route_id' : route_id, 'station' : station_info})
+
+@api_view(['GET'])
+def get_bus_pos(request, route_id):
+    bus_info = BusInfo()
+    ret = bus_info.get_bus_pos(route_id)
+    return JsonResponse({'bus_pos': ret})
+
+@api_view(['GET'])
 def get_subway_elevator(request, subway_station):
     elevators = SubwayElevator.objects.filter(sw_nm=subway_station)
     if not elevators.exists():
@@ -288,18 +303,3 @@ def update_custom(request):
         return JsonResponse({'success': True})
     except Exception as e:
         return JsonResponse({'success': False})
-
-@api_view(['GET'])
-def get_bus_route(request, bus_num):
-    bus_route = BusInfo()
-    data_ret = bus_route.get_bus_route(bus_num)
-
-    route_id = data_ret[0]
-    station_info = data_ret[1]
-    return JsonResponse({'route_id' : route_id, 'station' : station_info})
-
-@api_view(['GET'])
-def get_bus_pos(request, route_id):
-    bus_info = BusInfo()
-    ret = bus_info.get_bus_pos(route_id)
-    return JsonResponse({'bus_pos': ret})
