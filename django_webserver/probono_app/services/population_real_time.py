@@ -57,10 +57,11 @@ class PopulationRealTime():
 
     def __get_xl_file_info(self):
         current_dir = Path(__file__).parent
-        base_dir = current_dir.parent
-        file_path = base_dir / 'files' / 'population_region_info.xlsx'
-        xl_file = openpyxl.load_workbook(file_path)
-        xl_sheet = xl_file.active
+        base_dir    = current_dir.parent
+        file_path   = base_dir / 'files' / 'population_region_info.xlsx'
+
+        xl_file     = openpyxl.load_workbook(file_path)
+        xl_sheet    = xl_file.active
 
         data_list = []
         for row_idx, row in enumerate(xl_sheet.iter_rows(values_only=True), start=1):

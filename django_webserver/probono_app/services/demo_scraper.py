@@ -179,10 +179,10 @@ class DemoInfo():
                     # print(amount)
 
                 result = {
-                    'location': place,
-                    'date': date,
-                    'time': time,
-                    'amount': amount
+                    'location'  : place,
+                    'date'      : date,
+                    'time'      : time,
+                    'amount'    : amount
                 }
                 to_insert.append(result)
                 i += 1

@@ -18,9 +18,9 @@ class SpecialWeatherService():
     __tmfc1_value = None
 
     def __init__(self):
-        self.__base_url   = 'https://apihub.kma.go.kr/api/typ01/url/wrn_met_data.php'
-        self.__key        = 'm4y76-4OTnaMu-vuDg525w'
-        self.__params = {
+        self.__base_url = 'https://apihub.kma.go.kr/api/typ01/url/wrn_met_data.php'
+        self.__key      = 'm4y76-4OTnaMu-vuDg525w'
+        self.__params   = {
             'wrn'       : 'A',      'reg'   : None,
             'tmfc1'     : None,     'disp'  : '0',
             'authKey'   : self.__key
@@ -91,8 +91,8 @@ class SpecialWeatherService():
         return self.__fetch_data(target)
 
     def __set_params(self, target):
-        self.__params['reg'] = target[0]
-        self.__params['tmfc1'] = SpecialWeatherService.__tmfc1_value
+        self.__params['reg']    = target[0]
+        self.__params['tmfc1']  = SpecialWeatherService.__tmfc1_value
         return self.__params
 
     def __fetch_data(self, target, is_initial=False):
@@ -132,11 +132,11 @@ class SpecialWeatherService():
                 raise ValueError("Insufficient data in fields!")
             tm_ef = datetime.strptime(fields[1].strip(), "%Y%m%d%H%M")
             data = {
-                'TM_EF': tm_ef,
+                'TM_EF' : tm_ef,
                 'REG_NM': target[1],
-                'WRN': fields[5].strip(),
-                'LVL': fields[6].strip(),
-                'CMD': fields[7].strip(),
+                'WRN'   : fields[5].strip(),
+                'LVL'   : fields[6].strip(),
+                'CMD'   : fields[7].strip(),
             }
             all_data.append(data)
         return all_data
@@ -147,18 +147,19 @@ class SpecialWeatherService():
         for w, group in grouped_data.items():
             if group[-1]['CMD'] != '3':
                 result = {
-                    'TM_EF': group[-1]['TM_EF'],
+                    'TM_EF' : group[-1]['TM_EF'],
                     'REG_NM': target[1],
-                    'WRN': self.__wrn[w],
-                    'LVL': self.__lvl[group[-1]['LVL']]
+                    'WRN'   : self.__wrn[w],
+                    'LVL'   : self.__lvl[group[-1]['LVL']]
                 }
                 to_insert.append(result)
         return to_insert
 
     def __two_months_ago(self):
-        now = datetime.now(timezone('Asia/Seoul'))
-        year = now.year
-        month = now.month
+        now     = datetime.now(timezone('Asia/Seoul'))
+        year    = now.year
+        month   = now.month
+
         if month <= 2:
             month = 10 + month
             year -= 1

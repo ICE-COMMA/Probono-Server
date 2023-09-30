@@ -1,7 +1,6 @@
 from django.views.decorators.http import require_POST, require_GET
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseForbidden, JsonResponse
-import requests
 import json
 from bson.json_util import loads, dumps
 from datetime import datetime
@@ -35,16 +34,16 @@ from .serializers import SubwayElevatorSerializer
 
 # User
 from .serializers import CreateUserSerializer, LoginUserSerializer, UserSerializer
-from django.contrib.auth import authenticate, login, logout
-from rest_framework import viewsets, permissions
+from django.contrib.auth import login, logout
+from rest_framework import permissions
 
 class SafetyGuardHouseListView(generics.ListAPIView):
-    queryset = SafetyGuardHouse.objects.all()
-    serializer_class = SafetyGuardHouseSerializer
+    queryset            = SafetyGuardHouse.objects.all()
+    serializer_class    = SafetyGuardHouseSerializer
 
 class DemoListView(generics.ListAPIView):
-    queryset = Demo.objects.all()
-    serializer_class = DemoSerializer
+    queryset            = Demo.objects.all()
+    serializer_class    = DemoSerializer
 
 @api_view(['GET'])
 def real_dense_popul_info(request):
@@ -54,23 +53,26 @@ def real_dense_popul_info(request):
 
 @api_view(['GET'])
 def predict_dense_popul_info(request):
-    popul_ai = PopulationAiModel()
-    ret = popul_ai.get_predict_value()
+    popul_ai    = PopulationAiModel()
+    ret         = popul_ai.get_predict_value()
     return Response(ret)
 
 @api_view(['GET'])
 def get_bus_route(request, bus_num):
-    bus_route = BusInfo()
-    data_ret = bus_route.get_bus_route(bus_num)
+    bus_route   = BusInfo()
+    data_ret    = bus_route.get_bus_route(bus_num)
 
-    route_id = data_ret[0]
-    station_info = data_ret[1]
-    return Response({'route_id' : route_id, 'station' : station_info})
+    route_id        = data_ret[0]
+    station_info    = data_ret[1]
+    return Response({
+        'route_id'  : route_id,
+        'station'   : station_info
+    })
 
 @api_view(['GET'])
 def get_bus_pos(request, route_id):
-    bus_info = BusInfo()
-    ret = bus_info.get_bus_pos(route_id)
+    bus_info    = BusInfo()
+    ret         = bus_info.get_bus_pos(route_id)
     return Response(ret)
 
 @api_view(['GET'])
@@ -85,9 +87,8 @@ class SignUpView(generics.GenericAPIView):
     serializer_class = CreateUserSerializer
 
     def post(self, request, *args, **kwargs):
-        data = json.loads(request.body.decode('utf-8'))
-        print(data)
-        serializer = self.get_serializer(data=data)
+        data        = json.loads(request.body.decode('utf-8'))
+        serializer  = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         return Response(UserSerializer(user).data)
@@ -96,8 +97,9 @@ class LoginView(generics.GenericAPIView):
     serializer_class = LoginUserSerializer
 
     def post(self, request, *args, **kwargs):
-        data = json.loads(request.body.decode('utf-8'))
-        serializer = self.get_serializer(data=data)
+        data        = json.loads(request.body.decode('utf-8'))
+        serializer  = self.get_serializer(data=data)
+
         serializer.is_valid(raise_exception=True)
         user_id = serializer.validated_data
         login(request, user_id)
@@ -112,8 +114,8 @@ class LogoutView(generics.GenericAPIView):
         return Response(status=status.HTTP_200_OK)
 
 class UserView(generics.RetrieveAPIView):
-    permission_classes = [permissions.IsAuthenticated]
-    serializer_class = UserSerializer
+    permission_classes  = [permissions.IsAuthenticated]
+    serializer_class    = UserSerializer
 
     def get_object(self):
         return self.request.user

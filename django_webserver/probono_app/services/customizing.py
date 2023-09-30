@@ -4,9 +4,11 @@ from .population_ai_model import PopulationAiModel
 class CustomInfo():
     
     def __init__(self):
-        self.custom_list = ['custom-demo', 'custom-elevator', 'custom-population',
-                            'custom-predict', 'custom-safety', 'custom-safety-loc',
-                            'custom-low-bus', 'custom-festival']
+        self.custom_list = [
+            'custom-demo',      'custom-elevator',  'custom-population',
+            'custom-predict',   'custom-safety',    'custom-safety-loc',
+            'custom-low-bus',   'custom-festival'
+        ]
 
     def get_custom_info(self, id, collection):
         ret = []

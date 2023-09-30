@@ -13,8 +13,8 @@ import numpy as np
 class PopulationAiModel():
     
     def __init__(self):
-        self.__holi_base_url       = 'https://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo'
-        self.__holi_key       = '4cwiloFmPQxO3hXwmJy3jruoPPh6m8PQZqxBkWecSAgIIeRjq6UIdo0r7ZnmT4Rm4kVErRaD9jd1XU5CS7Chwg=='
+        self.__holi_base_url    = 'https://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo'
+        self.__holi_key         = '4cwiloFmPQxO3hXwmJy3jruoPPh6m8PQZqxBkWecSAgIIeRjq6UIdo0r7ZnmT4Rm4kVErRaD9jd1XU5CS7Chwg=='
 
     def get_predict_value(self):
         with ThreadPoolExecutor(max_workers=4) as executor:
