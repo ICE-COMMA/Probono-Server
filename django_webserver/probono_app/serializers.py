@@ -35,12 +35,12 @@ class SubwayElevatorSerializer(serializers.ModelSerializer):
 class CustomPreferencesSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomPreferences
-        fields = '__all__'
-        # fields = [
-            # 'custom_demo', 'custom_elevator', 'custom_population', 
-            # 'custom_predict', 'custom_safety', 'custom_safety_loc',
-            # 'custom_low_bus', 'custom_festival'
-        # ]
+        # fields = '__all__'
+        fields = [
+            'custom_demo', 'custom_elevator', 'custom_population', 
+            'custom_predict', 'custom_safety', 'custom_safety_loc',
+            'custom_low_bus', 'custom_festival'
+        ]
 
 class CreateUserSerializer(serializers.ModelSerializer):
     userId = serializers.CharField(source='ID')
@@ -82,4 +82,4 @@ class LoginUserSerializer(serializers.Serializer):
         user = authenticate(**data)
         if user and user.is_active:
             return user
-        raise serializers.ValidationError('Unable to log in with provided credentials.')
+        raise serializers.ValidationError('Login : Fail')
