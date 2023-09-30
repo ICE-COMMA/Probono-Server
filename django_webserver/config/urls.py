@@ -25,17 +25,16 @@ urlpatterns = [
     path('api/auth/logout/', views.LogoutView.as_view(), name='logout'),
     path('api/auth/user/', views.UserView.as_view(), name='user'),
     path('api/auth/id_check/', views.id_check, name='id_check'),
+    # path('api/auth/custom/', views.update_custom, name='update_custom'),
+    # path('api/my_page/<str:id>/', views.my_page, name='my_page'),
 
 
     # path('api/', views.index, name='index'),
-    # path('api/my_page/<str:id>/', views.my_page, name='my_page'),
     path('api/dense_popul_info/real/', views.real_dense_popul_info, name='real_popul_info'),
     path('api/dense_popul_info/predict/', views.predict_dense_popul_info, name='predict_popul_info'),
     path('api/safety_info/data/', views.SafetyGuardHouseListView.as_view(), name='safety_info_data'),
-    # path('api/custom/', views.update_custom, name='update_custom'),
     path('api/get_subway_elevator/<str:subway_station>/', views.get_subway_elevator, name='get_subway_elevator'),
     path('api/get_bus_route/<str:bus_num>/', views.get_bus_route, name='get_bus_route'),
     path('api/get_bus_pos/<str:route_id>/', views.get_bus_pos, name='get_bus_pos'),
     path('api/get_demo_today/', views.DemoListView.as_view(), name='get_demo_today'),
-    # path('api/popul_test/', views.test_AI, name='test_AI'),
 ]
