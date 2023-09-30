@@ -49,7 +49,7 @@ class BusInfo():
         
         params = {
             'ServiceKey'    : self.__route_key,
-            'busRouteId'    : bus_info['route'],
+            'busRouteId'    : bus_info.route,
             'resultType'    : 'json'
         }
 
