@@ -101,8 +101,7 @@ class LoginView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         user_id = serializer.validated_data
         login(request, user_id)
-        # print(user_id)
-        return Response(UserSerializer(user_id).data)
+        return Response(UserSerializer(user_id).data.get('name'))
 
 class LogoutView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -136,14 +135,6 @@ def id_check(request):
 
 
 
-
-def test_AI(request):
-
-    from .services import PopulationAiModel
-    popul_ai = PopulationAiModel()
-    ret = popul_ai.get_predict_value()
-
-    return JsonResponse({'popul_ai': ret})
 
 def index(request):
     if request.method == 'GET':
@@ -240,42 +231,6 @@ def login_view(request):
 
     return JsonResponse(data, status=status_code)
 
-@require_POST
-def sign_up(request):
-    data = json.loads(request.body.decode('utf-8'))
-
-    print(data)
-    # date_obj = data.get('date')
-    # datetime_obj = datetime(date_obj.year, date_obj.month, date_obj.day)
-
-    default_custom_settings = {
-        "custom-demo"       : False,
-        "custom-elevator"   : False,
-        "custom-population" : False,
-        "custom-predict"    : False,
-        "custom-safety"     : False,
-        "custom-safety-loc"  : False,
-        "custom-low-bus"    : False,
-        "custom-festival"   : False
-    }
-
-    user_data = {
-        "ID"        : data.get('userId'),
-        "name"      : data.get('userName'),
-        "PW"        : data.get('password'),
-        "gender"    : data.get('gender'),
-        "date"      : data.get('birth'),
-        "impaired"  : data.get('impaired'),
-        "custom"    : default_custom_settings  # custom 필드는 빈 문자열로 초기화
-    }
-    try:
-        users = get_collection(db_handle, 'User')
-        users.insert_one(user_data)
-
-        return JsonResponse({'success': True, 'message': '회원가입에 성공하였습니다.'})
-
-    except Exception as e:
-        return JsonResponse({'success': False, 'message': str(e)})
 
 def logout_view(request):
     request.session.flush()
