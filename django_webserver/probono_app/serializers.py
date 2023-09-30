@@ -35,11 +35,12 @@ class SubwayElevatorSerializer(serializers.ModelSerializer):
 class CustomPreferencesSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomPreferences
-        fields = [
-            'custom_demo', 'custom_elevator', 'custom_population', 
-            'custom_predict', 'custom_safety', 'custom_safety_loc',
-            'custom_low_bus', 'custom_festival'
-        ]
+        fields = '__all__'
+        # fields = [
+            # 'custom_demo', 'custom_elevator', 'custom_population', 
+            # 'custom_predict', 'custom_safety', 'custom_safety_loc',
+            # 'custom_low_bus', 'custom_festival'
+        # ]
 
 class CreateUserSerializer(serializers.ModelSerializer):
     userId = serializers.CharField(source='ID')
@@ -67,6 +68,8 @@ class CreateUserSerializer(serializers.ModelSerializer):
         return user
 
 class UserSerializer(serializers.ModelSerializer):
+    custom = CustomPreferencesSerializer()
+
     class Meta:
         model = ProbonoUser
         fields = ['ID', 'name', 'gender', 'date', 'impaired', 'custom']
