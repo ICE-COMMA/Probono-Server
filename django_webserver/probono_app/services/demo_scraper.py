@@ -13,11 +13,6 @@ import re
 import zlib
 import struct
 
-# from config import utils
-
-# db_handle = utils.db_handle
-# get_collection = utils.get_collection_handle
-
 from probono_app.models import Demo
 
 
@@ -28,35 +23,6 @@ class DemoInfo():
         # self.__download_path = '/Users/limhs/Downloads/'
         self.__download_path  = '/Users/choijeongheum/Downloads/'
         self.__site_url       = "https://www.smpa.go.kr/user/nd54882.do"
-        self.__db_name        = 'demo'
-
-    # def get_demo_info(self):
-    #     collection = get_collection(db_handle, self.__db_name)
-    #     data_demo = list(collection.find({}))
-    #     ret = []
-    #     for item in data_demo:
-    #         item_data = {
-    #             "location"  : str(item["location"]),
-    #             "date"      : str(item["date"]),
-    #             "time"      : str(item["time"]),
-    #             "amount"    : str(item["amount"])
-    #         }
-    #         ret.append(item_data)
-    #     return ret
-
-    # def get_demo_info(self):
-    #     data_demo = Demo.objects.all()
-        
-    #     ret = []
-    #     for item in data_demo:
-    #         item_data = {
-    #             "location"  : str(item.location),
-    #             "date"      : str(item.date),
-    #             "time"      : str(item.time),
-    #             "amount"    : str(item.amount)
-    #         }
-    #         ret.append(item_data)
-    #     return ret
 
     def _crawling_demo(self):
         print('Initializing demo crawling.. ', end='')
@@ -223,16 +189,6 @@ class DemoInfo():
 
         return to_insert
 
-    # MODIFY LATER
-    # def __update_demo(self):
-    #     collection = get_collection(db_handle, self.__db_name)
-    #     collection.delete_many({})
-    #     new_data = []
-    #     new_data.extend(self.__process_hwp_file())
-    #     for idx, target in enumerate(new_data):
-    #         new_data[idx]['date'] = target['date'].group()
-    #     # print(new_data)
-    #     collection.insert_many(new_data)
     def __update_demo(self):
         # 모든 Demo 객체를 삭제
         Demo.objects.all().delete()

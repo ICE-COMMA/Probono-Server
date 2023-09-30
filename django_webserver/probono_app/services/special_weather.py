@@ -25,7 +25,6 @@ class SpecialWeatherService():
             'tmfc1'     : None,     'disp'  : '0',
             'authKey'   : self.__key
         }
-        self.__db_name = 'special_weather'
         self.__target_reg = [
             ['L1100100', '서울동남권'], ['L1100200', '서울동북권'],
             ['L1100300', '서울서남권'], ['L1100400', '서울서북권']
@@ -43,37 +42,12 @@ class SpecialWeatherService():
         }
 
     def get_special_weather(self):
-        # collection = get_collection(db_handle, self.__db_name)
-        # ret = list(collection.find({}))
-        # return ret
         return list(SpecialWeather.objects.all())
-
-    # def init_special_weather(self):
-    #     print('Initializing Special Weather.. ', end='')
-    #     collection = get_collection(db_handle, self.__db_name)
-    #     collection.delete_many({})
-    #     to_insert = self.__process_weather_data(self.__init_fetch_data)
-    #     if to_insert:
-    #         collection.insert_many(to_insert)
-    #     print('OK')
-
-    # def update_special_weather(self):
-    #     print('Updating Special Weather.. ', end='')
-    #     collection = get_collection(db_handle, self.__db_name)
-    #     new_data = self.__process_weather_data(self.__update_fetch_data)
-    #     for target in new_data:
-    #         target_db = collection.find_one(target['WRN'])
-    #         if not target_db:
-    #             collection.delete_one(target_db)
-    #             if target['CMD'] != '3':
-    #                 collection.insert_one(target)
-    #     print('OK')
 
     def init_special_weather(self):
         print('Initializing Special Weather.. ', end='')
     
         SpecialWeather.objects.all().delete()
-        
         to_insert = self.__process_weather_data(self.__init_fetch_data)
         if to_insert:
             SpecialWeather.objects.bulk_create([

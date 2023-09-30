@@ -130,7 +130,6 @@ class districtInfo:  # 해당 지역 정보
 
     # file 위치 반환해주는 함수
     def __file_loc(self, file_name):
-        # file_path = os.path.join(os.path.dirname(__file__), 'files', file_name)
         current_dir = Path(__file__).parent
         base_dir = current_dir.parent
         file_path = base_dir / 'files' / file_name

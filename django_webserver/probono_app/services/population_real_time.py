@@ -5,46 +5,23 @@ from pathlib import Path
 import openpyxl
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-from config import utils
-
-# db_handle = utils.db_handle
-# get_collection = utils.get_collection_handle
-
 from probono_app.models import PopulRegion
 
 class PopulationRealTime():
     
     def __init__(self):
         self.__base_url   = 'http://openapi.seoul.go.kr:8088/68666f624d6c696d373249736e7649/json/citydata_ppltn'
-        self.__db_name    = 'popul_real_time_reg'
-
-    # def init_population_info(self):
-    #     print('Initializing population region info.. ', end='')
-    #     collection = get_collection(db_handle, self.__db_name)
-    #     collection.delete_many({})
-    #     to_insert = self.__get_xl_file_info()
-    #     collection.insert_many(to_insert)
-    #     print('OK')
 
     def init_population_info(self):
         print('Initializing population region info.. ', end='')
-    
-        # 모든 PopulRegion 객체를 삭제
         PopulRegion.objects.all().delete()
-        
-        # 새로운 데이터 가져오기
         to_insert = self.__get_xl_file_info()
-        
-        # 새로운 데이터를 PopulRegion 모델에 추가
         popul_region_instances = [PopulRegion(**item) for item in to_insert]
         PopulRegion.objects.bulk_create(popul_region_instances)
-        
         print('OK')
 
     def get_real_time_popul(self):
         
-        # collection = get_collection(db_handle, self.__db_name)
-        # region_info = list(collection.find({}))
         region_info = PopulRegion.objects.all().values()
 
         start_index = 1

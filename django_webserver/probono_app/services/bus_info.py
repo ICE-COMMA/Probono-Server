@@ -1,10 +1,4 @@
 import requests
-
-# from config import utils
-
-# db_handle = utils.db_handle
-# get_collection = utils.get_collection_handle
-
 from probono_app.models import Bus
 
 class BusInfo():
@@ -51,8 +45,6 @@ class BusInfo():
         return ret
 
     def get_bus_route(self, bus_num):
-        # collection_bus  = get_collection(db_handle, self.__route_db_name)
-        # bus_info        = collection_bus.find_one({'bus_no': bus_num})
         bus_info = Bus.objects.filter(bus_no=bus_num).first()
         
         params = {
