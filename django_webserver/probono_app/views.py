@@ -1,62 +1,170 @@
 from django.views.decorators.http import require_POST, require_GET
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseForbidden, JsonResponse
-import requests
 import json
 from bson.json_util import loads, dumps
 from datetime import datetime
 
-# Mongo DB
-from config import utils
 from pymongo.errors import PyMongoError
+from django.core.exceptions import ObjectDoesNotExist
+
+
+# Models
+from .models import SpecialWeather
+from .models import Bus
+from .models import PopulRegion
+from .models import ProbonoUser
+from .models import SubwayElevator
+from .models import Demo
+from .models import SafetyGuardHouse
+
+# Services
+from .services import BusInfo
+from .services import PopulationRealTime
+from .services import PopulationAiModel
+
+from rest_framework.response import Response
+from rest_framework import generics, status
+from django.shortcuts import get_object_or_404
+from rest_framework.decorators import api_view
+
+from .serializers import SafetyGuardHouseSerializer
+from .serializers import DemoSerializer
+from .serializers import SubwayElevatorSerializer
 
 # User
-from .forms import SignUpForm
-
-# Special Weather
-from .models import SpecialWeather
-
-# Transfer info
-from .models import BusInfo
-
-# Population_real_time, predict
-from .models import PopulationRealTime
-from .models import PopulationAiModel
-
-from .models import CustomInfo
-
-from .models import SubwayInfo
-
-from .models import DemoInfo
-
-db_handle = utils.db_handle
-get_collection = utils.get_collection_handle
+from .serializers import CreateUserSerializer, LoginUserSerializer, UserSerializer
+from django.contrib.auth import login, logout
+from rest_framework import permissions
 
 
-def test_AI(request):
+class SafetyGuardHouseListView(generics.ListAPIView):
+    queryset = SafetyGuardHouse.objects.all()
+    serializer_class = SafetyGuardHouseSerializer
 
-    from .models import PopulationAiModel
+
+class DemoListView(generics.ListAPIView):
+    queryset = Demo.objects.all()
+    serializer_class = DemoSerializer
+
+
+@api_view(['GET'])
+def real_dense_popul_info(request):
+    prt = PopulationRealTime()
+    ret = prt.get_real_time_popul()
+    return Response(ret)
+
+
+@api_view(['GET'])
+def predict_dense_popul_info(request):
     popul_ai = PopulationAiModel()
     ret = popul_ai.get_predict_value()
+    return Response(ret)
 
-    return JsonResponse({'popul_ai': ret})
+
+@api_view(['GET'])
+def get_bus_route(request, bus_num):
+    bus_route = BusInfo()
+    data_ret = bus_route.get_bus_route(bus_num)
+
+    route_id = data_ret[0]
+    station_info = data_ret[1]
+    return Response({
+        'route_id': route_id,
+        'station': station_info
+    })
+
+
+@api_view(['GET'])
+def get_bus_pos(request, route_id):
+    bus_info = BusInfo()
+    ret = bus_info.get_bus_pos(route_id)
+    return Response(ret)
+
+
+@api_view(['GET'])
+def get_subway_elevator(request, subway_station):
+    elevators = SubwayElevator.objects.filter(sw_nm=subway_station)
+    if not elevators.exists():
+        return Response(status=404)
+    serializer = SubwayElevatorSerializer(elevators, many=True)
+    return Response(serializer.data)
+
+
+class SignUpView(generics.GenericAPIView):
+    serializer_class = CreateUserSerializer
+
+    def post(self, request, *args, **kwargs):
+        data = json.loads(request.body.decode('utf-8'))
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        return Response(UserSerializer(user).data)
+
+
+class LoginView(generics.GenericAPIView):
+    serializer_class = LoginUserSerializer
+
+    def post(self, request, *args, **kwargs):
+        data = json.loads(request.body.decode('utf-8'))
+        serializer = self.get_serializer(data=data)
+
+        serializer.is_valid(raise_exception=True)
+        user_id = serializer.validated_data
+        login(request, user_id)
+        return Response(UserSerializer(user_id).data.get('name'))
+
+
+class LogoutView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        print(request)
+        logout(request)
+        return Response(status=status.HTTP_200_OK)
+
+
+class UserView(generics.RetrieveAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = UserSerializer
+
+    def get_object(self):
+        return self.request.user
+
+# @api_view(['GET'])
+
+
+@api_view(['POST'])
+def id_check(request):
+    print('ID_check : ', end='')
+    data = json.loads(request.body.decode('utf-8'))
+    target_id = data.get('userId')
+    try:
+        ProbonoUser.objects.get(ID=target_id)
+        print(target_id, 'is already exist')
+        data = {'valid': False}
+    except ObjectDoesNotExist:
+        print('Success')
+        data = {'valid': True}
+    return Response(data)
 
 
 def index(request):
     if request.method == 'GET':
         special_weather = SpecialWeather()
         spw = special_weather.get_special_weather()
-        sess_ret = request.session.get('ID', False)
-        print('User ID :', sess_ret)
-        custom_info = False
-        if sess_ret:
-            user_collection = get_collection(db_handle, 'User')
-            temp = CustomInfo()
-            custom_info = temp.get_custom_info(sess_ret, user_collection)
+        # sess_ret = request.session.get('ID', False)
+        # print('User ID :', sess_ret)
+        # custom_info = False
+        # if sess_ret:
+        # user_collection = get_collection(db_handle, 'User')
+        # temp = CustomInfo()
+        # custom_info = temp.get_custom_info(sess_ret, user_collection)
 
         for item in spw:
             item['_id'] = str(item['_id'])
-        return JsonResponse({'user': sess_ret, 'spw': spw, 'custom': custom_info})
+        # return JsonResponse({'user': sess_ret, 'spw': spw, 'custom': custom_info})
+        return JsonResponse({'spw': spw})
 
     # elif request.method == 'POST':
     #     collection = get_collection(db_handle, 'report')
@@ -101,29 +209,6 @@ def my_page(request, id):
         return JsonResponse({'valid': False, 'error': 'Database error'})
 
 
-@require_GET
-def real_dense_popul_info(request):
-    prt = PopulationRealTime()
-    ret = prt.get_real_time_popul()
-    return JsonResponse({'real_time': ret})
-
-
-@require_GET
-def predict_dense_popul_info(request):
-    popul_ai = PopulationAiModel()
-    ret = popul_ai.get_predict_value()
-    return JsonResponse({'predict': ret})
-
-
-@require_GET
-def safety_info_data(request):
-    collection = get_collection(db_handle, 'safety_guard_house')
-    ret = collection.find()
-    ret_list = [{'name': item['name'], 'x': item['y'], 'y': item['x']}
-                for item in ret]
-    return JsonResponse({'ret': ret_list})
-
-
 @csrf_exempt
 @require_POST
 def login_view(request):
@@ -160,63 +245,6 @@ def login_view(request):
     return JsonResponse(data, status=status_code)
 
 
-@require_POST
-def sign_up(request):
-    data = json.loads(request.body.decode('utf-8'))
-
-    print(data)
-    # date_obj = data.get('date')
-    # datetime_obj = datetime(date_obj.year, date_obj.month, date_obj.day)
-
-    default_custom_settings = {
-        "custom-demo": False,
-        "custom-elevator": False,
-        "custom-population": False,
-        "custom-predict": False,
-        "custom-safety": False,
-        "custom-safey-loc": False,
-        "custom-low-bus": False,
-        "custom-festival": False
-    }
-
-    user_data = {
-        "ID": data.get('userId'),
-        "name": data.get('userName'),
-        "PW": data.get('password'),
-        "gender": data.get('gender'),
-        "date": data.get('birth'),
-        "impaired": data.get('impaired'),
-        "custom": default_custom_settings  # custom 필드는 빈 문자열로 초기화
-    }
-    try:
-        users = get_collection(db_handle, 'User')
-        users.insert_one(user_data)
-
-        return JsonResponse({'success': True, 'message': '회원가입에 성공하였습니다.'})
-
-    except Exception as e:
-        return JsonResponse({'success': False, 'message': str(e)})
-
-
-@csrf_exempt
-@require_POST
-def id_check(request):
-    users = get_collection(db_handle, 'User')
-    data = json.loads(request.body)
-    temp_id = data['userId']
-    print('ID_check : ', end='')
-    temp = users.find_one({'ID': temp_id})
-    if not temp:
-        print('Success')
-        data = {'valid': True}  # REMIND : front have to know its response.
-        status_code = 200
-    else:
-        print(temp_id, 'is already exist')
-        status_code = 200
-        data = {'valid': False}  # REMIND : front have to know its response.
-    return JsonResponse(data, status=status_code)
-
-
 def logout_view(request):
     request.session.flush()
     return
@@ -236,34 +264,3 @@ def update_custom(request):
         return JsonResponse({'success': True})
     except Exception as e:
         return JsonResponse({'success': False})
-
-
-@require_GET
-def get_subway_elvtr(request, subway_station):
-    subway_info = SubwayInfo()
-    elevator_data = subway_info.get_subway_elvtr(subway_station)
-    return JsonResponse(elevator_data)
-
-
-@require_GET
-def get_bus_route(request, bus_num):
-    bus_route = BusInfo()
-    data_ret = bus_route.get_bus_route(bus_num)
-
-    route_id = data_ret[0]
-    station_info = data_ret[1]
-    return JsonResponse({'route_id': route_id, 'station': station_info})
-
-
-@require_GET
-def get_bus_pos(request, route_id):
-    bus_info = BusInfo()
-    ret = bus_info.get_bus_pos(route_id)
-    return JsonResponse({'bus_pos': ret})
-
-
-@require_GET
-def get_demo_today(request):
-    demo_info = DemoInfo()
-    ret = demo_info.get_demo_info()
-    return JsonResponse({'demo': ret})
