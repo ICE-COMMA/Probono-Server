@@ -16,39 +16,15 @@ import struct
 from probono_app.models import Demo
 
 
-
 class DemoInfo():
 
     def __init__(self):
         self.chrome_options = webdriver.ChromeOptions()
-<<<<<<< HEAD:django_webserver/probono_app/models/demo_scraper.py
-        self.download_path = '/Users/limhs/Downloads/'
-        # self.download_path  = '/Users/choijeongheum/Downloads/'
-        self.site_url = "https://www.smpa.go.kr/user/nd54882.do"
-        self.db_name = 'demo'
-
-    def get_demo_info(self):
-        collection = get_collection(db_handle, self.db_name)
-        data_demo = list(collection.find({}))
-        ret = []
-        for item in data_demo:
-            item_data = {
-                "location": str(item["location"]),
-                "date": str(item["date"]),
-                "time": str(item["time"]),
-                "amount": str(item["amount"])
-            }
-            ret.append(item_data)
-        return ret
-
-    def crawling_demo(self):
-=======
-        # self.__download_path = '/Users/limhs/Downloads/'
-        self.__download_path  = '/Users/choijeongheum/Downloads/'
-        self.__site_url       = "https://www.smpa.go.kr/user/nd54882.do"
+        self.__download_path = '/Users/limhs/Downloads/'
+        # self.__download_path  = '/Users/choijeongheum/Downloads/'
+        self.__site_url = "https://www.smpa.go.kr/user/nd54882.do"
 
     def _crawling_demo(self):
->>>>>>> 6da12c492dc5409825c04dbbd199e9135f8246f0:django_webserver/probono_app/services/demo_scraper.py
         print('Initializing demo crawling.. ', end='')
         self.__get_date_info()
         if self.__check_file():
@@ -177,7 +153,7 @@ class DemoInfo():
             date = re.search(r'\d{4}\. \d{2}\. \d{2}', text)
             cnt = len(re.findall(r'(\d{2}:\d{2})[∼~](\d{2}:\d{2})', text))
             text = text.replace('\r', '').replace('\n', '')
-            for i in range(cnt+1):
+            for i in range(cnt):
                 match = re.search(r'(\d{2}:\d{2})[∼~](\d{2}:\d{2})', text)
                 if match:
                     time = text[match.start():match.end()]
@@ -203,11 +179,12 @@ class DemoInfo():
                     # print(amount)
 
                 result = {
-                    'location'  : place,
-                    'date'      : date,
-                    'time'      : time,
-                    'amount'    : amount
+                    'location': place,
+                    'date': date,
+                    'time': time,
+                    'amount': amount
                 }
+                # print(result)
                 to_insert.append(result)
                 i += 1
 
@@ -217,20 +194,16 @@ class DemoInfo():
         # 모든 Demo 객체를 삭제
         Demo.objects.all().delete()
 
-<<<<<<< HEAD:django_webserver/probono_app/models/demo_scraper.py
-    def close_driver(self):
-        self.driver.quit()
-=======
         new_data = []
         new_data.extend(self.__process_hwp_file())
         for idx, target in enumerate(new_data):
-            formatted_date = datetime.strptime(target['date'].group(), "%Y. %m. %d").date()
+            formatted_date = datetime.strptime(
+                target['date'].group(), "%Y. %m. %d").date()
             new_data[idx]['date'] = formatted_date
-        
+
         # 새로운 데이터를 Demo 모델에 추가
         demo_instances = [Demo(**item) for item in new_data]
         Demo.objects.bulk_create(demo_instances)
 
     def __close_driver(self):
         self.driver.quit()
->>>>>>> 6da12c492dc5409825c04dbbd199e9135f8246f0:django_webserver/probono_app/services/demo_scraper.py
