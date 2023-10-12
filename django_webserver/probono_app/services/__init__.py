@@ -5,3 +5,4 @@ from .population_ai_model import districtInfo, PopulationAiModel
 from .demo_scraper import DemoInfo
 from .customizing import CustomInfo
 from .subway_info import SubwayInfo
+from .safety_guard_house_info import SafetyGuardHouseInfo
