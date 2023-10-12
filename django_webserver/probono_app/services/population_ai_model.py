@@ -86,7 +86,8 @@ class PopulationAiModel():
 
 class districtInfo:  # 해당 지역 정보
     def __init__(self, district_name):
-        self.base_url = 'http://openapi.seoul.go.kr:8088/4b4c477a766c696d39314965686a66/json/SPOP_LOCAL_RESD_DONG/1/24'
+        self.__key = '4b4c477a766c696d39314965686a66'
+        self.base_url = f'http://openapi.seoul.go.kr:8088/{self.__key}/json/SPOP_LOCAL_RESD_DONG/1/24'
         # Hwagok1(화곡동), Yeokchon(역촌동), Jingwan(진관동), Gil(길동)
         self.__district_code = ['11500540', '11380625', '11380690', '11740685']
 
