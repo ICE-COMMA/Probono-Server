@@ -19,7 +19,8 @@ class BusInfo():
         self.__route_base_url = 'http://ws.bus.go.kr/api/rest/busRouteInfo/getStaionByRoute'
         self.__route_key      = '4cwiloFmPQxO3hXwmJy3jruoPPh6m8PQZqxBkWecSAgIIeRjq6UIdo0r7ZnmT4Rm4kVErRaD9jd1XU5CS7Chwg=='
 
-        self.__route_db_name  = 'bus'
+        self.__no_to_route_key      = '57636d66616c696d3536664b555850'
+        self.__no_to_route_base_url = f'http://openapi.seoul.go.kr:8088/{self.__no_to_route_key}/json/busRoute'
 
     def get_bus_pos(self, route_id):
         params = {
@@ -69,6 +70,32 @@ class BusInfo():
             print(data)
             ret.append(data)
         return route_id, ret
+
+    def get_bus_no_to_route(self):
+        start_index = 1
+        end_index = 100
+
+        all_data = []
+        while True:
+            url = f"{self.__no_to_route_base_url}/{start_index}/{end_index}/"
+            response = requests.get(url)
+            data = response.json()
+            if 'busRoute' in data and 'row' in data['busRoute']:
+                all_data.extend(data['busRoute']['row'])
+            start_index += 100
+            end_index += 100
+            if len(data['busRoute']['row']) < 100:
+                break
+
+        Bus.objects.all().delete()
+        to_insert = []
+        for data in all_data:
+            bus_no = data.get('ROUTE', '')
+            route = data.get('ROUTE_ID', '')
+            no_to_route = Bus(bus_no=bus_no, route=route)
+            to_insert.append(no_to_route)
+        Bus.objects.bulk_create(to_insert)
+        return
 
     def __fetch_data(self, base_url, params):
         response = requests.get(base_url, params=params)

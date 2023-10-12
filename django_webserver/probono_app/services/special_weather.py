@@ -9,8 +9,6 @@ logger = logging.getLogger(__name__)
 
 from config import utils
 
-# db_handle = utils.db_handle
-# get_collection = utils.get_collection_handle
 from probono_app.models import SpecialWeather
 
 class SpecialWeatherService():

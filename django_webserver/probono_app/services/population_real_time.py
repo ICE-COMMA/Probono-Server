@@ -10,7 +10,8 @@ from probono_app.models import PopulRegion
 class PopulationRealTime():
     
     def __init__(self):
-        self.__base_url   = 'http://openapi.seoul.go.kr:8088/68666f624d6c696d373249736e7649/json/citydata_ppltn'
+        self.__key      = '68666f624d6c696d373249736e7649'
+        self.__base_url = f'http://openapi.seoul.go.kr:8088/{self.__key}/json/citydata_ppltn'
 
     def init_population_info(self):
         print('Initializing population region info.. ', end='')
