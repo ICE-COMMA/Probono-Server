@@ -6,6 +6,8 @@ env/
 
 django_front
 
+django_webserver/.env
+
 django_webserver/probono_app/__pycache__
 
 django_webserver/probono_app/models/__pycache__
