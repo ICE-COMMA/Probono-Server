@@ -17,12 +17,12 @@ from probono_app.models import Demo
 
 
 class DemoInfo():
-    
+
     def __init__(self):
         self.chrome_options = webdriver.ChromeOptions()
-        # self.__download_path = '/Users/limhs/Downloads/'
-        self.__download_path  = '/Users/choijeongheum/Downloads/'
-        self.__site_url       = "https://www.smpa.go.kr/user/nd54882.do"
+        self.__download_path = '/Users/limhs/Downloads/'
+        # self.__download_path  = '/Users/choijeongheum/Downloads/'
+        self.__site_url = "https://www.smpa.go.kr/user/nd54882.do"
 
     def _crawling_demo(self):
         print('Initializing demo crawling.. ', end='')
@@ -153,7 +153,7 @@ class DemoInfo():
             date = re.search(r'\d{4}\. \d{2}\. \d{2}', text)
             cnt = len(re.findall(r'(\d{2}:\d{2})[∼~](\d{2}:\d{2})', text))
             text = text.replace('\r', '').replace('\n', '')
-            for i in range(cnt+1):
+            for i in range(cnt):
                 match = re.search(r'(\d{2}:\d{2})[∼~](\d{2}:\d{2})', text)
                 if match:
                     time = text[match.start():match.end()]
@@ -179,11 +179,12 @@ class DemoInfo():
                     # print(amount)
 
                 result = {
-                    'location'  : place,
-                    'date'      : date,
-                    'time'      : time,
-                    'amount'    : amount
+                    'location': place,
+                    'date': date,
+                    'time': time,
+                    'amount': amount
                 }
+                # print(result)
                 to_insert.append(result)
                 i += 1
 
@@ -196,9 +197,10 @@ class DemoInfo():
         new_data = []
         new_data.extend(self.__process_hwp_file())
         for idx, target in enumerate(new_data):
-            formatted_date = datetime.strptime(target['date'].group(), "%Y. %m. %d").date()
+            formatted_date = datetime.strptime(
+                target['date'].group(), "%Y. %m. %d").date()
             new_data[idx]['date'] = formatted_date
-        
+
         # 새로운 데이터를 Demo 모델에 추가
         demo_instances = [Demo(**item) for item in new_data]
         Demo.objects.bulk_create(demo_instances)
