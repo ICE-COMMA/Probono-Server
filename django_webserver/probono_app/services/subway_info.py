@@ -1,26 +1,38 @@
-from config import utils
+import requests
 
-# # db_handle = utils.db_handle
-# get_collection = utils.get_collection_handle
+from probono_app.models import SubwayElevator
 
 class SubwayInfo():
 
     def __init__(self):
-        self.db_name = 'subway_elevator'
+        self.__key  = '4f6a5a74796c696d3534425a686562'
     
-    # def get_subway_elvtr(self, target):
-    #     collection_elvtr = get_collection(db_handle, self.db_name)
-    #     result = collection_elvtr.find({'sw_nm': target})
-    #     result = list(result)
+    def get_subway_elvtr_task(self):
+        base_url = f'http://openapi.seoul.go.kr:8088/{self.__key}/json/tbTraficElvtr'
+        start_index = 1
+        end_index = 100
 
-    #     ret = []
-    #     for temp in result:
-    #         data = {
-    #             'sw_nm': temp['sw_nm'],
-    #             'x': temp['x'],
-    #             'y': temp['y']
-    #         }
-    #         ret.append(data)
-    #     if not result:
-    #         return {'message': 'No results'}
-    #     return {'elvtr': ret}
+        all_data = []
+        while True:
+            url = f"{base_url}/{start_index}/{end_index}/"
+            response = requests.get(url)
+            data = response.json()
+            if 'tbTraficElvtr' in data and 'row' in data['tbTraficElvtr']:
+                all_data.extend(data['tbTraficElvtr']['row'])
+            start_index += 100
+            end_index += 100
+            if len(data['tbTraficElvtr']['row']) < 100:
+                break
+
+        SubwayElevator.objects.all().delete()
+        to_insert= []
+        for data in all_data:
+            sw_nm = data.get('SW_NM', '')
+            node_wkt = data.get('NODE_WKT', '')
+            coordinates = node_wkt.replace("POINT(", "").replace(")", "").split()
+            x = coordinates[0]
+            y = coordinates[1]
+            subway_elevator = SubwayElevator(sw_nm=sw_nm, x=float(x), y=float(y))
+            to_insert.append(subway_elevator)
+        SubwayElevator.objects.bulk_create(to_insert)
+        return
