@@ -10,22 +10,37 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
+import environ
+from django.core.exceptions import ImproperlyConfigured
 import datetime
 from pathlib import Path
-import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+env = environ.Env(DEBUG=(bool, True))
+
+environ.Env.read_env(
+    env_file=os.path.join(BASE_DIR, '.env')
+)
+
+def get_env_variable(var_name):
+  try:
+    return env(var_name)
+  except KeyError:
+    error_msg = "Set the {} environment variable".format(var_name)
+    raise ImproperlyConfigured(error_msg)
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-si+p!f@hyqqyc21!9rlqs8us-bor0wt4b7%^-4fg#t-fh$15a7"
+SECRET_KEY = get_env_variable('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = get_env_variable('DEBUG')
 
 ALLOWED_HOSTS = []
 
@@ -109,10 +124,10 @@ DATABASES = {
         'ENFORCE_SCHEMA': False,
         'CLIENT': {
             'name': 'Prototype',
-            'host': 'mongodb+srv://andyc707:tzlZgVWMs1wFvzDH@prototypeversion.sxa69i7.mongodb.net/?retryWrites=true&w=majority',
+            'host': get_env_variable('MONGO_HOST'),
             'port': 27017,
-            'username': 'andyc707',
-            'password': 'tzlZgVWMs1wFvzDH',
+            'username': get_env_variable('MONGO_USERNAME'),
+            'password': get_env_variable('MONGO_PASSWORD'),
             'authMechanism': 'SCRAM-SHA-1',
         }
     }

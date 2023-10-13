@@ -3,10 +3,9 @@ import logging
 from pytz import timezone
 from datetime import datetime
 from itertools import groupby
-
+from config.settings import get_env_variable
 
 logger = logging.getLogger(__name__)
-
 
 from probono_app.models import SpecialWeather
 
@@ -16,7 +15,7 @@ class SpecialWeatherService():
 
     def __init__(self):
         self.__base_url = 'https://apihub.kma.go.kr/api/typ01/url/wrn_met_data.php'
-        self.__key      = 'm4y76-4OTnaMu-vuDg525w'
+        self.__key      = get_env_variable('SPECIAL_WEATHER_KEY')
         self.__params   = {
             'wrn'       : 'A',      'reg'   : None,
             'tmfc1'     : None,     'disp'  : '0',

@@ -1,11 +1,12 @@
 import requests
 from probono_app.models import Bus
+from config.settings import get_env_variable
 
 class BusInfo():
     
     def __init__(self):
         self.__pos_base_url   = 'http://ws.bus.go.kr/api/rest/buspos/getBusPosByRtid'
-        self.__pos_key        = '4cwiloFmPQxO3hXwmJy3jruoPPh6m8PQZqxBkWecSAgIIeRjq6UIdo0r7ZnmT4Rm4kVErRaD9jd1XU5CS7Chwg=='
+        self.__pos_key        = get_env_variable('BUS_POS_KEY')
         self.__pos_bus_type   = {
             '0' : False,
             '1' : True,
@@ -17,9 +18,9 @@ class BusInfo():
         }
 
         self.__route_base_url = 'http://ws.bus.go.kr/api/rest/busRouteInfo/getStaionByRoute'
-        self.__route_key      = '4cwiloFmPQxO3hXwmJy3jruoPPh6m8PQZqxBkWecSAgIIeRjq6UIdo0r7ZnmT4Rm4kVErRaD9jd1XU5CS7Chwg=='
+        self.__route_key      = get_env_variable('BUS_ROUTE_KEY')
 
-        self.__no_to_route_key      = '57636d66616c696d3536664b555850'
+        self.__no_to_route_key      = get_env_variable('BUS_NO_TO_ROUTE_KEY')
         self.__no_to_route_base_url = f'http://openapi.seoul.go.kr:8088/{self.__no_to_route_key}/json/busRoute'
 
     def get_bus_pos(self, route_id):

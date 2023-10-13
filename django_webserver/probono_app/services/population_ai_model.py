@@ -1,6 +1,7 @@
 import requests
 from datetime import datetime, timedelta
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from config.settings import get_env_variable
 
 from pathlib import Path
 
@@ -14,7 +15,7 @@ class PopulationAiModel():
     
     def __init__(self):
         self.__holi_base_url    = 'https://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo'
-        self.__holi_key         = '4cwiloFmPQxO3hXwmJy3jruoPPh6m8PQZqxBkWecSAgIIeRjq6UIdo0r7ZnmT4Rm4kVErRaD9jd1XU5CS7Chwg=='
+        self.__holi_key         = get_env_variable('POPUL_HOLI_KEY')
 
     def get_predict_value(self):
         with ThreadPoolExecutor(max_workers=4) as executor:
@@ -86,7 +87,7 @@ class PopulationAiModel():
 
 class districtInfo:  # 해당 지역 정보
     def __init__(self, district_name):
-        self.__key = '4b4c477a766c696d39314965686a66'
+        self.__key = get_env_variable('POPUL_AI_KEY')
         self.base_url = f'http://openapi.seoul.go.kr:8088/{self.__key}/json/SPOP_LOCAL_RESD_DONG/1/24'
         # Hwagok1(화곡동), Yeokchon(역촌동), Jingwan(진관동), Gil(길동)
         self.__district_code = ['11500540', '11380625', '11380690', '11740685']

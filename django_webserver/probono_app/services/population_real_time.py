@@ -4,13 +4,14 @@ from pathlib import Path
 
 import openpyxl
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from config.settings import get_env_variable
 
 from probono_app.models import PopulRegion
 
 class PopulationRealTime():
     
     def __init__(self):
-        self.__key      = '68666f624d6c696d373249736e7649'
+        self.__key      = get_env_variable('POPUL_REAL_KEY')
         self.__base_url = f'http://openapi.seoul.go.kr:8088/{self.__key}/json/citydata_ppltn'
 
     def init_population_info(self):

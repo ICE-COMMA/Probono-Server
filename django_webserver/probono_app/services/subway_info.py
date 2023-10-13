@@ -1,11 +1,12 @@
 import requests
+from config.settings import get_env_variable
 
 from probono_app.models import SubwayElevator
 
 class SubwayInfo():
 
     def __init__(self):
-        self.__key  = '4f6a5a74796c696d3534425a686562'
+        self.__key  = get_env_variable('SUBWAY_ELVTR_KET')
     
     def get_subway_elvtr_task(self):
         base_url = f'http://openapi.seoul.go.kr:8088/{self.__key}/json/tbTraficElvtr'

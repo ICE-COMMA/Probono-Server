@@ -12,6 +12,7 @@ import olefile
 import re
 import zlib
 import struct
+from config.settings import get_env_variable
 
 from probono_app.models import Demo
 
@@ -20,8 +21,7 @@ class DemoInfo():
 
     def __init__(self):
         self.chrome_options = webdriver.ChromeOptions()
-        # self.__download_path = '/Users/limhs/Downloads/'
-        self.__download_path  = '/Users/choijeongheum/Downloads/'
+        self.__download_path  = get_env_variable('DEMO_FILE_PATH')
         self.__site_url = "https://www.smpa.go.kr/user/nd54882.do"
 
     def _crawling_demo(self):

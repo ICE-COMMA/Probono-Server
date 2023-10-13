@@ -1,11 +1,12 @@
 import requests
+from config.settings import get_env_variable
 
 from probono_app.models import SafetyGuardHouse
 
 class SafetyGuardHouseInfo():
 
     def __init__(self):
-        self.__key = 'z3tbVitFT7XffZ43RQ9sMyE0ALiv+EtqOysMUKPdg9E5zTIL3lNVHqGCOS9vPqq73zYw6OhwHiskVZj4MYCJ0w=='
+        self.__key = get_env_variable('SAFETY_GUARD_HOUSE_KEY')
         self.__base_url = "http://api.data.go.kr/openapi/tn_pubr_public_female_safety_prtchouse_api"
 
     def get_safety_guard_house(self):
