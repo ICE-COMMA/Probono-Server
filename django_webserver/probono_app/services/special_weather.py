@@ -1,13 +1,12 @@
 import requests
 import logging
 from pytz import timezone
-from datetime import datetime, timedelta
+from datetime import datetime
 from itertools import groupby
 
 
 logger = logging.getLogger(__name__)
 
-from config import utils
 
 from probono_app.models import SpecialWeather
 
