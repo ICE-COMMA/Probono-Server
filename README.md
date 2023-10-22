@@ -6,7 +6,10 @@
   <br>
 </p>
 
-# 프로젝트 소개
+## 개발기간
+- 23.08.14 - 23.11.14
+
+## 프로젝트 개요
 
 <p align="justify">
 
@@ -30,11 +33,11 @@
 
 <br>
 
-<!-- ## 기술 스택 -->
+ ## 기술 스택
 
-<!-- |  HTML5  |  CSS3  | JavaScript | React    | Figma    | notion    |
+|  HTML5  |  CSS3  | JavaScript | React    | Figma    | notion    |
 | :-----: | :----: | :--------: | -------- | -------- | --------- |
-| ![html] | ![css] |   ![js]    | ![react] | ![figma] | ![notion] | -->
+| ![html] | ![css] |   ![js]    | ![react] | ![figma] | ![notion] |
 
 <br>
 
