@@ -2,7 +2,7 @@
 
 <p align="center">
   <br>
-  <img src="./images/comma.png" width="300" heigh="100">
+  <img src="./images/comma.png" width="300" heigh="200">
   <br>
 </p>
 
