@@ -33,14 +33,15 @@
 
 <br>
 
- ## 기술 스택
+ ## 개발환경
 
-|  Front  |  Back  | 
-| :----: | :----: |
-| 'JavaScript' | 'Python' |
-| 'React' | 'Django'|
-
+- **Language**: Python
+  
+- **Framework**: Django
+  
+- **Database**: MongoDB
 <br>
+
 
 ## 구현 기능
 
