@@ -1,8 +1,8 @@
-# 사회적 약자 참여형 스마트시티 생활 예보 서비스
+# 데이터 중심의 사회적 약자 참여형 스마트시티 생활 예보 서비스 개발
 
 <p align="center">
   <br>
-  <img src="./images/comma.png">
+  <img src="./images/comma.png" width="300" heigh="100">
   <br>
 </p>
 
