@@ -35,9 +35,10 @@
 
  ## 기술 스택
 
-|  HTML5  |  CSS3  | JavaScript | React    | Figma    | notion    |
-| :-----: | :----: | :--------: | -------- | -------- | --------- |
-| ![html] | ![css] |   ![js]    | ![react] | ![figma] | ![notion] |
+|  Front  |  Back  | 
+| :----: | :----: |
+| 'JavaScript' | 'Python' |
+| 'React' | 'Django'|
 
 <br>
 
