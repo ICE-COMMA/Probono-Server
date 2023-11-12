@@ -33,15 +33,19 @@
 
 <br>
 
- ## 개발환경
+## 기대 효과
 
-- **Language**: Python
-  
-- **Framework**: Django
-  
-- **Database**: MongoDB
+- **사회적 약자의 도시 생활 안전 향상**
+> &rarr; ICT 중심의 사회적 약자에 대한 복지 향상 및 특정 집단을 위한 맞춤형 생활 예보로 확장 가능
+
+- **스마트시티의 사용자 참여 증가**
+> &rarr; 도시 위험 상황 신고 등의 사용자 참여(crowd sourcing)를 활용한 시민 체감형 스마트시티 구현
+
+<p align="justify">
+
+</p>
+
 <br>
-
 
 ## 구현 기능
 
@@ -55,16 +59,13 @@
 
 <br>
 
-## 기대 효과
+ ## 개발환경
 
-> 사회적 약자의 도시 생활 안전 향상
-
-> 스마트시티를 위한 사용자 참여도 향상
-
-<p align="justify">
-
-</p>
-
+- **Language**: Python
+  
+- **Framework**: Django
+  
+- **Database**: MongoDB
 <br>
 
 <!-- ## 라이센스
