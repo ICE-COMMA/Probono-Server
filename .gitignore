@@ -6,7 +6,8 @@ django_webserver/.env
 django_webserver/probono_app/__pycache__
 django_webserver/probono_app/models/__pycache__
 .DS_Store
-.idea
+.idea/
+.vscode/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
