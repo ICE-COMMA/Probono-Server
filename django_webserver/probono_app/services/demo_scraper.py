@@ -12,7 +12,7 @@ import olefile
 import re
 import zlib
 import struct
-from django_webserver.config.settings.common import get_env_variable
+from config.settings.common import get_env_variable
 
 from probono_app.models import Demo
 

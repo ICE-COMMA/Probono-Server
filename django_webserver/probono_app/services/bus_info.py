@@ -1,6 +1,7 @@
 import requests
 from probono_app.models import Bus
-from django_webserver.config.settings.common import get_env_variable
+from config.settings.common import get_env_variable
+
 
 class BusInfo():
     
