@@ -1,6 +1,7 @@
 import requests
 from probono_app.models import Bus
-from config.settings import get_env_variable
+from config.settings.common import get_env_variable
+
 
 class BusInfo():
     

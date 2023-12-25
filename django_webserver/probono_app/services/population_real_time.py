@@ -4,7 +4,7 @@ from pathlib import Path
 
 import openpyxl
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from config.settings import get_env_variable
+from config.settings.common import get_env_variable
 
 from probono_app.models import PopulRegion
 

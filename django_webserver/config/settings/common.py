@@ -17,7 +17,7 @@ import datetime
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 env = environ.Env(DEBUG=(bool, True))
 
@@ -165,7 +165,3 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Celery ZONE
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
-
-
-# CORS ZONE
-CORS_ALLOW_ALL_ORIGINS = True
