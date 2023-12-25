@@ -3,7 +3,7 @@ import logging
 from pytz import timezone
 from datetime import datetime
 from itertools import groupby
-from config.settings import get_env_variable
+from django_webserver.config.settings.common import get_env_variable
 
 logger = logging.getLogger(__name__)
 

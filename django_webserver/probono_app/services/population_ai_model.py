@@ -1,7 +1,7 @@
 import requests
 from datetime import datetime, timedelta
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from config.settings import get_env_variable
+from django_webserver.config.settings.common import get_env_variable
 
 from pathlib import Path
 
