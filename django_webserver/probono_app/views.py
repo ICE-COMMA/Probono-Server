@@ -13,7 +13,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from .models import SpecialWeather
 from .models import Bus
 from .models import PopulRegion
-from .models import ProbonoUser
+# from .models import ProbonoUser
+from django.contrib.auth import get_user_model
 from .models import SubwayElevator
 from .models import Demo
 from .models import SafetyGuardHouse
@@ -36,6 +37,8 @@ from .serializers import SubwayElevatorSerializer
 from .serializers import CreateUserSerializer, LoginUserSerializer, UserSerializer
 from django.contrib.auth import login, logout
 from rest_framework import permissions
+
+User = get_user_model()
 
 
 class SafetyGuardHouseListView(generics.ListAPIView):
@@ -140,7 +143,7 @@ def id_check(request):
     data = json.loads(request.body.decode('utf-8'))
     target_id = data.get('userId')
     try:
-        ProbonoUser.objects.get(ID=target_id)
+        User.objects.get(ID=target_id)
         print(target_id, 'is already exist')
         data = {'valid': False}
     except ObjectDoesNotExist:
