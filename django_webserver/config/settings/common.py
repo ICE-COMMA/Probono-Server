@@ -26,11 +26,11 @@ environ.Env.read_env(
 )
 
 def get_env_variable(var_name):
-  try:
-    return env(var_name)
-  except KeyError:
-    error_msg = "Set the {} environment variable".format(var_name)
-    raise ImproperlyConfigured(error_msg)
+    try:
+        return env(var_name)
+    except KeyError:
+        error_msg = "Set the {} environment variable".format(var_name)
+        raise ImproperlyConfigured(error_msg)
 
 
 # Quick-start development settings - unsuitable for production
@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Register probono_app"
     "probono_app.apps.ProbonoAppConfig",
+    "accounts",
     'corsheaders',
     'rest_framework',
 ]
@@ -69,7 +70,7 @@ REST_FRAMEWORK = {
 }
 
 
-AUTH_USER_MODEL = 'probono_app.ProbonoUser'
+AUTH_USER_MODEL = 'accounts.ProbonoUser'
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
