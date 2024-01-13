@@ -1,13 +1,17 @@
 from rest_framework import serializers
 
 # ProbonoUser
-from .models import ProbonoUser, CustomPreferences
+# from .models import ProbonoUser, CustomPreferences
+from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
 
 from .models import SpecialWeather
 from .models import SubwayElevator
 from .models import Demo
 from .models import SafetyGuardHouse
+from ..accounts.models import CustomPreferences
+
+ProbonoUser = get_user_model()
 
 class SpecialWeatherSerializer(serializers.ModelSerializer):
     class Meta:
